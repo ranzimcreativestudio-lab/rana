@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Halfseam — Tops &amp; Dresses</title>
+  <meta name="description" content="Halfseam is a small tops-and-dresses label for men and women. Cotton, linen and poplin, made in small runs.">
+  <meta name="theme-color" content="#22544A">
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Halfseam — Tops &amp; Dresses">
+  <meta property="og:description" content="Sixteen pieces for men and women. Cotton, linen and poplin, made in small runs.">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%97%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Karla:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="topbar">Free delivery over ৳3,000 · Cash on delivery available nationwide</div>
+
+  <header class="site">
+    <div class="wrap bar">
+      <button class="wordmark" data-nav="all" aria-label="Halfseam home">Halfseam</button>
+      <nav class="nav" id="nav">
+        <button data-nav="all">All</button>
+        <button data-nav="women">Women</button>
+        <button data-nav="men">Men</button>
+        <button data-nav="dresses">Dresses</button>
+      </nav>
+      <div class="spacer"></div>
+      <label class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search tops, dresses…" aria-label="Search products">
+      </label>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch colour theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 13.2A8.2 8.2 0 1 1 10.8 4a6.4 6.4 0 0 0 9.2 9.2Z"/></svg>
+      </button>
+      <button class="icon-btn" id="cartBtn" aria-label="Open bag">
+        Bag <span class="count" id="cartCount" data-empty="true">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Autumn 26 · Tops &amp; dresses</p>
+          <h1>Cut plain,<br>sewn <em>properly.</em></h1>
+          <p class="lede">Sixteen pieces for men and women — cotton, linen and poplin, made in small runs and priced without the markup.</p>
+          <div class="cta-row">
+            <button class="btn btn-primary" data-nav="women">Shop women</button>
+            <button class="btn btn-ghost" data-nav="men">Shop men</button>
+          </div>
+        </div>
+        <div class="hero-art" id="heroArt"></div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div class="promises">
+        <div><strong>Free delivery over ৳3,000</strong><span>Dhaka next-day, elsewhere 2–4 days</span></div>
+        <div><strong>7-day exchange</strong><span>Wrong size? Swap it, no questions</span></div>
+        <div><strong>Cash on delivery</strong><span>Or card, bKash and Nagad</span></div>
+      </div>
+    </div>
+
+    <section class="wrap shop" id="shop">
+      <div class="shop-head">
+        <div>
+          <p class="eyebrow">The collection</p>
+          <h2>Everything in stock</h2>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="chips" id="genderChips">
+          <button class="chip" data-gender="all" aria-pressed="true">Everyone</button>
+          <button class="chip" data-gender="women" aria-pressed="false">Women</button>
+          <button class="chip" data-gender="men" aria-pressed="false">Men</button>
+        </div>
+        <div class="sep" aria-hidden="true"></div>
+        <div class="chips" id="typeChips"></div>
+        <div class="spacer"></div>
+        <span class="count-note" id="countNote">16 pieces</span>
+        <select class="sort" id="sort" aria-label="Sort products">
+          <option value="featured">Featured</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="wordmark">Halfseam</div>
+          <p class="foot-blurb">A small tops-and-dresses label. We cut in Dhaka, sell direct, and keep the range short on purpose.</p>
+        </div>
+        <div>
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="#shop" data-nav="women">Women</a></li>
+            <li><a href="#shop" data-nav="men">Men</a></li>
+            <li><a href="#shop" data-nav="dresses">Dresses</a></li>
+            <li><a href="#shop" data-nav="all">All pieces</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Help</h4>
+          <ul>
+            <li><a href="#shop">Size guide</a></li>
+            <li><a href="#shop">Delivery &amp; returns</a></li>
+            <li><a href="#shop">Fabric care</a></li>
+            <li><a href="#shop">Track an order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Reach us</h4>
+          <ul>
+            <li>hello@halfseam.example</li>
+            <li>+880 1XXX-XXXXXX</li>
+            <li>Sat–Thu, 10am–7pm</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Halfseam — a demonstration storefront. No orders are processed and no payment is taken.</span>
+        <span>Prices in BDT (৳)</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="scrim" id="scrim"></div>
+
+  <section class="sheet" id="detail" role="dialog" aria-modal="true" aria-label="Product details" hidden></section>
+
+  <aside class="sheet" id="cart" role="dialog" aria-modal="true" aria-label="Your bag">
+    <div class="cart-head">
+      <h3>Your bag</h3>
+      <button class="icon-btn" id="cartClose" aria-label="Close bag">Close</button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-foot" id="cartFoot"></div>
+  </aside>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
