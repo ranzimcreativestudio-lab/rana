@@ -56,6 +56,54 @@ var P = [
 
 var SIZES = {women:["XS","S","M","L","XL"],men:["S","M","L","XL","XXL"]};
 
+/* ================= size + fit engine =================
+   CHEST  — the body chest/bust range (in inches) each label size is cut for.
+   LEN_BASE — garment length in inches (shoulder seam to hem) for the SMALLEST
+              size of each shape. Each size up adds LEN_STEP.
+   Edit these three tables to match your own measurement chart.        */
+var CHEST = {
+  women:{XS:[30,32.5],S:[32.5,35],M:[35,37.5],L:[37.5,40],XL:[40,43]},
+  men:  {S:[35,37.5],M:[37.5,40.5],L:[40.5,43.5],XL:[43.5,46.5],XXL:[46.5,50]}
+};
+var LEN_BASE = {tee:24.5,henley:26,sweat:25.5,crop:17.5,shirt:27,polo:26.5,
+                hoodie:26,blouse:23.5,cami:22,aline:38,wrap:42,slip:46};
+var LEN_STEP = 0.5;
+
+/* every size of one product, with its chest range and finished length */
+function sizeTable(p){
+  var list=SIZES[p.gender], base=LEN_BASE[p.shape]||25;
+  return list.map(function(s,i){
+    var r=CHEST[p.gender][s];
+    return {size:s,chestMin:r[0],chestMax:r[1],length:Math.round((base+i*LEN_STEP)*2)/2};
+  });
+}
+
+/* the size of this product that fits the customer, or null if none does */
+function fitMatch(p,fit){
+  if(!fit) return null;
+  var tol=fit.tol||2,best=null;
+  sizeTable(p).forEach(function(r){
+    if(fit.chest<r.chestMin-0.25||fit.chest>r.chestMax+0.25) return;
+    var d=Math.abs(r.length-fit.len);
+    if(d<=tol&&(!best||d<best.d)) best={d:d,row:r};
+  });
+  return best?best.row:null;
+}
+
+/* closest length we actually stock — used when nothing matches */
+function nearestLength(fit){
+  var best=null;
+  P.forEach(function(p){
+    if(fit.type!=="all"&&p.type!==fit.type) return;
+    sizeTable(p).forEach(function(r){
+      if(fit.chest<r.chestMin-0.25||fit.chest>r.chestMax+0.25) return;
+      var d=Math.abs(r.length-fit.len);
+      if(!best||d<best.d) best={d:d,len:r.length};
+    });
+  });
+  return best;
+}
+
 /* ================= garment illustrations ================= */
 var SHAPES = {
   tee:    {sleeve:"short",neck:"crew",   hem:198,hw:40},
@@ -173,16 +221,25 @@ function garmentSVG(shapeKey,hex){
 }
 
 /* ================= state ================= */
-var state={gender:"all",type:"all",q:"",sort:"featured",sel:{},cart:[],open:null,placed:null};
+var state={gender:"all",type:"all",q:"",sort:"featured",sel:{},cart:[],open:null,placed:null,fit:null};
 
 P.forEach(function(p){ state.sel[p.id]=0; });
 
 try{
-  var saved=localStorage.getItem("halfseam.cart");
+  var saved=localStorage.getItem("dreamofall.cart");
   if(saved){ var c=JSON.parse(saved); if(Array.isArray(c)) state.cart=c; }
 }catch(e){}
 
-function save(){ try{ localStorage.setItem("halfseam.cart",JSON.stringify(state.cart)); }catch(e){} }
+try{
+  var savedFit=localStorage.getItem("dreamofall.fit");
+  if(savedFit){
+    var f=JSON.parse(savedFit);
+    if(f&&f.chest&&f.len){ state.fit=f; state.gender=f.gender||"all"; state.type=f.type||"all"; }
+  }
+}catch(e){}
+
+function save(){ try{ localStorage.setItem("dreamofall.cart",JSON.stringify(state.cart)); }catch(e){} }
+function saveFit(){ try{ localStorage.setItem("dreamofall.fit",JSON.stringify(state.fit)); }catch(e){} }
 
 var TYPES=["all"].concat(P.map(function(p){return p.type;}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort());
 
@@ -206,6 +263,7 @@ function visible(){
       var hay=(p.name+" "+p.type+" "+p.gender+" "+p.fabric).toLowerCase();
       if(hay.indexOf(state.q.toLowerCase())===-1) return false;
     }
+    if(state.fit&&!fitMatch(p,state.fit)) return false;
     return true;
   });
   if(state.sort==="low") list.sort(function(a,b){return a.price-b.price;});
@@ -224,13 +282,15 @@ function renderTypeChips(){
 /* ================= render: grid ================= */
 function cardHTML(p){
   var ci=state.sel[p.id]||0, col=p.colors[ci];
+  var m=state.fit?fitMatch(p,state.fit):null;
+  var badge=m?'<span class="fit-badge">Size '+m.size+" · "+m.length+"″</span>":"";
   var tag=p.oldPrice?'<span class="tag" data-kind="sale">Sale</span>':(p.tag?'<span class="tag">'+esc(p.tag)+"</span>":"");
   return '<article class="card">'+
     '<div class="plate">'+tag+
       '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+garmentSVG(p.shape,col.h)+"</button>"+
       '<button class="quick" data-open="'+p.id+'">Choose size</button>'+
     "</div>"+
-    '<div class="meta"><div><div class="name">'+esc(p.name)+"</div>"+
+    '<div class="meta"><div><div class="name">'+esc(p.name)+badge+"</div>"+
       '<div class="sub">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+" · "+esc(col.n)+"</div></div>"+
       '<div class="price">'+(p.oldPrice?"<s>"+money(p.oldPrice)+"</s>":"")+money(p.price)+"</div></div>"+
     '<div class="swatches">'+p.colors.map(function(c,i){
@@ -243,7 +303,15 @@ function renderGrid(){
   var list=visible();
   var g=$("#grid");
   if(!list.length){
-    g.innerHTML='<div class="empty"><strong>Nothing matches that.</strong><br>Try clearing the search or picking another type.</div>';
+    var msg='<strong>Nothing matches that.</strong><br>Try clearing the search or picking another type.';
+    if(state.fit){
+      var n=nearestLength(state.fit);
+      msg='<strong>Nothing in stock matches those measurements.</strong><br>'+
+        (n?"The closest length we cut for a "+state.fit.chest+"″ chest is <strong>"+n.len+"″</strong>. ":"")+
+        'Widen the length tolerance or change your measurements.'+
+        '<br><br><button class="btn btn-ghost btn-sm" id="fitEdit2">Change measurements</button>';
+    }
+    g.innerHTML='<div class="empty">'+msg+"</div>";
   }else{
     g.innerHTML=list.map(cardHTML).join("");
   }
@@ -266,7 +334,15 @@ function renderDetail(){
   var p=P.filter(function(x){return x.id===detailState.id;})[0];
   if(!p) return;
   var ci=state.sel[p.id]||0, col=p.colors[ci];
-  var sizes=SIZES[p.gender];
+  var rows=sizeTable(p);
+  var m=state.fit?fitMatch(p,state.fit):null;
+  var fitLine="";
+  if(state.fit){
+    fitLine=m
+      ? '<p class="fit-line">For a <strong>'+state.fit.chest+"″</strong> chest and a <strong>"+state.fit.len+
+        '″</strong> length we suggest <strong>'+m.size+"</strong> — this piece measures "+m.length+"″ long in that size.</p>"
+      : '<p class="fit-line">None of these sizes match the measurements you gave.</p>';
+  }
   $("#detail").innerHTML=
     '<button class="close-x" id="detailClose" aria-label="Close">'+
       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button>'+
@@ -280,9 +356,10 @@ function renderDetail(){
           return '<button class="sw sw-lg" data-sw="'+p.id+'" data-i="'+i+'" aria-label="'+esc(c.n)+'" aria-pressed="'+(i===ci)+'" style="background:'+c.h+'"></button>';
         }).join("")+"</div></div>"+
       '<div class="field"><div class="field-head"><span class="eyebrow">Size</span><span class="val">'+esc(p.gender==="women"?"Women’s sizing":"Men’s sizing")+"</span></div>"+
-        '<div class="sizes">'+sizes.map(function(s){
-          return '<button class="size" data-size="'+s+'" aria-pressed="'+(detailState.size===s)+'">'+s+"</button>";
-        }).join("")+"</div></div>"+
+        '<div class="sizes">'+rows.map(function(r){
+          return '<button class="size" data-size="'+r.size+'" aria-pressed="'+(detailState.size===r.size)+
+                 '" title="Chest '+r.chestMin+"–"+r.chestMax+"″ · length "+r.length+'″">'+r.size+"</button>";
+        }).join("")+"</div>"+fitLine+"</div>"+
       '<div class="field"><span class="eyebrow">Quantity</span>'+
         '<div class="stepper"><button data-q="-1" aria-label="Decrease quantity">−</button><span id="qtyVal">'+detailState.qty+'</span><button data-q="1" aria-label="Increase quantity">+</button></div></div>'+
       '<button class="btn btn-primary btn-block" id="addBtn">'+(detailState.size?"Add to bag · "+money(p.price*detailState.qty):"Select a size")+"</button>"+
@@ -298,7 +375,9 @@ function renderDetail(){
 }
 
 function openDetail(id){
-  detailState={id:id,size:null,qty:1};
+  var prod=P.filter(function(x){return x.id===id;})[0];
+  var pre=prod&&state.fit?fitMatch(prod,state.fit):null;
+  detailState={id:id,size:pre?pre.size:null,qty:1};
   var d=$("#detail");
   d.hidden=false;
   renderDetail();
@@ -473,7 +552,7 @@ document.addEventListener("click",function(ev){
     return;
   }
   if(t.closest("#checkout")){
-    state.placed="HS-"+Math.floor(100000+Math.random()*899999);
+    state.placed="DOA-"+Math.floor(100000+Math.random()*899999);
     state.cart=[]; save(); renderCart(); return;
   }
   if(t.closest("#keepShopping")){ state.placed=null; closeAll(); return; }
@@ -502,18 +581,100 @@ $("#themeBtn").addEventListener("click",function(){
   if(!cur) next=prefersDark?"light":"dark";
   else next=cur==="dark"?"light":"dark";
   document.documentElement.setAttribute("data-theme",next);
-  try{ localStorage.setItem("halfseam.theme",next); }catch(e){}
+  try{ localStorage.setItem("dreamofall.theme",next); }catch(e){}
 });
 try{
-  var th=localStorage.getItem("halfseam.theme");
+  var th=localStorage.getItem("dreamofall.theme");
   if(th==="dark"||th==="light") document.documentElement.setAttribute("data-theme",th);
 }catch(e){}
+
+/* ================= measurement gate ================= */
+var gateDraft={gender:"women"};
+
+function renderFitBar(){
+  var bar=$("#fitBar");
+  if(!state.fit){ bar.hidden=true; return; }
+  bar.hidden=false;
+  $("#fitVals").textContent=
+    "chest "+state.fit.chest+"″ · length "+state.fit.len+"″ ± "+state.fit.tol+"″"+
+    " — showing only what fits";
+}
+
+function fillGateTypes(){
+  $("#gateType").innerHTML=TYPES.map(function(t){
+    return '<option value="'+esc(t)+'">'+(t==="all"?"Everything":esc(t))+"</option>";
+  }).join("");
+}
+
+function openGate(){
+  var f=state.fit||{};
+  gateDraft.gender=f.gender||"women";
+  fillGateTypes();
+  $("#gateChest").value=f.chest||"";
+  $("#gateLen").value=f.len||"";
+  $("#gateType").value=f.type||"all";
+  $("#gateTol").value=String(f.tol||2);
+  $("#gateErr").hidden=true;
+  document.querySelectorAll("#gateGender .chip").forEach(function(b){
+    b.setAttribute("aria-pressed",String(b.getAttribute("data-gg")===gateDraft.gender));
+  });
+  $("#gate").hidden=false;
+  document.body.style.overflow="hidden";
+  setTimeout(function(){ $("#gateChest").focus(); },60);
+}
+
+function closeGate(){
+  $("#gate").hidden=true;
+  if(!state.open) document.body.style.overflow="";
+}
+
+function gateError(msg){
+  var e=$("#gateErr"); e.textContent=msg; e.hidden=false;
+}
+
+document.addEventListener("click",function(ev){
+  var g=ev.target.closest?ev.target.closest("[data-gg]"):null;
+  if(g){
+    gateDraft.gender=g.getAttribute("data-gg");
+    document.querySelectorAll("#gateGender .chip").forEach(function(b){
+      b.setAttribute("aria-pressed",String(b.getAttribute("data-gg")===gateDraft.gender));
+    });
+    return;
+  }
+  if(ev.target.closest&&(ev.target.closest("#fitEdit")||ev.target.closest("#fitEdit2"))){ openGate(); return; }
+  if(ev.target.closest&&ev.target.closest("#gateGo")){
+    var chest=parseFloat($("#gateChest").value);
+    var len=parseFloat($("#gateLen").value);
+    $("#gateChest").setAttribute("data-bad",String(!(chest>=24&&chest<=60)));
+    $("#gateLen").setAttribute("data-bad",String(!(len>=14&&len<=60)));
+    if(!(chest>=24&&chest<=60)){ gateError("Chest should be between 24 and 60 inches."); return; }
+    if(!(len>=14&&len<=60)){ gateError("Length should be between 14 and 60 inches."); return; }
+    state.fit={gender:gateDraft.gender,chest:chest,len:len,
+               type:$("#gateType").value,tol:parseFloat($("#gateTol").value)||2};
+    saveFit();
+    state.gender=state.fit.gender;
+    state.type=state.fit.type;
+    state.q=""; $("#q").value="";
+    closeGate();
+    syncChips(); renderTypeChips(); renderFitBar(); renderGrid();
+    document.getElementById("shop").scrollIntoView({behavior:"smooth",block:"start"});
+    var n=visible().length;
+    toast(n?n+(n===1?" piece":" pieces")+" fit your measurements":"Nothing matched — try a wider tolerance");
+    return;
+  }
+});
+
+$("#gateChest").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#gateGo").click(); });
+$("#gateLen").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#gateGo").click(); });
 
 /* ================= boot ================= */
 renderTypeChips();
 renderHero();
+renderFitBar();
 renderGrid();
 renderCart();
 document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
+syncChips();
+if(!state.fit) openGate();
 
 })();

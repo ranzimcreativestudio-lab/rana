@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Halfseam — Tops &amp; Dresses</title>
-  <meta name="description" content="Halfseam is a small tops-and-dresses label for men and women. Cotton, linen and poplin, made in small runs.">
+  <title>Dream of All — Tops &amp; Dresses</title>
+  <meta name="description" content="Dream of All is a small tops-and-dresses label for men and women. Cotton, linen and poplin, made in small runs.">
   <meta name="theme-color" content="#22544A">
 
   <!-- Open Graph / social preview -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Halfseam — Tops &amp; Dresses">
+  <meta property="og:title" content="Dream of All — Tops &amp; Dresses">
   <meta property="og:description" content="Sixteen pieces for men and women. Cotton, linen and poplin, made in small runs.">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%97%3C/text%3E%3C/svg%3E">
@@ -25,7 +25,7 @@
 
   <header class="site">
     <div class="wrap bar">
-      <button class="wordmark" data-nav="all" aria-label="Halfseam home">Halfseam</button>
+      <button class="wordmark" data-nav="all" aria-label="Dream of All home">Dream of All</button>
       <nav class="nav" id="nav">
         <button data-nav="all">All</button>
         <button data-nav="women">Women</button>
@@ -78,6 +78,14 @@
         </div>
       </div>
 
+      <div class="fitbar" id="fitBar" hidden>
+        <div class="fitbar-main">
+          <span class="eyebrow">Your measurements</span>
+          <span class="fitbar-vals" id="fitVals"></span>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="fitEdit">Change</button>
+      </div>
+
       <div class="filters">
         <div class="chips" id="genderChips">
           <button class="chip" data-gender="all" aria-pressed="true">Everyone</button>
@@ -104,7 +112,7 @@
     <div class="wrap">
       <div class="foot-grid">
         <div>
-          <div class="wordmark">Halfseam</div>
+          <div class="wordmark">Dream of All</div>
           <p class="foot-blurb">A small tops-and-dresses label. We cut in Dhaka, sell direct, and keep the range short on purpose.</p>
         </div>
         <div>
@@ -128,14 +136,14 @@
         <div>
           <h4>Reach us</h4>
           <ul>
-            <li>hello@halfseam.example</li>
+            <li>hello@dreamofall.example</li>
             <li>+880 1XXX-XXXXXX</li>
             <li>Sat–Thu, 10am–7pm</li>
           </ul>
         </div>
       </div>
       <div class="foot-bottom">
-        <span>© 2026 Halfseam — a demonstration storefront. No orders are processed and no payment is taken.</span>
+        <span>© 2026 Dream of All — a demonstration storefront. No orders are processed and no payment is taken.</span>
         <span>Prices in BDT (৳)</span>
       </div>
     </div>
@@ -155,6 +163,55 @@
   </aside>
 
   <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- measurement gate -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" hidden>
+    <div class="gate-card">
+      <p class="eyebrow">Step 1 of 1</p>
+      <h2 id="gateTitle">Tell us your measurements</h2>
+      <p class="gate-lede">We only show the pieces that will actually fit you. Measure in <strong>inches</strong>, over light clothing.</p>
+
+      <div class="gate-field">
+        <span class="eyebrow">Shopping for</span>
+        <div class="chips" id="gateGender">
+          <button type="button" class="chip" data-gg="women" aria-pressed="true">Women</button>
+          <button type="button" class="chip" data-gg="men" aria-pressed="false">Men</button>
+        </div>
+      </div>
+
+      <div class="gate-row">
+        <label class="gate-field">
+          <span class="eyebrow">Chest / bust (inches)</span>
+          <input id="gateChest" type="number" inputmode="decimal" min="24" max="60" step="0.5" placeholder="e.g. 38">
+          <small>Around the fullest part, tape level and snug.</small>
+        </label>
+        <label class="gate-field">
+          <span class="eyebrow">Length you want (inches)</span>
+          <input id="gateLen" type="number" inputmode="decimal" min="14" max="60" step="0.5" placeholder="e.g. 27">
+          <small>Shoulder down to where the hem should sit.</small>
+        </label>
+      </div>
+
+      <div class="gate-row">
+        <label class="gate-field">
+          <span class="eyebrow">What are you looking for</span>
+          <select id="gateType"></select>
+        </label>
+        <label class="gate-field">
+          <span class="eyebrow">Length tolerance</span>
+          <select id="gateTol">
+            <option value="1">± 1 inch — exact</option>
+            <option value="2" selected>± 2 inches — recommended</option>
+            <option value="3">± 3 inches — show me more</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="gate-err" id="gateErr" hidden></p>
+      <button class="btn btn-primary btn-block" id="gateGo">Show what fits me</button>
+      <p class="gate-foot">Not sure? Take a shirt that fits you well, lay it flat, measure across the chest and double it.</p>
+    </div>
+  </div>
 
   <script src="js/app.js"></script>
 </body>

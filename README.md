@@ -1,8 +1,8 @@
-# Halfseam
+# Dream of All
 
 A small storefront for tops and dresses — men's and women's. Plain HTML, CSS and JavaScript with no build step and no dependencies, so it runs anywhere you can serve a folder.
 
-**Live site:** https://YOUR-USERNAME.github.io/halfseam-store/
+**Live site:** https://halfseam-store.vercel.app/
 
 ---
 
@@ -125,4 +125,4 @@ A common middle path is keeping this design as the front end and letting a headl
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE). The code is yours to use commercially. Rename the brand to your own before you launch; "Halfseam" is a placeholder.
+MIT — see [LICENSE](LICENSE). The code is yours to use commercially. Rename the brand to your own before you launch; "Dream of All" is the brand name — change it in index.html if you rebrand.
