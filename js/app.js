@@ -65,6 +65,9 @@ var P = [
    sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27,stock:2}]}
 ];
 
+/* your WhatsApp number in international form, no + and no spaces */
+var WA_NUMBER = "8801342240408";
+
 var SIZES = {women:["XS","S","M","L","XL"],men:["S","M","L","XL","XXL"]};
 
 /* ================= size + fit engine =================
@@ -279,6 +282,11 @@ var $=function(s){return document.querySelector(s);};
 function money(n){ return "৳"+n.toLocaleString("en-US"); }
 function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 
+var CART_ICON='<svg class="bi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+  'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+  '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>'+
+  '<path d="M2.5 3h2.6l2.5 12.1a1.8 1.8 0 0 0 1.8 1.4h7.8a1.8 1.8 0 0 0 1.8-1.4L20.5 7H6"/></svg>';
+
 /* a real photo when the product has one, otherwise the drawn garment */
 function artHTML(p,col){
   if(p.img) return '<img class="photo" src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">';
@@ -367,6 +375,14 @@ function renderHero(){
   }).join("");
 }
 
+/* the small grey line under the price — the size and length being bought */
+function unitLine(p,size){
+  var rows=sizeTable(p);
+  var r=size?rows.filter(function(x){return x.size===size;})[0]:null;
+  if(r) return "Size "+r.size+" · "+r.length+"″ length · chest "+r.chestMin+"–"+r.chestMax+"″";
+  return rows.length+" size"+(rows.length===1?"":"s")+" · "+rows[0].length+"–"+rows[rows.length-1].length+"″ length";
+}
+
 /* ================= render: detail ================= */
 var detailState={id:null,size:null,qty:1};
 
@@ -400,7 +416,11 @@ function renderDetail(){
     '<div class="detail-info">'+
       '<div><p class="eyebrow">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+"</p>"+
       "<h3>"+esc(p.name)+"</h3></div>"+
-      '<div class="detail-price">'+(p.oldPrice?"<s>"+money(p.oldPrice)+"</s>":"")+money(p.price)+"</div>"+
+      '<div class="price-block">'+
+        '<div class="detail-price">'+money(p.price)+(p.oldPrice?" <s>"+money(p.oldPrice)+"</s>":"")+"</div>"+
+        '<div class="price-unit">'+esc(unitLine(p,sz))+"</div>"+
+        (p.oldPrice?'<span class="save-badge">Save '+money(p.oldPrice-p.price)+"</span>":"")+
+      "</div>"+
       '<div class="field"><div class="field-head"><span class="eyebrow">Colour</span><span class="val">'+esc(col.n)+"</span></div>"+
         '<div class="swatches">'+p.colors.map(function(c,i){
           return '<button class="sw sw-lg" data-sw="'+p.id+'" data-i="'+i+'" aria-label="'+esc(c.n)+'" aria-pressed="'+(i===ci)+'" style="background:'+c.h+'"></button>';
@@ -412,7 +432,11 @@ function renderDetail(){
         }).join("")+"</div>"+stockNote+fitLine+"</div>"+
       '<div class="field"><span class="eyebrow">Quantity</span>'+
         '<div class="stepper"><button data-q="-1" aria-label="Decrease quantity">−</button><span id="qtyVal">'+detailState.qty+'</span><button data-q="1" aria-label="Increase quantity">+</button></div></div>'+
-      '<button class="btn btn-primary btn-block" id="addBtn">'+(!sz?"Select a size":(canBuy?"Add to bag · "+money(p.price*detailState.qty):"Out of stock"))+"</button>"+
+      '<div class="buy-row">'+
+        '<button class="btn btn-outline" id="addBtn">'+CART_ICON+
+          "<span>"+(!sz?"Select a size":(canBuy?"Add to cart":"Out of stock"))+"</span></button>"+
+        '<button class="btn btn-buy" id="buyBtn">'+CART_ICON+"<span>Buy Now</span></button>"+
+      "</div>"+
       '<dl class="specs">'+
         "<div><dt>Fabric</dt><dd>"+esc(p.fabric)+"</dd></div>"+
         "<div><dt>Fit</dt><dd>"+esc(p.fit)+"</dd></div>"+
@@ -422,6 +446,8 @@ function renderDetail(){
     "</div></div>";
   var add=$("#addBtn");
   if(add) add.disabled=!canBuy;
+  var buy=$("#buyBtn");
+  if(buy) buy.disabled=!canBuy;
 }
 
 function openDetail(id){
@@ -614,6 +640,20 @@ document.addEventListener("click",function(ev){
     var n=state.cart.reduce(function(a,l){return a+l.qty;},0);
     $("#cartCount").textContent=n;
     $("#cartCount").setAttribute("data-empty","false");
+    return;
+  }
+  if(t.closest("#buyBtn")){
+    var bp=P.filter(function(x){return x.id===detailState.id;})[0];
+    if(!bp||!detailState.size) return;
+    var bcol=bp.colors[state.sel[bp.id]||0];
+    var msg="Hello Dream of All, I would like to order:\n\n"+
+      bp.name+"\n"+
+      "Size: "+detailState.size+"\n"+
+      "Colour: "+bcol.n+"\n"+
+      "Quantity: "+detailState.qty+"\n"+
+      "Price: "+money(bp.price*detailState.qty)+"\n\n"+
+      "My name:\nDelivery address:\nPhone:";
+    window.open("https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
     return;
   }
   if(t.closest("#checkout")){
