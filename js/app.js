@@ -62,7 +62,7 @@ var P = [
    img:"images/offwhite-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
    colors:[{n:"Off White Cream",h:"#F2EBDD"}],
-   sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27}]}
+   sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27,stock:2}]}
 ];
 
 var SIZES = {women:["XS","S","M","L","XL"],men:["S","M","L","XL","XXL"]};
@@ -88,6 +88,25 @@ function sizeTable(p){
     var r=CHEST[p.gender][s];
     return {size:s,chestMin:r[0],chestMax:r[1],length:Math.round((base+i*LEN_STEP)*2)/2};
   });
+}
+
+/* how many pieces of one size are left. null = not tracked (always available) */
+function stockFor(p,size){
+  if(!p.sizes) return null;
+  var r=p.sizes.filter(function(x){return x.size===size;})[0];
+  return r&&typeof r.stock==="number"?r.stock:null;
+}
+/* total pieces left across every size; null when stock is not tracked */
+function stockTotal(p){
+  if(!p.sizes) return null;
+  var any=false,n=0;
+  p.sizes.forEach(function(r){ if(typeof r.stock==="number"){any=true;n+=r.stock;} });
+  return any?n:null;
+}
+/* how many of this size are already sitting in the bag */
+function inBag(p,size){
+  return state.cart.filter(function(l){return l.id===p.id&&l.size===size;})
+                   .reduce(function(a,l){return a+l.qty;},0);
 }
 
 /* the size of this product that fits the customer, or null if none does */
@@ -303,6 +322,9 @@ function cardHTML(p){
   var m=state.fit?fitMatch(p,state.fit):null;
   var badge=m?'<span class="fit-badge">Size '+m.size+" · "+m.length+"″</span>":"";
   var tag=p.oldPrice?'<span class="tag" data-kind="sale">Sale</span>':(p.tag?'<span class="tag">'+esc(p.tag)+"</span>":"");
+  var st=stockTotal(p);
+  if(st===0) tag='<span class="tag" data-kind="sale">Sold out</span>';
+  else if(st!==null&&st<=5) tag='<span class="tag" data-kind="low">Only '+st+' left</span>';
   return '<article class="card">'+
     '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+
       '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+artHTML(p,col)+"</button>"+
@@ -354,6 +376,16 @@ function renderDetail(){
   var ci=state.sel[p.id]||0, col=p.colors[ci];
   var rows=sizeTable(p);
   var m=state.fit?fitMatch(p,state.fit):null;
+  var sz=detailState.size;
+  var left=sz?stockFor(p,sz):null;
+  var remaining=(left===null)?null:Math.max(0,left-inBag(p,sz));
+  var canBuy=!!sz&&(remaining===null||remaining>0);
+  var stockNote="";
+  if(sz&&remaining!==null){
+    stockNote=remaining>0
+      ? '<p class="stock-line"'+(remaining<=2?' data-low="true"':'')+'>Only '+remaining+' piece'+(remaining===1?'':'s')+' left in size '+esc(sz)+'.</p>'
+      : '<p class="stock-line" data-low="true">Size '+esc(sz)+' is sold out.</p>';
+  }
   var fitLine="";
   if(state.fit){
     fitLine=m
@@ -377,10 +409,10 @@ function renderDetail(){
         '<div class="sizes">'+rows.map(function(r){
           return '<button class="size" data-size="'+r.size+'" aria-pressed="'+(detailState.size===r.size)+
                  '" title="Chest '+r.chestMin+"–"+r.chestMax+"″ · length "+r.length+'″">'+r.size+"</button>";
-        }).join("")+"</div>"+fitLine+"</div>"+
+        }).join("")+"</div>"+stockNote+fitLine+"</div>"+
       '<div class="field"><span class="eyebrow">Quantity</span>'+
         '<div class="stepper"><button data-q="-1" aria-label="Decrease quantity">−</button><span id="qtyVal">'+detailState.qty+'</span><button data-q="1" aria-label="Increase quantity">+</button></div></div>'+
-      '<button class="btn btn-primary btn-block" id="addBtn">'+(detailState.size?"Add to bag · "+money(p.price*detailState.qty):"Select a size")+"</button>"+
+      '<button class="btn btn-primary btn-block" id="addBtn">'+(!sz?"Select a size":(canBuy?"Add to bag · "+money(p.price*detailState.qty):"Out of stock"))+"</button>"+
       '<dl class="specs">'+
         "<div><dt>Fabric</dt><dd>"+esc(p.fabric)+"</dd></div>"+
         "<div><dt>Fit</dt><dd>"+esc(p.fit)+"</dd></div>"+
@@ -389,7 +421,7 @@ function renderDetail(){
       "</dl>"+
     "</div></div>";
   var add=$("#addBtn");
-  if(add) add.disabled=!detailState.size;
+  if(add) add.disabled=!canBuy;
 }
 
 function openDetail(id){
@@ -527,18 +559,27 @@ document.addEventListener("click",function(ev){
 
   if(el.hasAttribute("data-size")){
     detailState.size=el.getAttribute("data-size");
+    detailState.qty=1;
     renderDetail(); return;
   }
 
   if(el.hasAttribute("data-q")){
     var delta=parseInt(el.getAttribute("data-q"),10);
-    detailState.qty=Math.max(1,Math.min(9,detailState.qty+delta));
+    var pq=P.filter(function(x){return x.id===detailState.id;})[0];
+    var cap=9, lft=(pq&&detailState.size)?stockFor(pq,detailState.size):null;
+    if(lft!==null) cap=Math.max(1,lft-inBag(pq,detailState.size));
+    detailState.qty=Math.max(1,Math.min(cap,detailState.qty+delta));
     renderDetail(); return;
   }
 
   if(el.hasAttribute("data-line")){
     var i=parseInt(el.getAttribute("data-line"),10);
     var dd=parseInt(el.getAttribute("data-d"),10);
+    var lp=P.filter(function(x){return x.id===state.cart[i].id;})[0];
+    var lmax=lp?stockFor(lp,state.cart[i].size):null;
+    if(dd>0&&lmax!==null&&state.cart[i].qty>=lmax){
+      toast("Only "+lmax+" piece"+(lmax===1?"":"s")+" available in size "+state.cart[i].size); return;
+    }
     state.cart[i].qty+=dd;
     if(state.cart[i].qty<1) state.cart.splice(i,1);
     save(); renderCart(); return;
@@ -558,8 +599,14 @@ document.addEventListener("click",function(ev){
     var col=p.colors[state.sel[p.id]||0];
     var key=p.id+"|"+col.n+"|"+detailState.size;
     var found=state.cart.filter(function(l){return l.key===key;})[0];
-    if(found) found.qty=Math.min(20,found.qty+detailState.qty);
-    else state.cart.push({key:key,id:p.id,name:p.name,color:col.n,hex:col.h,size:detailState.size,price:p.price,qty:detailState.qty});
+    var lim=stockFor(p,detailState.size);
+    var want=detailState.qty;
+    if(lim!==null){
+      want=Math.min(want,Math.max(0,lim-inBag(p,detailState.size)));
+      if(want<=0){ toast("Sorry — no more pieces left in size "+detailState.size); return; }
+    }
+    if(found) found.qty=Math.min(lim===null?20:lim,found.qty+want);
+    else state.cart.push({key:key,id:p.id,name:p.name,color:col.n,hex:col.h,size:detailState.size,price:p.price,qty:want});
     save();
     state.placed=null;
     closeAll();
