@@ -62,7 +62,25 @@ var P = [
    img:"images/offwhite-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
    colors:[{n:"Off White Cream",h:"#F2EBDD"}],
-   sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27,stock:2}]}
+   sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27,stock:2}]},
+
+  {id:"r02",name:"Black Cotton Tee · 40×29",gender:"men",type:"T-Shirt",shape:"tee",price:180,
+   img:"images/black-tee.jpg",
+   fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
+   colors:[{n:"Black",h:"#1C1E20"}],
+   sizes:[{size:"L",chestMin:38,chestMax:40.5,length:29,stock:1}]},
+
+  {id:"r03",name:"Black Cotton Tee · 38×27",gender:"men",type:"T-Shirt",shape:"tee",price:180,
+   img:"images/black-tee.jpg",
+   fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
+   colors:[{n:"Black",h:"#1C1E20"}],
+   sizes:[{size:"L",chestMin:36,chestMax:38.5,length:27,stock:1}]},
+
+  {id:"r04",name:"Black Cotton Tee · 36×27",gender:"men",type:"T-Shirt",shape:"tee",price:180,
+   img:"images/black-tee.jpg",
+   fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
+   colors:[{n:"Black",h:"#1C1E20"}],
+   sizes:[{size:"L",chestMin:34,chestMax:36.5,length:27,stock:1}]}
 ];
 
 /* your WhatsApp number in international form, no + and no spaces */
