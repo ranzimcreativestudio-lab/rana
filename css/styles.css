@@ -471,3 +471,9 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   .gate-card{padding:22px 18px 20px;}
   .gate-row{grid-template-columns:1fr;gap:0;}
 }
+
+/* ============ product photos ============ */
+.plate .photo{width:100%;aspect-ratio:3/4;object-fit:contain;background:transparent;}
+.detail-art .photo{width:100%;max-width:340px;border-radius:10px;}
+.plate[data-photo="true"]{background:#FFFFFF;}
+.detail-art:has(.photo){background:#FFFFFF;}

@@ -51,7 +51,18 @@ var P = [
    colors:[{n:"Chalk",h:"#EDE8DE"},{n:"Sea",h:"#7C9AA6"},{n:"Olive",h:"#5E6448"}]},
   {id:"m08",name:"Crew Sweatshirt",gender:"men",type:"Sweatshirt",shape:"sweat",price:3300,
    fabric:"Brushed-back fleece, 350gsm",fit:"Regular with ribbed cuffs and hem",care:"Machine wash cold, dry flat",
-   colors:[{n:"Grey Melange",h:"#B3B6B2"},{n:"Pine",h:"#33544B"},{n:"Black",h:"#1C1E20"}]}
+   colors:[{n:"Grey Melange",h:"#B3B6B2"},{n:"Pine",h:"#33544B"},{n:"Black",h:"#1C1E20"}]},
+
+  /* --- real stock ---------------------------------------------------------
+     img    : a photo in the images/ folder, used instead of the drawing
+     sizes  : the exact measurements of the pieces you actually have.
+              chestMin/chestMax = the body chest this piece fits (inches)
+              length            = shoulder to hem (inches)                    */
+  {id:"r01",name:"Off White Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
+   img:"images/offwhite-tee.jpg",
+   fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
+   colors:[{n:"Off White Cream",h:"#F2EBDD"}],
+   sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27}]}
 ];
 
 var SIZES = {women:["XS","S","M","L","XL"],men:["S","M","L","XL","XXL"]};
@@ -71,6 +82,7 @@ var LEN_STEP = 0.5;
 
 /* every size of one product, with its chest range and finished length */
 function sizeTable(p){
+  if(p.sizes&&p.sizes.length) return p.sizes;
   var list=SIZES[p.gender], base=LEN_BASE[p.shape]||25;
   return list.map(function(s,i){
     var r=CHEST[p.gender][s];
@@ -248,6 +260,12 @@ var $=function(s){return document.querySelector(s);};
 function money(n){ return "৳"+n.toLocaleString("en-US"); }
 function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 
+/* a real photo when the product has one, otherwise the drawn garment */
+function artHTML(p,col){
+  if(p.img) return '<img class="photo" src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">';
+  return garmentSVG(p.shape,col.h);
+}
+
 var toastTimer=null;
 function toast(msg){
   var t=$("#toast"); t.textContent=msg; t.setAttribute("data-show","true");
@@ -286,8 +304,8 @@ function cardHTML(p){
   var badge=m?'<span class="fit-badge">Size '+m.size+" · "+m.length+"″</span>":"";
   var tag=p.oldPrice?'<span class="tag" data-kind="sale">Sale</span>':(p.tag?'<span class="tag">'+esc(p.tag)+"</span>":"");
   return '<article class="card">'+
-    '<div class="plate">'+tag+
-      '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+garmentSVG(p.shape,col.h)+"</button>"+
+    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+
+      '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+artHTML(p,col)+"</button>"+
       '<button class="quick" data-open="'+p.id+'">Choose size</button>'+
     "</div>"+
     '<div class="meta"><div><div class="name">'+esc(p.name)+badge+"</div>"+
@@ -346,7 +364,7 @@ function renderDetail(){
   $("#detail").innerHTML=
     '<button class="close-x" id="detailClose" aria-label="Close">'+
       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button>'+
-    '<div class="detail-grid"><div class="detail-art">'+garmentSVG(p.shape,col.h)+"</div>"+
+    '<div class="detail-grid"><div class="detail-art">'+artHTML(p,col)+"</div>"+
     '<div class="detail-info">'+
       '<div><p class="eyebrow">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+"</p>"+
       "<h3>"+esc(p.name)+"</h3></div>"+
