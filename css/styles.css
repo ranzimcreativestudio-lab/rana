@@ -482,3 +482,4 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 .tag[data-kind="low"]{background:var(--accent);color:var(--accent-ink);}
 .stock-line{margin:2px 0 0;font-size:13px;color:var(--ink-2);}
 .stock-line[data-low="true"]{color:var(--sale);font-weight:600;}
+.topbar a{text-decoration:underline;text-underline-offset:2px;}
