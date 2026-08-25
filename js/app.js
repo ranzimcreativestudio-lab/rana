@@ -718,9 +718,10 @@ function requireFit(pending){
 }
 
 function renderFitBar(){
-  var bar=$("#fitBar");
-  if(!state.fit){ bar.hidden=true; return; }
+  var bar=$("#fitBar"), edit=$("#fitEdit");
+  if(!state.fit){ bar.hidden=true; if(edit) edit.hidden=true; return; }
   bar.hidden=false;
+  if(edit) edit.hidden=false;
   $("#fitVals").textContent=
     "chest "+state.fit.chest+"″ · length "+state.fit.len+"″ ± "+state.fit.tol+"″"+
     " — showing only what fits";
