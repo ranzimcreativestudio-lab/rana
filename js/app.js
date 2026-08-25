@@ -702,7 +702,8 @@ try{
 }catch(e){}
 
 /* ================= measurement gate ================= */
-var gateDraft={gender:"women"};
+/* nothing is pre-selected — the customer must choose every field */
+var gateDraft={gender:null};
 
 function renderFitBar(){
   var bar=$("#fitBar");
@@ -714,23 +715,65 @@ function renderFitBar(){
 }
 
 function fillGateTypes(){
-  $("#gateType").innerHTML=TYPES.map(function(t){
-    return '<option value="'+esc(t)+'">'+(t==="all"?"Everything":esc(t))+"</option>";
-  }).join("");
+  $("#gateType").innerHTML=
+    '<option value="" selected disabled>Select an option…</option>'+
+    TYPES.map(function(t){
+      return '<option value="'+esc(t)+'">'+(t==="all"?"Everything":esc(t))+"</option>";
+    }).join("");
+}
+
+/* --- red-mark validation helpers --- */
+function gateFieldEl(name){ return document.querySelector('#gate [data-field="'+name+'"]'); }
+
+function markField(name,bad,msg){
+  var f=gateFieldEl(name); if(!f) return;
+  f.classList.toggle("is-bad",!!bad);
+  var e=f.querySelector('.field-err[data-err="'+name+'"]');
+  if(e){ if(msg) e.textContent=msg; e.hidden=!bad; }
+  var input=f.querySelector("input");
+  if(input) input.setAttribute("data-bad",String(!!bad));
+}
+
+function clearGateErrors(){
+  ["gender","chest","len","type","tol"].forEach(function(n){ markField(n,false); });
+  $("#gateErr").hidden=true;
+}
+
+/* what is still missing / invalid, in field order */
+function gateProblems(){
+  var out=[];
+  var chest=parseFloat($("#gateChest").value);
+  var len=parseFloat($("#gateLen").value);
+  if(!gateDraft.gender) out.push({f:"gender",m:"Please select Women or Men."});
+  if($("#gateChest").value.trim()==="") out.push({f:"chest",m:"Please enter your chest measurement."});
+  else if(!(chest>=24&&chest<=60)) out.push({f:"chest",m:"Chest should be between 24 and 60 inches."});
+  if($("#gateLen").value.trim()==="") out.push({f:"len",m:"Please enter the length you want."});
+  else if(!(len>=14&&len<=60)) out.push({f:"len",m:"Length should be between 14 and 60 inches."});
+  if(!$("#gateType").value) out.push({f:"type",m:"Please select what you are looking for."});
+  if(!$("#gateTol").value) out.push({f:"tol",m:"Please select a length tolerance."});
+  return out;
+}
+
+/* dim the button while the form is incomplete (it still reports errors on click) */
+function syncGateGo(){
+  var left=gateProblems().length;
+  $("#gateGo").classList.toggle("is-incomplete",left>0);
+  if(left===0) $("#gateErr").hidden=true;
 }
 
 function openGate(){
   var f=state.fit||{};
-  gateDraft.gender=f.gender||"women";
+  gateDraft.gender=f.gender||null;
   fillGateTypes();
-  $("#gateChest").value=f.chest||"";
-  $("#gateLen").value=f.len||"";
-  $("#gateType").value=f.type||"all";
-  $("#gateTol").value=String(f.tol||2);
-  $("#gateErr").hidden=true;
+  $("#gateChest").value=(f.chest||f.chest===0)?f.chest:"";
+  $("#gateLen").value=(f.len||f.len===0)?f.len:"";
+  $("#gateType").value=f.type||"";
+  $("#gateTol").value=f.tol?String(f.tol):"";
+  clearGateErrors();
   document.querySelectorAll("#gateGender .chip").forEach(function(b){
-    b.setAttribute("aria-pressed",String(b.getAttribute("data-gg")===gateDraft.gender));
+    b.setAttribute("aria-pressed",String(!!gateDraft.gender&&b.getAttribute("data-gg")===gateDraft.gender));
   });
+  syncGateGo();
   $("#gate").hidden=false;
   document.body.style.overflow="hidden";
   setTimeout(function(){ $("#gateChest").focus(); },60);
@@ -752,18 +795,31 @@ document.addEventListener("click",function(ev){
     document.querySelectorAll("#gateGender .chip").forEach(function(b){
       b.setAttribute("aria-pressed",String(b.getAttribute("data-gg")===gateDraft.gender));
     });
+    markField("gender",false);
+    syncGateGo();
     return;
   }
   if(ev.target.closest&&(ev.target.closest("#fitEdit")||ev.target.closest("#fitEdit2"))){ openGate(); return; }
   if(ev.target.closest&&ev.target.closest("#gateGo")){
-    var chest=parseFloat($("#gateChest").value);
-    var len=parseFloat($("#gateLen").value);
-    $("#gateChest").setAttribute("data-bad",String(!(chest>=24&&chest<=60)));
-    $("#gateLen").setAttribute("data-bad",String(!(len>=14&&len<=60)));
-    if(!(chest>=24&&chest<=60)){ gateError("Chest should be between 24 and 60 inches."); return; }
-    if(!(len>=14&&len<=60)){ gateError("Length should be between 14 and 60 inches."); return; }
-    state.fit={gender:gateDraft.gender,chest:chest,len:len,
-               type:$("#gateType").value,tol:parseFloat($("#gateTol").value)||2};
+    var probs=gateProblems();
+    ["gender","chest","len","type","tol"].forEach(function(n){ markField(n,false); });
+    if(probs.length){
+      probs.forEach(function(p){ markField(p.f,true,p.m); });
+      gateError(probs.length===1
+        ? probs[0].m
+        : "Please complete the "+probs.length+" fields marked in red before we can show what fits you.");
+      syncGateGo();
+      var first=gateFieldEl(probs[0].f);
+      var focusable=first&&first.querySelector("input,select,button");
+      if(focusable) focusable.focus();
+      return;   /* the button does nothing until everything is chosen */
+    }
+    $("#gateErr").hidden=true;
+    state.fit={gender:gateDraft.gender,
+               chest:parseFloat($("#gateChest").value),
+               len:parseFloat($("#gateLen").value),
+               type:$("#gateType").value,
+               tol:parseFloat($("#gateTol").value)};
     saveFit();
     state.gender=state.fit.gender;
     state.type=state.fit.type;
@@ -779,6 +835,18 @@ document.addEventListener("click",function(ev){
 
 $("#gateChest").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#gateGo").click(); });
 $("#gateLen").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#gateGo").click(); });
+
+/* clear a field's red state as soon as the customer fills it in */
+[["#gateChest","chest"],["#gateLen","len"],["#gateType","type"],["#gateTol","tol"]]
+  .forEach(function(pair){
+    var el=$(pair[0]);
+    ["input","change"].forEach(function(evt){
+      el.addEventListener(evt,function(){
+        if(el.value!==""){ markField(pair[1],false); }
+        syncGateGo();
+      });
+    });
+  });
 
 /* ================= boot ================= */
 renderTypeChips();

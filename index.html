@@ -171,45 +171,52 @@
       <p class="eyebrow">Step 1 of 1</p>
       <h2 id="gateTitle">Tell us your measurements</h2>
       <p class="gate-lede">We only show the pieces that will actually fit you. Measure in <strong>inches</strong>, over light clothing.</p>
+      <p class="gate-note">Every field marked <span class="req">*</span> is required — nothing is chosen for you.</p>
 
-      <div class="gate-field">
-        <span class="eyebrow">Shopping for</span>
+      <div class="gate-field" data-field="gender">
+        <span class="eyebrow">Shopping for <span class="req">*</span></span>
         <div class="chips" id="gateGender">
-          <button type="button" class="chip" data-gg="women" aria-pressed="true">Women</button>
+          <button type="button" class="chip" data-gg="women" aria-pressed="false">Women</button>
           <button type="button" class="chip" data-gg="men" aria-pressed="false">Men</button>
         </div>
+        <small class="field-err" data-err="gender" hidden>Please select Women or Men.</small>
       </div>
 
       <div class="gate-row">
-        <label class="gate-field">
-          <span class="eyebrow">Chest / bust (inches)</span>
+        <label class="gate-field" data-field="chest">
+          <span class="eyebrow">Chest / bust (inches) <span class="req">*</span></span>
           <input id="gateChest" type="number" inputmode="decimal" min="24" max="60" step="0.5" placeholder="e.g. 38">
           <small>Around the fullest part, tape level and snug.</small>
+          <small class="field-err" data-err="chest" hidden>Please enter your chest measurement.</small>
         </label>
-        <label class="gate-field">
-          <span class="eyebrow">Length you want (inches)</span>
+        <label class="gate-field" data-field="len">
+          <span class="eyebrow">Length you want (inches) <span class="req">*</span></span>
           <input id="gateLen" type="number" inputmode="decimal" min="14" max="60" step="0.5" placeholder="e.g. 27">
           <small>Shoulder down to where the hem should sit.</small>
+          <small class="field-err" data-err="len" hidden>Please enter the length you want.</small>
         </label>
       </div>
 
       <div class="gate-row">
-        <label class="gate-field">
-          <span class="eyebrow">What are you looking for</span>
+        <label class="gate-field" data-field="type">
+          <span class="eyebrow">What are you looking for <span class="req">*</span></span>
           <select id="gateType"></select>
+          <small class="field-err" data-err="type" hidden>Please select what you are looking for.</small>
         </label>
-        <label class="gate-field">
-          <span class="eyebrow">Length tolerance</span>
+        <label class="gate-field" data-field="tol">
+          <span class="eyebrow">Length tolerance <span class="req">*</span></span>
           <select id="gateTol">
+            <option value="" selected disabled>Select a tolerance…</option>
             <option value="1">± 1 inch — exact</option>
-            <option value="2" selected>± 2 inches — recommended</option>
+            <option value="2">± 2 inches — recommended</option>
             <option value="3">± 3 inches — show me more</option>
           </select>
+          <small class="field-err" data-err="tol" hidden>Please select a length tolerance.</small>
         </label>
       </div>
 
       <p class="gate-err" id="gateErr" hidden></p>
-      <button class="btn btn-primary btn-block" id="gateGo">Show what fits me</button>
+      <button class="btn btn-primary btn-block is-incomplete" id="gateGo">Show what fits me</button>
       <p class="gate-foot">Not sure? Take a shirt that fits you well, lay it flat, measure across the chest and double it.</p>
     </div>
   </div>
