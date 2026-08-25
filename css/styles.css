@@ -200,6 +200,15 @@ header.site{
 .promises div{padding:20px 24px;border-left:1px solid var(--line);}
 .promises div:first-child{border-left:0;}
 .promises strong{display:block;font-size:14px;}
+/* the free-delivery promise is the one we want noticed */
+.promises .promise-hi{
+  background:var(--accent-soft);
+  border-left:4px solid var(--accent);
+  position:relative;
+}
+.promises .promise-hi strong{color:var(--accent);font-size:15px;}
+.promises .promise-hi span{color:var(--ink-2);}
+.topbar strong{color:#fff;font-weight:800;letter-spacing:.06em;}
 .promises span{font-size:13px;color:var(--ink-2);}
 
 /* ============ filters ============ */

@@ -492,7 +492,7 @@ function renderDetail(){
         "<div><dt>Fabric</dt><dd>"+esc(p.fabric)+"</dd></div>"+
         "<div><dt>Fit</dt><dd>"+esc(p.fit)+"</dd></div>"+
         "<div><dt>Care</dt><dd>"+esc(p.care)+"</dd></div>"+
-        "<div><dt>Delivery</dt><dd>Dhaka next-day · 2–4 days elsewhere · free over ৳3,000</dd></div>"+
+        "<div><dt>Delivery</dt><dd>Dhaka next-day · 2–4 days elsewhere · free over ৳500</dd></div>"+
       "</dl>"+
     "</div></div>";
   var add=$("#addBtn");
@@ -517,8 +517,8 @@ function openDetail(id){
 }
 
 /* ================= render: cart ================= */
-/* delivery: free over ৳3,000, otherwise ৳80 inside Dhaka and ৳120 elsewhere */
-var FREE_OVER=3000, SHIP_DHAKA=80, SHIP_OUTSIDE=120;
+/* delivery: free over ৳500, otherwise ৳80 inside Dhaka and ৳120 elsewhere */
+var FREE_OVER=500, SHIP_DHAKA=80, SHIP_OUTSIDE=120;
 
 function isDhaka(d){
   var v=String(d||"").toLowerCase().trim();
