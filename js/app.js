@@ -64,6 +64,12 @@ var P = [
    colors:[{n:"Off White Cream",h:"#F2EBDD"}],
    sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27,stock:2}]},
 
+  {id:"r03",name:"Let\u2019s Get Exploring Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
+   img:"images/exploring-tee.jpg",tag:"New",
+   fabric:"Cotton jersey with a white front print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
+   colors:[{n:"Black",h:"#141414"}],
+   sizes:[{size:"XXS",chestMin:30,chestMax:32.5,length:24,stock:1}]},
+
   {id:"r02",name:"Black Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
    img:"images/black-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
