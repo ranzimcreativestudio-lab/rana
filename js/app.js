@@ -3,86 +3,53 @@
 
 /* ================= product data ================= */
 var P = [
-  {id:"w01",name:"Linen Column Dress",gender:"women",type:"Dress",shape:"aline",price:4850,tag:"New",
-   fabric:"100% washed European linen, 190gsm",fit:"Straight through the body, falls below the knee",care:"Cold machine wash, line dry, warm iron",
-   colors:[{n:"Bone",h:"#E9E3D6"},{n:"Clay",h:"#B98A70"},{n:"Ink",h:"#23262C"}]},
-  {id:"w02",name:"Silk-Wash Wrap Dress",gender:"women",type:"Dress",shape:"wrap",price:5400,
-   fabric:"Sandwashed viscose with a matte silk hand",fit:"True wrap with a self tie at the waist",care:"Gentle wash or dry clean, cool iron",
-   colors:[{n:"Olive",h:"#5E6448"},{n:"Plum",h:"#5C3A47"},{n:"Sand",h:"#D6C4A8"}]},
-  {id:"w03",name:"Slip Midi Dress",gender:"women",type:"Dress",shape:"slip",price:4200,oldPrice:4900,
-   fabric:"Cupro-blend satin, fully cut on the bias",fit:"Skims the body, adjustable straps",care:"Hand wash cold, hang to dry",
-   colors:[{n:"Pearl",h:"#DFD9CE"},{n:"Slate",h:"#4A5560"},{n:"Wine",h:"#63313A"}]},
   {id:"w04",name:"Boxy Cotton Tee",gender:"women",type:"T-Shirt",shape:"tee",price:1450,tag:"Best seller",
    fabric:"Combed organic cotton, 220gsm",fit:"Boxy, sits at the hip",care:"Machine wash warm, tumble low",
-   colors:[{n:"White",h:"#F4F2EC"},{n:"Black",h:"#1C1E20"},{n:"Sage",h:"#94A88F"},{n:"Butter",h:"#E7CE94"}]},
-  {id:"w05",name:"Poplin Oversized Shirt",gender:"women",type:"Shirt",shape:"shirt",price:3200,
-   fabric:"Crisp cotton poplin, mother-of-pearl buttons",fit:"Oversized, dropped shoulder",care:"Machine wash cold, iron while damp",
-   colors:[{n:"White",h:"#F4F2EC"},{n:"Blue Stripe",h:"#A9BFD4"},{n:"Moss",h:"#6E7A5C"}]},
-  {id:"w06",name:"Ribbed Camisole",gender:"women",type:"Top",shape:"cami",price:1150,
-   fabric:"2×2 rib cotton-modal",fit:"Close fitting with a scoop neck",care:"Machine wash cold, do not bleach",
-   colors:[{n:"Ivory",h:"#EEE8DC"},{n:"Black",h:"#1C1E20"},{n:"Cocoa",h:"#7A5F4E"}]},
-  {id:"w07",name:"Georgette V-Neck Blouse",gender:"women",type:"Top",shape:"blouse",price:2600,
-   fabric:"Lightweight georgette with a soft drape",fit:"Relaxed, blouson sleeve",care:"Gentle wash, cool iron",
-   colors:[{n:"Blush",h:"#DFB9AE"},{n:"Ink",h:"#23262C"},{n:"Fern",h:"#4F6350"}]},
+   colors:[{"n":"White","h":"#F4F2EC"},{"n":"Black","h":"#1C1E20"},{"n":"Sage","h":"#94A88F"},{"n":"Butter","h":"#E7CE94"}]},
+
   {id:"w08",name:"Cropped Loopback Sweat",gender:"women",type:"Sweatshirt",shape:"crop",price:2900,
    fabric:"Loopback cotton terry, 320gsm",fit:"Cropped at the waist, ribbed hem",care:"Wash inside out, dry flat",
-   colors:[{n:"Grey Melange",h:"#B3B6B2"},{n:"Ecru",h:"#E3DCCC"},{n:"Pine",h:"#33544B"}]},
+   colors:[{"n":"Grey Melange","h":"#B3B6B2"},{"n":"Ecru","h":"#E3DCCC"},{"n":"Pine","h":"#33544B"}]},
 
   {id:"m01",name:"Heavy Cotton Crew Tee",gender:"men",type:"T-Shirt",shape:"tee",price:1350,tag:"Best seller",
    fabric:"Ring-spun cotton, 240gsm, ribbed collar",fit:"Regular, straight body",care:"Machine wash warm, tumble low",
-   colors:[{n:"White",h:"#F4F2EC"},{n:"Black",h:"#1C1E20"},{n:"Navy",h:"#2A3A50"},{n:"Rust",h:"#A65B3D"}]},
-  {id:"m02",name:"Oxford Button-Down",gender:"men",type:"Shirt",shape:"shirt",price:3450,
-   fabric:"Yarn-dyed cotton oxford, button-down collar",fit:"Regular through the chest",care:"Machine wash cold, hang dry",
-   colors:[{n:"Sky",h:"#A9C4DA"},{n:"White",h:"#F4F2EC"},{n:"Stone",h:"#C6BCA9"}]},
+   colors:[{"n":"White","h":"#F4F2EC"},{"n":"Black","h":"#1C1E20"},{"n":"Navy","h":"#2A3A50"},{"n":"Rust","h":"#A65B3D"}]},
+
   {id:"m03",name:"Piqué Polo",gender:"men",type:"Polo",shape:"polo",price:2250,
    fabric:"Cotton piqué with a flat-knit collar",fit:"Trim, sits at the hip",care:"Machine wash cold, reshape damp",
-   colors:[{n:"Forest",h:"#3B5A46"},{n:"Chalk",h:"#EDE8DE"},{n:"Charcoal",h:"#3A3E42"}]},
-  {id:"m04",name:"Brushed Flannel Overshirt",gender:"men",type:"Shirt",shape:"shirt",price:3900,tag:"New",
-   fabric:"Brushed cotton flannel, chest pocket",fit:"Roomy — wears over a tee",care:"Machine wash warm, tumble low",
-   colors:[{n:"Rust Check",h:"#9C5238"},{n:"Green Check",h:"#4B6047"},{n:"Ash",h:"#767B7E"}]},
+   colors:[{"n":"Forest","h":"#3B5A46"},{"n":"Chalk","h":"#EDE8DE"},{"n":"Charcoal","h":"#3A3E42"}]},
+
   {id:"m05",name:"Loopback Hoodie",gender:"men",type:"Sweatshirt",shape:"hoodie",price:4100,
    fabric:"Heavyweight loopback terry, 400gsm",fit:"Regular, kangaroo pocket",care:"Wash inside out, dry flat",
-   colors:[{n:"Charcoal",h:"#35393B"},{n:"Oat",h:"#DDD2BE"},{n:"Navy",h:"#2A3A50"}]},
-  {id:"m06",name:"Long-Sleeve Henley",gender:"men",type:"Top",shape:"henley",price:2400,oldPrice:2800,
-   fabric:"Slub cotton jersey, four-button placket",fit:"Regular with a slight taper",care:"Machine wash cold, tumble low",
-   colors:[{n:"Oat",h:"#DDD2BE"},{n:"Black",h:"#1C1E20"},{n:"Clay",h:"#B98A70"}]},
-  {id:"m07",name:"Relaxed Linen Shirt",gender:"men",type:"Shirt",shape:"shirt",price:3600,
-   fabric:"Garment-washed linen, camp collar",fit:"Relaxed and airy",care:"Machine wash cold, wear the wrinkles",
-   colors:[{n:"Chalk",h:"#EDE8DE"},{n:"Sea",h:"#7C9AA6"},{n:"Olive",h:"#5E6448"}]},
+   colors:[{"n":"Charcoal","h":"#35393B"},{"n":"Oat","h":"#DDD2BE"},{"n":"Navy","h":"#2A3A50"}]},
+
   {id:"m08",name:"Crew Sweatshirt",gender:"men",type:"Sweatshirt",shape:"sweat",price:3300,
    fabric:"Brushed-back fleece, 350gsm",fit:"Regular with ribbed cuffs and hem",care:"Machine wash cold, dry flat",
-   colors:[{n:"Grey Melange",h:"#B3B6B2"},{n:"Pine",h:"#33544B"},{n:"Black",h:"#1C1E20"}]},
+   colors:[{"n":"Grey Melange","h":"#B3B6B2"},{"n":"Pine","h":"#33544B"},{"n":"Black","h":"#1C1E20"}]},
 
-  /* --- real stock ---------------------------------------------------------
-     img    : a photo in the images/ folder, used instead of the drawing
-     sizes  : the exact measurements of the pieces you actually have.
-              chestMin/chestMax = the body chest this piece fits (inches)
-              length            = shoulder to hem (inches)                    */
   {id:"r01",name:"Off White Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
    img:"images/offwhite-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
-   colors:[{n:"Off White Cream",h:"#F2EBDD"}],
-   sizes:[{size:"M",chestMin:36,chestMax:38.5,length:27,stock:2}]},
+   colors:[{"n":"Off White Cream","h":"#F2EBDD"}],
+   sizes:[{"size":"M","chestMin":36,"chestMax":38.5,"length":27,"stock":2}]},
 
-  {id:"r03",name:"Let\u2019s Get Exploring Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
-   img:"images/exploring-tee.jpg",tag:"New",
+  {id:"r03",name:"Let’s Get Exploring Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
+   img:"images/exploring-tee.jpg",
    fabric:"Cotton jersey with a white front print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
-   colors:[{n:"Black",h:"#141414"}],
-   sizes:[{size:"XXS",chestMin:30,chestMax:32.5,length:24,stock:1}]},
+   colors:[{"n":"Black","h":"#141414"}],
+   sizes:[{"size":"XXS","chestMin":30,"chestMax":32.5,"length":24,"stock":1}]},
 
   {id:"r04",name:"Grey Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
    img:"images/grey-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
-   colors:[{n:"Charcoal Grey",h:"#565A5E"}],
-   sizes:[{size:"XL",chestMin:40,chestMax:42.5,length:31,stock:2}]},
+   colors:[{"n":"Charcoal Grey","h":"#565A5E"}],
+   sizes:[{"size":"XL","chestMin":40,"chestMax":42.5,"length":31,"stock":2}]},
 
   {id:"r02",name:"Black Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
    img:"images/black-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
-   colors:[{n:"Black",h:"#1C1E20"}],
-   sizes:[{size:"S",chestMin:34,chestMax:36.5,length:27,stock:1},
-          {size:"M",chestMin:36,chestMax:38.5,length:27,stock:1},
-          {size:"L",chestMin:38,chestMax:40.5,length:29,stock:1}]}
+   colors:[{"n":"Black","h":"#1C1E20"}],
+   sizes:[{"size":"S","chestMin":34,"chestMax":36.5,"length":27,"stock":1},{"size":"M","chestMin":36,"chestMax":38.5,"length":27,"stock":1},{"size":"L","chestMin":38,"chestMax":40.5,"length":29,"stock":1}]}
 ];
 
 /* your WhatsApp number in international form, no + and no spaces */
