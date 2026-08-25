@@ -14,8 +14,8 @@
      service_role key কখনও এখানে বসাবেন না।
    ============================================================ */
 
-window.SUPABASE_URL      = "";
-window.SUPABASE_ANON_KEY = "";
+window.SUPABASE_URL      = "https://zrmrwuldfkptoltqmqop.supabase.co";
+window.SUPABASE_ANON_KEY = "sb_publishable_9KkK_TAn0fqb2MSrfgwYBw_wL3kCc_u";
 
 /* ছবির জন্য স্টোরেজ বাকেটের নাম — SQL-এ এই নামেই বানানো আছে */
 window.SUPABASE_BUCKET   = "product-images";
