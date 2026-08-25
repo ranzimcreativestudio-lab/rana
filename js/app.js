@@ -655,22 +655,19 @@ document.addEventListener("click",function(ev){
   if(t.closest("#buyBtn")){
     var bp=P.filter(function(x){return x.id===detailState.id;})[0];
     if(!bp||!detailState.size) return;
+    if(!state.fit){ requireFit(null); return; }
     var bcol=bp.colors[state.sel[bp.id]||0];
-    var msg="Hello Dream of All, I would like to order:\n\n"+
-      bp.name+"\n"+
-      "Size: "+detailState.size+"\n"+
-      "Colour: "+bcol.n+"\n"+
-      "Quantity: "+detailState.qty+"\n"+
-      "Price: "+money(bp.price*detailState.qty)+"\n\n"+
-      "My name:\nDelivery address:\nPhone:";
-    window.open("https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
+    openOrder([{name:bp.name,color:bcol.n,size:detailState.size,
+                qty:detailState.qty,price:bp.price}],"buy");
     return;
   }
   if(t.closest("#addBtn")&&!state.fit){ requireFit(null); return; }
   if(t.closest("#checkout")&&!state.fit){ requireFit(null); return; }
   if(t.closest("#checkout")){
-    state.placed="DOA-"+Math.floor(100000+Math.random()*899999);
-    state.cart=[]; save(); renderCart(); return;
+    openOrder(state.cart.map(function(l){
+      return {name:l.name,color:l.color,size:l.size,qty:l.qty,price:l.price};
+    }),"cart");
+    return;
   }
   if(t.closest("#keepShopping")){ state.placed=null; closeAll(); return; }
   if(t.closest("#detailClose")||t.closest("#cartClose")||t.id==="scrim"){ closeAll(); return; }
@@ -704,6 +701,118 @@ try{
   var th=localStorage.getItem("dreamofall.theme");
   if(th==="dark"||th==="light") document.documentElement.setAttribute("data-theme",th);
 }catch(e){}
+
+/* ================= order form ================= */
+var orderCtx=null;   /* {lines:[{name,color,size,qty,price}],sub,ship,total,from} */
+
+function orderTotals(lines){
+  var sub=lines.reduce(function(a,l){return a+l.price*l.qty;},0);
+  var ship=sub===0?0:(sub>=3000?0:120);
+  return {sub:sub,ship:ship,total:sub+ship};
+}
+
+function orderSummaryText(){
+  if(!orderCtx) return "";
+  var out="Assalamu alaikum, Dream of All — I would like to place an order.\n\n";
+  orderCtx.lines.forEach(function(l){
+    out+="• "+l.name+" — "+l.color+" / "+l.size+" × "+l.qty+" = "+money(l.price*l.qty)+"\n";
+  });
+  out+="\nSubtotal: "+money(orderCtx.sub)+
+       "\nDelivery: "+(orderCtx.ship===0?"Free":money(orderCtx.ship))+
+       "\nTotal: "+money(orderCtx.total)+" (cash on delivery)";
+  return out;
+}
+
+function openOrder(lines,from){
+  if(!lines||!lines.length){ toast("Your bag is empty"); return; }
+  var t=orderTotals(lines);
+  orderCtx={lines:lines,sub:t.sub,ship:t.ship,total:t.total,from:from};
+  $("#orderSum").textContent=orderSummaryText();
+  ["oname","ophone","odist","oaddr"].forEach(function(n){ markOrderField(n,false); });
+  $("#orderErr").hidden=true;
+  syncOrderGo();
+  $("#order").hidden=false;
+  document.body.style.overflow="hidden";
+  setTimeout(function(){ $("#oName").focus(); },60);
+}
+
+function closeOrder(){
+  $("#order").hidden=true;
+  orderCtx=null;
+  if(!state.open) document.body.style.overflow="";
+}
+
+function orderFieldEl(name){ return document.querySelector('#order [data-field="'+name+'"]'); }
+function markOrderField(name,bad,msg){
+  var f=orderFieldEl(name); if(!f) return;
+  f.classList.toggle("is-bad",!!bad);
+  var e=f.querySelector('.field-err[data-err="'+name+'"]');
+  if(e){ if(msg) e.textContent=msg; e.hidden=!bad; }
+}
+
+function orderProblems(){
+  var out=[];
+  var phone=$("#oPhone").value.replace(/[^0-9]/g,"");
+  if(!$("#oName").value.trim()) out.push({f:"oname",m:"Please write your name."});
+  if(!/^01[0-9]{9}$/.test(phone)) out.push({f:"ophone",m:"Please give an 11-digit number starting with 01."});
+  if(!$("#oDist").value.trim()) out.push({f:"odist",m:"Please write your district."});
+  if($("#oAddr").value.trim().length<10) out.push({f:"oaddr",m:"Please write the full address."});
+  return out;
+}
+
+function syncOrderGo(){
+  var left=orderProblems().length;
+  $("#orderGo").classList.toggle("is-incomplete",left>0);
+  if(left===0) $("#orderErr").hidden=true;
+}
+
+["#oName","#oPhone","#oDist","#oAddr"].forEach(function(sel,i){
+  var el=$(sel), name=["oname","ophone","odist","oaddr"][i];
+  ["input","change"].forEach(function(evt){
+    el.addEventListener(evt,function(){
+      if(el.value.trim()!=="") markOrderField(name,false);
+      syncOrderGo();
+    });
+  });
+});
+
+$("#orderClose").addEventListener("click",closeOrder);
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"&&!$("#order").hidden) closeOrder();
+});
+
+$("#orderGo").addEventListener("click",function(){
+  if(!orderCtx) return;
+  var probs=orderProblems();
+  ["oname","ophone","odist","oaddr"].forEach(function(n){ markOrderField(n,false); });
+  if(probs.length){
+    probs.forEach(function(p){ markOrderField(p.f,true,p.m); });
+    var e=$("#orderErr");
+    e.textContent=probs.length===1?probs[0].m:"Please complete the "+probs.length+" fields marked in red.";
+    e.hidden=false;
+    $("#orderGo").classList.add("is-incomplete");
+    var first=orderFieldEl(probs[0].f), f=first&&first.querySelector("input,textarea");
+    if(f) f.focus();
+    return;
+  }
+  var note=$("#oNote").value.trim();
+  var msg=orderSummaryText()+
+    "\n\nName: "+$("#oName").value.trim()+
+    "\nMobile: "+$("#oPhone").value.trim()+
+    "\nDistrict: "+$("#oDist").value.trim()+
+    "\nAddress: "+$("#oAddr").value.trim()+
+    (note?"\nInstructions: "+note:"")+
+    (state.fit?"\nMeasurements: chest "+state.fit.chest+"″, length "+state.fit.len+"″ (± "+state.fit.tol+"″)":"");
+  window.open("https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
+  var from=orderCtx.from;
+  closeOrder();
+  if(from==="cart"){
+    state.placed="DOA-"+Math.floor(100000+Math.random()*899999);
+    state.cart=[]; save(); renderCart();
+  }else{
+    toast("Your order is ready in WhatsApp — press send to confirm.");
+  }
+});
 
 /* ================= measurement gate ================= */
 /* nothing is pre-selected — the customer must choose every field */

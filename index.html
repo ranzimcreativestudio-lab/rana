@@ -173,6 +173,57 @@
 
   <div id="toast" role="status" aria-live="polite"></div>
 
+  <!-- order form -->
+  <div class="gate" id="order" role="dialog" aria-modal="true" aria-labelledby="orderTitle" hidden>
+    <div class="gate-card order-card">
+      <div class="order-head">
+        <h2 id="orderTitle">Order form</h2>
+        <button type="button" class="gate-close" id="orderClose" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="order-body">
+        <label class="gate-field" data-field="oname">
+          <span class="lbl">Your name <span class="req">*</span></span>
+          <input id="oName" type="text" autocomplete="name" placeholder="For example: Rafiqul Islam">
+          <small class="field-err" data-err="oname" hidden>Please write your name.</small>
+        </label>
+
+        <div class="gate-row">
+          <label class="gate-field" data-field="ophone">
+            <span class="lbl">Mobile number <span class="req">*</span></span>
+            <input id="oPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01XXXXXXXXX">
+            <small class="field-err" data-err="ophone" hidden>Please give an 11-digit number starting with 01.</small>
+          </label>
+          <label class="gate-field" data-field="odist">
+            <span class="lbl">District <span class="req">*</span></span>
+            <input id="oDist" type="text" placeholder="For example: Dhaka">
+            <small class="field-err" data-err="odist" hidden>Please write your district.</small>
+          </label>
+        </div>
+
+        <label class="gate-field" data-field="oaddr">
+          <span class="lbl">Full address <span class="req">*</span></span>
+          <textarea id="oAddr" rows="3" placeholder="House/holding, road, area, police station — so that the courier can find it"></textarea>
+          <small class="field-err" data-err="oaddr" hidden>Please write the full address.</small>
+        </label>
+
+        <label class="gate-field">
+          <span class="lbl">Special instructions</span>
+          <textarea id="oNote" rows="2" placeholder="For example: call before delivery / I want it on Friday morning"></textarea>
+        </label>
+
+        <p class="eyebrow order-sum-head">Order summary</p>
+        <pre class="order-sum" id="orderSum"></pre>
+        <p class="gate-err" id="orderErr" hidden></p>
+      </div>
+
+      <div class="order-foot">
+        <button class="btn btn-primary btn-block is-incomplete" id="orderGo">Confirm order.</button>
+        <p class="gate-foot">Once confirmed, the order will be ready to be sent on WhatsApp. No advance payment is required.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- measurement gate -->
   <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" hidden>
     <div class="gate-card">
