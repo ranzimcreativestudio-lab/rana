@@ -260,6 +260,23 @@ function saveFit(){ /* intentionally not stored — see note above */ }
 
 var TYPES=["all"].concat(P.map(function(p){return p.type;}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort());
 
+/* ================= 10% off on everything =================
+   DISCOUNT=0.10 মানে ১০% ছাড়। ছাড় বন্ধ করতে 0 বসিয়ে দিন।     */
+var DISCOUNT=0.10;
+var OFF_BADGE=DISCOUNT>0?'<span class="off-badge">'+Math.round(DISCOUNT*100)+'% OFF</span>':"";
+
+function applyDiscount(list){
+  if(!DISCOUNT) return list;
+  list.forEach(function(p){
+    if(p.discounted) return;
+    if(!p.oldPrice) p.oldPrice=p.price;          /* কাটা দাম = আসল দাম */
+    p.price=Math.round(p.oldPrice*(1-DISCOUNT)); /* নতুন দাম */
+    p.discounted=true;
+  });
+  return list;
+}
+applyDiscount(P);
+
 /* ================= Supabase (admin panel data) =================
    ঘর দুটো ফাঁকা থাকলে সব আগের মতোই চলবে — শুধু কোডে লেখা প্রোডাক্ট
    দেখাবে এবং অর্ডার ডেটাবেজে জমা হবে না।                          */
@@ -292,6 +309,7 @@ function rowToProduct(r){
 
 function applyProducts(list){
   P.length=0;
+  applyDiscount(list);
   list.forEach(function(x){ P.push(x); });
   P.forEach(function(p){ if(state.sel[p.id]===undefined) state.sel[p.id]=0; });
   TYPES=["all"].concat(P.map(function(p){return p.type;})
@@ -369,7 +387,7 @@ function cardHTML(p){
   var ci=state.sel[p.id]||0, col=p.colors[ci];
   var m=state.fit?fitMatch(p,state.fit):null;
   var badge=m?'<span class="fit-badge">Size '+m.size+" · "+m.length+"″</span>":"";
-  var tag=p.oldPrice?'<span class="tag" data-kind="sale">Sale</span>':(p.tag?'<span class="tag">'+esc(p.tag)+"</span>":"");
+  var tag=p.oldPrice?'<span class="tag" data-kind="sale">'+Math.round(DISCOUNT*100)+'% OFF</span>':(p.tag?'<span class="tag">'+esc(p.tag)+"</span>":"");
   var st=stockTotal(p);
   if(st===0) tag='<span class="tag" data-kind="sale">Sold out</span>';
   else if(st!==null&&st<=5) tag='<span class="tag" data-kind="low">Only '+st+' left</span>';
@@ -380,7 +398,8 @@ function cardHTML(p){
     "</div>"+
     '<div class="meta"><div><div class="name">'+esc(p.name)+badge+"</div>"+
       '<div class="sub">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+" · "+esc(col.n)+"</div></div>"+
-      '<div class="price">'+(p.oldPrice?"<s>"+money(p.oldPrice)+"</s>":"")+money(p.price)+"</div></div>"+
+      '<div class="price">'+(p.oldPrice?"<s>"+money(p.oldPrice)+"</s>":"")+money(p.price)+
+        (p.oldPrice?OFF_BADGE:"")+"</div></div>"+
     '<div class="swatches">'+p.colors.map(function(c,i){
       return '<button class="sw" title="'+esc(c.n)+'" aria-label="'+esc(c.n)+'" data-sw="'+p.id+'" data-i="'+i+'" aria-pressed="'+(i===ci)+'" style="background:'+c.h+'"></button>';
     }).join("")+"</div>"+
@@ -468,7 +487,7 @@ function renderDetail(){
       '<div><p class="eyebrow">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+"</p>"+
       "<h3>"+esc(p.name)+"</h3></div>"+
       '<div class="price-block">'+
-        '<div class="detail-price">'+money(p.price)+(p.oldPrice?" <s>"+money(p.oldPrice)+"</s>":"")+"</div>"+
+        '<div class="detail-price">'+money(p.price)+(p.oldPrice?" <s>"+money(p.oldPrice)+"</s>"+OFF_BADGE:"")+"</div>"+
         '<div class="price-unit">'+esc(unitLine(p,sz))+"</div>"+
         (p.oldPrice?'<span class="save-badge">Save '+money(p.oldPrice-p.price)+"</span>":"")+
       "</div>"+

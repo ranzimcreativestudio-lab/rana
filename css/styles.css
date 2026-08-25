@@ -177,6 +177,23 @@ header.site{
 .btn[disabled]{opacity:.45;cursor:not-allowed;}
 .btn-block{width:100%;}
 
+/* discount banner in place of the headline */
+.hero-promo{display:flex;flex-direction:column;align-items:flex-start;gap:18px;}
+.hero-promo img{
+  width:100%;max-width:520px;border-radius:var(--radius);
+  background:#fff;
+}
+.hero-promo .cta-row{margin-top:0;}
+
+/* 10% off marker beside every price */
+.off-badge{
+  display:inline-block;margin-left:8px;padding:3px 8px;border-radius:6px;
+  background:#E11D2E;color:#fff;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;
+  vertical-align:middle;white-space:nowrap;
+}
+.detail-price .off-badge{font-size:12px;padding:4px 10px;}
+
 .hero-art{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end;}
 .hero-art figure{margin:0;background:var(--surface-2);border-radius:var(--radius);padding:10px;border:1px solid var(--line);}
 .hero-art figure:nth-child(1){transform:translateY(22px) rotate(-2deg);}
