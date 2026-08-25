@@ -470,9 +470,22 @@ function openDetail(id){
 }
 
 /* ================= render: cart ================= */
+/* delivery: free over ৳3,000, otherwise ৳80 inside Dhaka and ৳120 elsewhere */
+var FREE_OVER=3000, SHIP_DHAKA=80, SHIP_OUTSIDE=120;
+
+function isDhaka(d){
+  var v=String(d||"").toLowerCase().trim();
+  return v.indexOf("dhaka")>-1||v.indexOf("ঢাকা")>-1;
+}
+function shipFor(sub,district){
+  if(sub===0) return 0;
+  if(sub>=FREE_OVER) return 0;
+  return isDhaka(district)?SHIP_DHAKA:SHIP_OUTSIDE;
+}
+
 function cartTotals(){
   var sub=state.cart.reduce(function(a,l){return a+l.price*l.qty;},0);
-  var ship=sub===0?0:(sub>=3000?0:120);
+  var ship=sub===0?0:(sub>=FREE_OVER?0:SHIP_OUTSIDE);
   return {sub:sub,ship:ship,total:sub+ship};
 }
 
@@ -514,11 +527,15 @@ function renderCart(){
       "</div>";
     }).join("");
     var t=cartTotals();
+    var free=t.ship===0;
     foot.innerHTML=
       '<div class="sumrow"><span>Subtotal</span><span>'+money(t.sub)+"</span></div>"+
-      '<div class="sumrow"><span>Delivery</span><span>'+(t.ship===0?"Free":money(t.ship))+"</span></div>"+
-      (t.ship>0?'<p class="ship-note">Add '+money(3000-t.sub)+" more for free delivery.</p>":"")+
-      '<div class="sumrow total"><span>Total</span><span>'+money(t.total)+"</span></div>"+
+      '<div class="sumrow"><span>Delivery</span><span>'+
+        (free?"Free":money(SHIP_DHAKA)+" – "+money(SHIP_OUTSIDE))+"</span></div>"+
+      (free?"":'<p class="ship-note">Inside Dhaka '+money(SHIP_DHAKA)+", other districts "+money(SHIP_OUTSIDE)+
+             ". Add "+money(FREE_OVER-t.sub)+" more for free delivery.</p>")+
+      '<div class="sumrow total"><span>Total</span><span>'+
+        (free?money(t.total):money(t.sub+SHIP_DHAKA)+" – "+money(t.sub+SHIP_OUTSIDE))+"</span></div>"+
       '<button class="btn btn-primary btn-block" id="checkout">Place order</button>'+
       '<p class="demo-note">Demonstration storefront — no payment is processed.</p>';
   }
@@ -705,10 +722,19 @@ try{
 /* ================= order form ================= */
 var orderCtx=null;   /* {lines:[{name,color,size,qty,price}],sub,ship,total,from} */
 
-function orderTotals(lines){
+function orderTotals(lines,district){
   var sub=lines.reduce(function(a,l){return a+l.price*l.qty;},0);
-  var ship=sub===0?0:(sub>=3000?0:120);
+  var ship=shipFor(sub,district);
   return {sub:sub,ship:ship,total:sub+ship};
+}
+
+/* recalculate the delivery charge from the district box and redraw the summary */
+function refreshOrderSummary(){
+  if(!orderCtx) return;
+  var t=orderTotals(orderCtx.lines,$("#oDist").value);
+  orderCtx.sub=t.sub; orderCtx.ship=t.ship; orderCtx.total=t.total;
+  orderCtx.district=$("#oDist").value.trim();
+  $("#orderSum").textContent=orderSummaryText();
 }
 
 function orderSummaryText(){
@@ -717,16 +743,19 @@ function orderSummaryText(){
   orderCtx.lines.forEach(function(l){
     out+="• "+l.name+" — "+l.color+" / "+l.size+" × "+l.qty+" = "+money(l.price*l.qty)+"\n";
   });
+  var where=orderCtx.ship===0
+    ? "Free"
+    : money(orderCtx.ship)+(isDhaka(orderCtx.district)?" (inside Dhaka)":" (outside Dhaka)");
   out+="\nSubtotal: "+money(orderCtx.sub)+
-       "\nDelivery: "+(orderCtx.ship===0?"Free":money(orderCtx.ship))+
+       "\nDelivery: "+where+
        "\nTotal: "+money(orderCtx.total)+" (cash on delivery)";
   return out;
 }
 
 function openOrder(lines,from){
   if(!lines||!lines.length){ toast("Your bag is empty"); return; }
-  var t=orderTotals(lines);
-  orderCtx={lines:lines,sub:t.sub,ship:t.ship,total:t.total,from:from};
+  var t=orderTotals(lines,"");
+  orderCtx={lines:lines,sub:t.sub,ship:t.ship,total:t.total,from:from,district:""};
   $("#orderSum").textContent=orderSummaryText();
   ["oname","ophone","odist","oaddr"].forEach(function(n){ markOrderField(n,false); });
   $("#orderErr").hidden=true;
@@ -771,6 +800,7 @@ function syncOrderGo(){
   ["input","change"].forEach(function(evt){
     el.addEventListener(evt,function(){
       if(el.value.trim()!=="") markOrderField(name,false);
+      if(name==="odist") refreshOrderSummary();
       syncOrderGo();
     });
   });
