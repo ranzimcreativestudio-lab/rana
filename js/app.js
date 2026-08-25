@@ -441,10 +441,21 @@ function renderGrid(){
 
 /* ================= render: hero ================= */
 function renderHero(){
-  var picks=[P[0],P[8],P[4]];
-  $("#heroArt").innerHTML=picks.map(function(p){
+  var el=$("#heroArt"); if(!el) return;
+  /* up to three different pieces — works with 1 product or 100 */
+  var picks=[];
+  [0,Math.floor(P.length/2),P.length-1,1,2].forEach(function(i){
+    var p=P[i];
+    if(p&&picks.length<3&&picks.indexOf(p)===-1) picks.push(p);
+  });
+  if(!picks.length){ el.innerHTML=""; return; }
+  el.innerHTML=picks.map(function(p){
+    var col=(p.colors&&p.colors[0])?p.colors[0]:{h:"#cccccc"};
+    var art=p.img
+      ? '<img class="photo" src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">'
+      : garmentSVG(p.shape,col.h);
     return '<figure><button data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+
-      garmentSVG(p.shape,p.colors[0].h)+"</button><figcaption>"+esc(p.type)+"</figcaption></figure>";
+      art+"</button><figcaption>"+esc(p.type)+"</figcaption></figure>";
   }).join("");
 }
 
@@ -1104,13 +1115,14 @@ $("#gateLen").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#ga
 
 /* ================= boot ================= */
 function boot(){
-  renderTypeChips();
-  renderHero();
-  renderFitBar();
-  renderGrid();
-  renderCart();
-  document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
-  syncChips();
+  /* each step on its own, so one hiccup can never blank the shop */
+  [renderTypeChips,renderHero,renderFitBar,renderGrid,renderCart,syncChips]
+    .forEach(function(fn){
+      try{ fn(); }catch(e){ console.warn("boot step failed:",e); }
+    });
+  try{
+    document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
+  }catch(e){}
 }
 
 if(SB) loadProductsFromDb().then(boot,boot); else boot();
