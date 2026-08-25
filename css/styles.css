@@ -582,7 +582,20 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 .price-block{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
 .price-block .detail-price{font-size:26px;font-weight:600;}
 .price-block .detail-price s{color:var(--ink-3);font-size:17px;font-weight:400;margin-left:4px;}
-.price-unit{font-size:13px;color:var(--ink-2);}
+/* the measurement line — kept highlighted so the customer notices it */
+.price-unit{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:2px;padding:9px 14px;border-radius:10px;
+  background:var(--accent-soft);
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  border-left:4px solid var(--accent);
+  font-family:var(--mono);font-size:13px;font-weight:500;
+  color:var(--ink);letter-spacing:.01em;
+}
+.price-unit::before{
+  content:"";flex:none;width:8px;height:8px;border-radius:50%;
+  background:var(--accent);
+}
 .save-badge{
   display:inline-block;margin-top:2px;padding:5px 11px;border-radius:8px;
   background:var(--save);color:var(--save-ink);
