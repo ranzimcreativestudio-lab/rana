@@ -70,6 +70,12 @@ var P = [
    colors:[{n:"Black",h:"#141414"}],
    sizes:[{size:"XXS",chestMin:30,chestMax:32.5,length:24,stock:1}]},
 
+  {id:"r04",name:"Grey Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
+   img:"images/grey-tee.jpg",
+   fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
+   colors:[{n:"Charcoal Grey",h:"#565A5E"}],
+   sizes:[{size:"XL",chestMin:40,chestMax:42.5,length:31,stock:2}]},
+
   {id:"r02",name:"Black Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
    img:"images/black-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
