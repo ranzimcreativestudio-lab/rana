@@ -568,7 +568,11 @@ document.addEventListener("click",function(ev){
 
   if(!el) return;
 
-  if(el.hasAttribute("data-open")){ openDetail(el.getAttribute("data-open")); return; }
+  if(el.hasAttribute("data-open")){
+    var openId=el.getAttribute("data-open");
+    if(!state.fit){ requireFit({kind:"open",value:openId}); return; }
+    openDetail(openId); return;
+  }
 
   if(el.hasAttribute("data-sw")){
     state.sel[el.getAttribute("data-sw")]=parseInt(el.getAttribute("data-i"),10);
@@ -583,7 +587,9 @@ document.addEventListener("click",function(ev){
   }
 
   if(el.hasAttribute("data-type")){
-    state.type=el.getAttribute("data-type");
+    var wantType=el.getAttribute("data-type");
+    if(!state.fit){ requireFit({kind:"type",value:wantType}); return; }
+    state.type=wantType;
     renderTypeChips(); renderGrid(); return;
   }
 
@@ -660,6 +666,8 @@ document.addEventListener("click",function(ev){
     window.open("https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
     return;
   }
+  if(t.closest("#addBtn")&&!state.fit){ requireFit(null); return; }
+  if(t.closest("#checkout")&&!state.fit){ requireFit(null); return; }
   if(t.closest("#checkout")){
     state.placed="DOA-"+Math.floor(100000+Math.random()*899999);
     state.cart=[]; save(); renderCart(); return;
@@ -700,6 +708,14 @@ try{
 /* ================= measurement gate ================= */
 /* nothing is pre-selected — the customer must choose every field */
 var gateDraft={gender:null};
+
+/* what the customer was trying to do when the form appeared */
+var gatePending=null;
+function requireFit(pending){
+  gatePending=pending||null;
+  openGate();
+  toast("Tell us your measurements first — then we only show what fits you.");
+}
 
 function renderFitBar(){
   var bar=$("#fitBar");
@@ -763,7 +779,7 @@ function openGate(){
   fillGateTypes();
   $("#gateChest").value=(f.chest||f.chest===0)?f.chest:"";
   $("#gateLen").value=(f.len||f.len===0)?f.len:"";
-  $("#gateType").value=f.type||"";
+  $("#gateType").value=(gatePending&&gatePending.kind==="type")?gatePending.value:(f.type||"");
   $("#gateTol").value=f.tol?String(f.tol):"";
   clearGateErrors();
   document.querySelectorAll("#gateGender .chip").forEach(function(b){
@@ -776,9 +792,14 @@ function openGate(){
 }
 
 function closeGate(){
+  gatePending=null;
   $("#gate").hidden=true;
   if(!state.open) document.body.style.overflow="";
 }
+$("#gateClose").addEventListener("click",closeGate);
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"&&!$("#gate").hidden) closeGate();
+});
 
 function gateError(msg){
   var e=$("#gateErr"); e.textContent=msg; e.hidden=false;
@@ -811,6 +832,7 @@ document.addEventListener("click",function(ev){
       return;   /* the button does nothing until everything is chosen */
     }
     $("#gateErr").hidden=true;
+    var pend=gatePending;              /* keep it — closeGate() clears it */
     state.fit={gender:gateDraft.gender,
                chest:parseFloat($("#gateChest").value),
                len:parseFloat($("#gateLen").value),
@@ -825,6 +847,7 @@ document.addEventListener("click",function(ev){
     document.getElementById("shop").scrollIntoView({behavior:"smooth",block:"start"});
     var n=visible().length;
     toast(n?n+(n===1?" piece":" pieces")+" fit your measurements":"Nothing matched — try a wider tolerance");
+    if(pend&&pend.kind==="open") openDetail(pend.value);
     return;
   }
 });
@@ -852,6 +875,7 @@ renderGrid();
 renderCart();
 document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
 syncChips();
-openGate();   /* always ask on every page load / refresh */
+/* the shop opens straight away — the measurement form is asked for only when
+   the customer picks a type or opens a piece, and again on every new visit  */
 
 })();

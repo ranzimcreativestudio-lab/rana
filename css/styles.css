@@ -447,6 +447,14 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   box-shadow:var(--shadow-lg);
   padding:30px 30px 26px;
 }
+.gate-card{position:relative;}
+.gate-close{
+  position:absolute;top:12px;right:14px;
+  width:34px;height:34px;border-radius:50%;
+  font-size:22px;line-height:1;color:var(--ink-3);
+  border:1px solid var(--line);background:var(--paper);
+}
+.gate-close:hover{color:var(--ink);border-color:var(--line-2);}
 .gate-card h2{font-size:clamp(24px,3.4vw,32px);line-height:1.1;margin:6px 0 0;}
 .gate-lede{color:var(--ink-2);font-size:15px;margin:10px 0 22px;}
 .gate-field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
