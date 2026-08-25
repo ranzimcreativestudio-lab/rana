@@ -1112,6 +1112,34 @@ function boot(){
 }
 
 if(SB) loadProductsFromDb().then(boot,boot); else boot();
+
+/* ================= hero banner slideshow =================
+   প্রতি ৩ সেকেন্ডে পরের ছবি। সময় বদলাতে 3000 বদলান।        */
+(function(){
+  var box=document.getElementById("heroSlides");
+  if(!box) return;
+  var imgs=[].slice.call(box.querySelectorAll("img"));
+  var dots=document.getElementById("slideDots");
+  if(imgs.length<2){ if(dots) dots.remove(); return; }
+  if(dots) dots.innerHTML=imgs.map(function(_,i){
+    return "<i"+(i===0?' class="on"':"")+"></i>";
+  }).join("");
+  var marks=dots?[].slice.call(dots.children):[];
+  var i=0, timer=null;
+  function show(n){
+    imgs[i].classList.remove("on"); if(marks[i]) marks[i].classList.remove("on");
+    i=(n+imgs.length)%imgs.length;
+    imgs[i].classList.add("on");  if(marks[i]) marks[i].classList.add("on");
+  }
+  function start(){ timer=setInterval(function(){ show(i+1); },3000); }
+  function stop(){ clearInterval(timer); }
+  start();
+  box.addEventListener("mouseenter",stop);
+  box.addEventListener("mouseleave",start);
+  document.addEventListener("visibilitychange",function(){
+    if(document.hidden) stop(); else { stop(); start(); }
+  });
+})();
 /* the shop opens straight away — the measurement form is asked for only when
    the customer picks a type or opens a piece, and again on every new visit  */
 
