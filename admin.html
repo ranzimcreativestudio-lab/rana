@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — Dream of All</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#22544A">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%92%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Karla:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+  <!-- ============ login ============ -->
+  <section class="login-wrap" id="loginWrap" hidden>
+    <form class="login-card" id="loginForm">
+      <p class="eyebrow">Dream of All</p>
+      <h1>Admin sign in</h1>
+      <p class="login-lede">Only the shop owner can sign in here.</p>
+
+      <label class="gate-field">
+        <span class="lbl">Email</span>
+        <input id="logEmail" type="email" autocomplete="username" placeholder="you@example.com" required>
+      </label>
+      <label class="gate-field">
+        <span class="lbl">Password</span>
+        <input id="logPass" type="password" autocomplete="current-password" placeholder="••••••••" required>
+      </label>
+
+      <p class="gate-err" id="loginErr" hidden></p>
+      <button class="btn btn-primary btn-block" id="loginGo" type="submit">Sign in</button>
+      <p class="gate-foot"><a href="index.html">← Back to the shop</a></p>
+    </form>
+  </section>
+
+  <!-- ============ panel ============ -->
+  <div class="panel" id="panel" hidden>
+    <header class="admin-bar">
+      <div class="wordmark">Dream of All · Admin</div>
+      <nav class="admin-tabs">
+        <button class="chip" data-tab="orders" aria-pressed="true">Orders</button>
+        <button class="chip" data-tab="products" aria-pressed="false">Products</button>
+      </nav>
+      <div class="spacer"></div>
+      <span class="who" id="whoAmI"></span>
+      <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">View shop</a>
+      <button class="btn btn-ghost btn-sm" id="signOut">Sign out</button>
+    </header>
+
+    <!-- orders -->
+    <section class="tab" id="tabOrders">
+      <div class="tab-head">
+        <h2>Orders</h2>
+        <div class="spacer"></div>
+        <select class="sort" id="orderFilter" aria-label="Filter orders">
+          <option value="all">All orders</option>
+          <option value="new">New</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="reloadOrders">Refresh</button>
+      </div>
+      <div id="ordersBox" class="cards"></div>
+    </section>
+
+    <!-- products -->
+    <section class="tab" id="tabProducts" hidden>
+      <div class="tab-head">
+        <h2>Products</h2>
+        <div class="spacer"></div>
+        <button class="btn btn-primary btn-sm" id="newProduct">+ Add product</button>
+      </div>
+      <div id="productsBox" class="cards"></div>
+    </section>
+  </div>
+
+  <!-- ============ product editor ============ -->
+  <div class="gate" id="pEdit" role="dialog" aria-modal="true" hidden>
+    <div class="gate-card order-card">
+      <div class="order-head">
+        <h2 id="pEditTitle">Add product</h2>
+        <button type="button" class="gate-close" id="pClose" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="order-body">
+        <div class="gate-row">
+          <label class="gate-field"><span class="lbl">Name *</span>
+            <input id="pName" type="text" placeholder="Black Cotton Tee"></label>
+          <label class="gate-field"><span class="lbl">Price (৳) *</span>
+            <input id="pPrice" type="number" min="0" step="1" placeholder="180"></label>
+        </div>
+
+        <div class="gate-row">
+          <label class="gate-field"><span class="lbl">For *</span>
+            <select id="pGender">
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+            </select></label>
+          <label class="gate-field"><span class="lbl">Type *</span>
+            <input id="pType" type="text" list="typeList" placeholder="T-Shirt">
+            <datalist id="typeList">
+              <option value="T-Shirt"><option value="Shirt"><option value="Polo">
+              <option value="Top"><option value="Sweatshirt"><option value="Dress">
+            </datalist></label>
+        </div>
+
+        <div class="gate-row">
+          <label class="gate-field"><span class="lbl">Old price (optional)</span>
+            <input id="pOld" type="number" min="0" step="1" placeholder="leave empty"></label>
+          <label class="gate-field"><span class="lbl">Badge (optional)</span>
+            <input id="pTag" type="text" placeholder="New / Best seller"></label>
+        </div>
+
+        <label class="gate-field"><span class="lbl">Photo</span>
+          <input id="pImgFile" type="file" accept="image/*">
+          <small>Pick a photo — it is uploaded when you save. Leave empty to keep the current one.</small>
+          <input id="pImg" type="text" placeholder="images/black-tee.jpg or a full URL">
+          <img class="p-preview" id="pPreview" alt="" hidden>
+        </label>
+
+        <div class="gate-row">
+          <label class="gate-field"><span class="lbl">Fabric</span>
+            <input id="pFabric" type="text" placeholder="Cotton jersey, ribbed crew neck"></label>
+          <label class="gate-field"><span class="lbl">Fit</span>
+            <input id="pFit" type="text" placeholder="Regular, straight body"></label>
+        </div>
+        <label class="gate-field"><span class="lbl">Care</span>
+          <input id="pCare" type="text" placeholder="Machine wash cold, tumble dry low"></label>
+
+        <p class="eyebrow order-sum-head">Colours</p>
+        <div id="pColors" class="rows"></div>
+        <button class="btn btn-ghost btn-sm" id="addColor" type="button">+ Add colour</button>
+
+        <p class="eyebrow order-sum-head">Sizes, measurements &amp; stock</p>
+        <div class="rows-head">
+          <span>Size</span><span>Chest from</span><span>Chest to</span><span>Length</span><span>Stock</span><span></span>
+        </div>
+        <div id="pSizes" class="rows"></div>
+        <button class="btn btn-ghost btn-sm" id="addSize" type="button">+ Add size</button>
+        <small class="hint">Chest from/to = the body chest (inches) this size fits. Length = shoulder to hem.</small>
+
+        <label class="check"><input id="pActive" type="checkbox" checked> Show this piece in the shop</label>
+
+        <p class="gate-err" id="pErr" hidden></p>
+      </div>
+
+      <div class="order-foot">
+        <button class="btn btn-primary btn-block" id="pSave">Save product</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

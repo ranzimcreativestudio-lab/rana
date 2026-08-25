@@ -293,6 +293,63 @@ function saveFit(){ /* intentionally not stored — see note above */ }
 
 var TYPES=["all"].concat(P.map(function(p){return p.type;}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort());
 
+/* ================= Supabase (admin panel data) =================
+   ঘর দুটো ফাঁকা থাকলে সব আগের মতোই চলবে — শুধু কোডে লেখা প্রোডাক্ট
+   দেখাবে এবং অর্ডার ডেটাবেজে জমা হবে না।                          */
+var SB=null;
+try{
+  if(window.supabase&&window.SUPABASE_URL&&window.SUPABASE_ANON_KEY){
+    SB=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+  }
+}catch(e){ SB=null; }
+
+function rowToProduct(r){
+  return {
+    id:r.slug||("db"+r.id),
+    dbId:r.id,
+    name:r.name,
+    gender:r.gender,
+    type:r.type,
+    shape:r.shape||"tee",
+    price:Number(r.price)||0,
+    oldPrice:r.old_price?Number(r.old_price):undefined,
+    tag:r.tag||undefined,
+    img:r.img||undefined,
+    fabric:r.fabric||"",
+    fit:r.fit||"",
+    care:r.care||"",
+    colors:(r.colors&&r.colors.length)?r.colors:[{n:"Default",h:"#333333"}],
+    sizes:(r.sizes&&r.sizes.length)?r.sizes:undefined
+  };
+}
+
+function applyProducts(list){
+  P.length=0;
+  list.forEach(function(x){ P.push(x); });
+  P.forEach(function(p){ if(state.sel[p.id]===undefined) state.sel[p.id]=0; });
+  TYPES=["all"].concat(P.map(function(p){return p.type;})
+        .filter(function(v,i,a){return a.indexOf(v)===i;}).sort());
+}
+
+function loadProductsFromDb(){
+  if(!SB) return Promise.resolve(false);
+  return SB.from("products").select("*").eq("active",true)
+    .order("sort",{ascending:true}).order("id",{ascending:true})
+    .then(function(res){
+      if(res.error||!res.data||!res.data.length) return false;
+      applyProducts(res.data.map(rowToProduct));
+      return true;
+    })
+    .catch(function(){ return false; });
+}
+
+function saveOrderToDb(o){
+  if(!SB) return;
+  SB.from("orders").insert([o]).then(function(res){
+    if(res.error) console.warn("order not saved:",res.error.message);
+  });
+}
+
 /* ================= helpers ================= */
 var $=function(s){return document.querySelector(s);};
 function money(n){ return "৳"+n.toLocaleString("en-US"); }
@@ -838,7 +895,8 @@ $("#orderGo").addEventListener("click",function(){
     return;
   }
   var note=$("#oNote").value.trim();
-  var msg=orderSummaryText()+
+  var code="DOA-"+Math.floor(100000+Math.random()*899999);
+  var msg="Order no: "+code+"\n"+orderSummaryText()+
     "\n\nName: "+$("#oName").value.trim()+
     "\nMobile: "+$("#oPhone").value.trim()+
     "\nDistrict: "+$("#oDist").value.trim()+
@@ -846,10 +904,23 @@ $("#orderGo").addEventListener("click",function(){
     (note?"\nInstructions: "+note:"")+
     (state.fit?"\nMeasurements: chest "+state.fit.chest+"″, length "+state.fit.len+"″ (± "+state.fit.tol+"″)":"");
   window.open("https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
+  saveOrderToDb({
+    code:code,
+    name:$("#oName").value.trim(),
+    phone:$("#oPhone").value.trim(),
+    district:$("#oDist").value.trim(),
+    address:$("#oAddr").value.trim(),
+    note:note||null,
+    items:orderCtx.lines,
+    subtotal:orderCtx.sub,
+    delivery:orderCtx.ship,
+    total:orderCtx.total,
+    measurements:state.fit||null
+  });
   var from=orderCtx.from;
   closeOrder();
   if(from==="cart"){
-    state.placed="DOA-"+Math.floor(100000+Math.random()*899999);
+    state.placed=code;
     state.cart=[]; save(); renderCart();
   }else{
     toast("Your order is ready in WhatsApp — press send to confirm.");
@@ -1032,13 +1103,17 @@ $("#gateLen").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#ga
   });
 
 /* ================= boot ================= */
-renderTypeChips();
-renderHero();
-renderFitBar();
-renderGrid();
-renderCart();
-document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
-syncChips();
+function boot(){
+  renderTypeChips();
+  renderHero();
+  renderFitBar();
+  renderGrid();
+  renderCart();
+  document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
+  syncChips();
+}
+
+if(SB) loadProductsFromDb().then(boot,boot); else boot();
 /* the shop opens straight away — the measurement form is asked for only when
    the customer picks a type or opens a piece, and again on every new visit  */
 
