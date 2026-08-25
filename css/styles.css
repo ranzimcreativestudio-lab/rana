@@ -239,6 +239,12 @@ header.site{
 }
 .filters .spacer{flex:1;}
 #fitEdit[hidden]{display:none;}
+.wa-btn{
+  gap:7px;text-decoration:none;font-weight:700;
+  background:var(--surface);border-color:var(--line-2);
+}
+.wa-btn svg{color:#25D366;}
+.wa-btn:hover{border-color:#25D366;background:var(--surface);}
 .count-note{font-family:var(--mono);font-size:12px;color:var(--ink-3);}
 select.sort{
   border:1px solid var(--line);background:var(--surface);border-radius:999px;

@@ -717,7 +717,19 @@ function requireFit(pending){
   toast("Tell us your measurements first — then we only show what fits you.");
 }
 
+/* the "Talk on WhatsApp" button carries the measurements once they are given */
+function renderWaTalk(){
+  var a=$("#waTalk"); if(!a) return;
+  var msg="Hi Dream of All, I would like to ask about a piece.";
+  if(state.fit){
+    msg+="\nMy measurements — chest "+state.fit.chest+"\", length "+state.fit.len+
+         "\" (± "+state.fit.tol+"\"), shopping for "+state.fit.gender+".";
+  }
+  a.href="https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg);
+}
+
 function renderFitBar(){
+  renderWaTalk();
   var bar=$("#fitBar"), edit=$("#fitEdit");
   if(!state.fit){ bar.hidden=true; if(edit) edit.hidden=true; return; }
   bar.hidden=false;
