@@ -211,9 +211,13 @@ header.site{
   background:var(--paper);
   background:color-mix(in srgb,var(--paper) 92%,transparent);
   backdrop-filter:blur(10px);
-  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  display:flex;flex-direction:column;gap:10px;
   padding:14px 0;margin:20px 0 26px;border-bottom:1px solid var(--line);
 }
+/* line 1 = who it is for, line 2 = what kind of piece */
+.filter-line{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+.filter-line .spacer{flex:1;}
+.line-type{padding-top:2px;border-top:1px dashed var(--line);}
 .chips{display:flex;gap:6px;flex-wrap:wrap;}
 .chip{
   border:1px solid var(--line);background:var(--surface);
@@ -222,7 +226,17 @@ header.site{
 }
 .chip:hover{border-color:var(--line-2);color:var(--ink);}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600;}
-.filters .sep{width:1px;height:22px;background:var(--line);margin:0 4px;}
+
+/* colour 1 — Everyone / Women / Men */
+.line-who .chip[aria-pressed="true"]{
+  background:var(--ink);border-color:var(--ink);color:var(--paper);
+}
+/* colour 2 — All types / Dress / Polo / … */
+.line-type .chip{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));}
+.line-type .chip:hover{border-color:var(--accent);color:var(--accent-hi);}
+.line-type .chip[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);color:var(--accent-ink);
+}
 .filters .spacer{flex:1;}
 .count-note{font-family:var(--mono);font-size:12px;color:var(--ink-3);}
 select.sort{

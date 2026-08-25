@@ -87,21 +87,24 @@
       </div>
 
       <div class="filters">
-        <div class="chips" id="genderChips">
-          <button class="chip" data-gender="all" aria-pressed="true">Everyone</button>
-          <button class="chip" data-gender="women" aria-pressed="false">Women</button>
-          <button class="chip" data-gender="men" aria-pressed="false">Men</button>
+        <div class="filter-line line-who">
+          <div class="chips" id="genderChips">
+            <button class="chip" data-gender="all" aria-pressed="true">Everyone</button>
+            <button class="chip" data-gender="women" aria-pressed="false">Women</button>
+            <button class="chip" data-gender="men" aria-pressed="false">Men</button>
+          </div>
+          <div class="spacer"></div>
+          <span class="count-note" id="countNote">16 pieces</span>
+          <select class="sort" id="sort" aria-label="Sort products">
+            <option value="featured">Featured</option>
+            <option value="low">Price: low to high</option>
+            <option value="high">Price: high to low</option>
+            <option value="name">Name A–Z</option>
+          </select>
         </div>
-        <div class="sep" aria-hidden="true"></div>
-        <div class="chips" id="typeChips"></div>
-        <div class="spacer"></div>
-        <span class="count-note" id="countNote">16 pieces</span>
-        <select class="sort" id="sort" aria-label="Sort products">
-          <option value="featured">Featured</option>
-          <option value="low">Price: low to high</option>
-          <option value="high">Price: high to low</option>
-          <option value="name">Name A–Z</option>
-        </select>
+        <div class="filter-line line-type">
+          <div class="chips" id="typeChips"></div>
+        </div>
       </div>
 
       <div class="grid" id="grid"></div>
