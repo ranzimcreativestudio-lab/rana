@@ -272,16 +272,12 @@ try{
   if(saved){ var c=JSON.parse(saved); if(Array.isArray(c)) state.cart=c; }
 }catch(e){}
 
-try{
-  var savedFit=localStorage.getItem("dreamofall.fit");
-  if(savedFit){
-    var f=JSON.parse(savedFit);
-    if(f&&f.chest&&f.len){ state.fit=f; state.gender=f.gender||"all"; state.type=f.type||"all"; }
-  }
-}catch(e){}
+/* measurements are NOT remembered — the gate is asked again on every visit
+   and on every refresh, always with empty fields */
+try{ localStorage.removeItem("dreamofall.fit"); }catch(e){}
 
 function save(){ try{ localStorage.setItem("dreamofall.cart",JSON.stringify(state.cart)); }catch(e){} }
-function saveFit(){ try{ localStorage.setItem("dreamofall.fit",JSON.stringify(state.fit)); }catch(e){} }
+function saveFit(){ /* intentionally not stored — see note above */ }
 
 var TYPES=["all"].concat(P.map(function(p){return p.type;}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort());
 
@@ -856,6 +852,6 @@ renderGrid();
 renderCart();
 document.querySelector('#nav button[data-nav="all"]').setAttribute("aria-current","true");
 syncChips();
-if(!state.fit) openGate();
+openGate();   /* always ask on every page load / refresh */
 
 })();
