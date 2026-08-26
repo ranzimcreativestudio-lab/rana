@@ -49,7 +49,13 @@ var P = [
    img:"images/black-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
    colors:[{"n":"Black","h":"#1C1E20"}],
-   sizes:[{"size":"S","chestMin":34,"chestMax":36.5,"length":27,"stock":1},{"size":"M","chestMin":36,"chestMax":38.5,"length":27,"stock":1},{"size":"L","chestMin":38,"chestMax":40.5,"length":29,"stock":1}]}
+   sizes:[{"size":"S","chestMin":34,"chestMax":36.5,"length":27,"stock":1},{"size":"M","chestMin":36,"chestMax":38.5,"length":27,"stock":1},{"size":"L","chestMin":38,"chestMax":40.5,"length":29,"stock":1}]},
+
+  {id:"r05",name:"Orange Reflective Stripe Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
+   img:"images/orange-reflective-tee.jpg",
+   fabric:"Cotton jersey with a white reflective chest stripe",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the stripe",
+   colors:[{"n":"Safety Orange","h":"#FA7002"}],
+   sizes:[{"size":"S","chestMin":36,"chestMax":38.5,"length":28,"stock":1},{"size":"L","chestMin":42,"chestMax":44.5,"length":29,"stock":2},{"size":"XL","chestMin":46,"chestMax":48.5,"length":29,"stock":1},{"size":"XXL","chestMin":48,"chestMax":50.5,"length":30,"stock":1}]}
 ];
 
 /* your WhatsApp number in international form, no + and no spaces */
