@@ -515,6 +515,7 @@ function renderDetail(){
   $("#detail").innerHTML=
     '<button class="close-x" id="detailClose" aria-label="Close">'+
       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button>'+
+    '<div class="sheet-scroll">'+
     '<div class="detail-grid"><div class="detail-art">'+artHTML(p,col)+"</div>"+
     '<div class="detail-info">'+
       '<div><p class="eyebrow">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+"</p>"+
@@ -546,7 +547,8 @@ function renderDetail(){
         "<div><dt>Care</dt><dd>"+esc(p.care)+"</dd></div>"+
         "<div><dt>Delivery</dt><dd>Dhaka next-day · 2–4 days elsewhere · free over ৳500</dd></div>"+
       "</dl>"+
-    "</div></div>";
+    "</div></div>"+
+    "</div>";
   var add=$("#addBtn");
   if(add) add.disabled=!canBuy;
   var buy=$("#buyBtn");

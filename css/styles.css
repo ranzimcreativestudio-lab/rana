@@ -809,3 +809,19 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   .reviews-head h2{font-size:22px;}
   .review-grid{grid-template-columns:1fr;}
 }
+
+/* close button sits just above the product card, not on top of it */
+#detail{overflow:visible;max-height:none;}
+#detail .sheet-scroll{
+  max-height:82vh;overflow:auto;border-radius:18px;
+}
+#detail .close-x{
+  top:-48px;right:0;
+  background:#fff;border-color:transparent;
+  box-shadow:0 4px 14px rgba(0,0,0,.28);
+}
+#detail .close-x:hover{background:#F2F0EA;}
+@media (max-width:640px){
+  #detail .close-x{top:-44px;right:0;width:34px;height:34px;}
+  #detail .sheet-scroll{max-height:78vh;}
+}
