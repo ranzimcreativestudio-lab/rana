@@ -16,7 +16,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Karla:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Karla:wght@300..700&family=IBM+Plex+Mono:wght@400;500&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
 
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -87,8 +87,8 @@
         <div class="filter-line line-who">
           <div class="chips" id="genderChips">
             <button class="chip" data-gender="all" aria-pressed="true">Everyone</button>
-            <button class="chip" data-gender="women" aria-pressed="false">Women</button>
-            <button class="chip" data-gender="men" aria-pressed="false">Men</button>
+            <button class="chip" data-gender="women" aria-pressed="false">নারী</button>
+            <button class="chip" data-gender="men" aria-pressed="false">পুরুষ</button>
           </div>
           <div class="spacer"></div>
           <a class="btn btn-ghost btn-sm wa-btn" id="waTalk" href="https://wa.me/8801342240408" target="_blank" rel="noopener">
@@ -106,7 +106,7 @@
         <div class="filter-line line-type">
           <div class="chips" id="typeChips"></div>
           <div class="spacer"></div>
-          <button class="btn btn-ghost btn-sm" id="fitEdit" hidden>Change your measurements</button>
+          <button class="btn btn-ghost btn-sm" id="fitEdit" hidden>মাপ পরিবর্তন করুন</button>
         </div>
       </div>
 
@@ -175,7 +175,7 @@
     <div class="gate-card order-card">
       <div class="order-head">
         <h2 id="orderTitle">Order form</h2>
-        <button type="button" class="gate-close" id="orderClose" aria-label="Close">&times;</button>
+        <button type="button" class="gate-close" id="orderClose" aria-label="বন্ধ করুন">&times;</button>
       </div>
 
       <div class="order-body">
@@ -224,56 +224,56 @@
   <!-- measurement gate -->
   <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" hidden>
     <div class="gate-card">
-      <button type="button" class="gate-close" id="gateClose" aria-label="Close">&times;</button>
-      <p class="eyebrow">Step 1 of 1</p>
-      <h2 id="gateTitle">Tell us your measurements</h2>
-      <p class="gate-lede">We only show the pieces that will actually fit you. Measure in <strong>inches</strong>, over light clothing.</p>
-      <p class="gate-note">Every field marked <span class="req">*</span> is required — nothing is chosen for you.</p>
+      <button type="button" class="gate-close" id="gateClose" aria-label="বন্ধ করুন">&times;</button>
+      <p class="eyebrow">ধাপ ১ / ১</p>
+      <h2 id="gateTitle">আপনার মাপ বলুন</h2>
+      <p class="gate-lede">আপনার গায়ে সত্যিই ফিট হবে — শুধু এমন পোশাকগুলোই আমরা দেখাই। মাপ দিন <strong>ইঞ্চিতে</strong>, পাতলা পোশাকের উপর দিয়ে।</p>
+      <p class="gate-note"><span class="req">*</span> চিহ্ন দেওয়া প্রতিটি ঘর পূরণ করা জরুরি — কিছুই আগে থেকে বাছাই করা নেই।</p>
 
       <div class="gate-field" data-field="gender">
-        <span class="eyebrow">Shopping for <span class="req">*</span></span>
+        <span class="eyebrow">কার জন্য কিনছেন <span class="req">*</span></span>
         <div class="chips" id="gateGender">
-          <button type="button" class="chip" data-gg="women" aria-pressed="false">Women</button>
-          <button type="button" class="chip" data-gg="men" aria-pressed="false">Men</button>
+          <button type="button" class="chip" data-gg="women" aria-pressed="false">নারী</button>
+          <button type="button" class="chip" data-gg="men" aria-pressed="false">পুরুষ</button>
         </div>
-        <small class="field-err" data-err="gender" hidden>Please select Women or Men.</small>
+        <small class="field-err" data-err="gender" hidden>নারী নাকি পুরুষ — একটি বেছে নিন।</small>
       </div>
 
       <div class="gate-row">
         <label class="gate-field" data-field="chest">
-          <span class="eyebrow">Chest / bust (inches) <span class="req">*</span></span>
-          <input id="gateChest" type="number" inputmode="decimal" min="24" max="60" step="0.5" placeholder="e.g. 38">
-          <small>Around the fullest part, tape level and snug.</small>
-          <small class="field-err" data-err="chest" hidden>Please enter your chest measurement.</small>
+          <span class="eyebrow">বুকের মাপ (ইঞ্চি) <span class="req">*</span></span>
+          <input id="gateChest" type="number" inputmode="decimal" min="24" max="60" step="0.5" placeholder="যেমন ৩৮">
+          <small>বুকের সবচেয়ে চওড়া জায়গায়, ফিতা সমান ও আঁটসাঁট রেখে।</small>
+          <small class="field-err" data-err="chest" hidden>বুকের মাপটি লিখুন।</small>
         </label>
         <label class="gate-field" data-field="len">
-          <span class="eyebrow">Length you want (inches) <span class="req">*</span></span>
-          <input id="gateLen" type="number" inputmode="decimal" min="14" max="60" step="0.5" placeholder="e.g. 27">
-          <small>Shoulder down to where the hem should sit.</small>
-          <small class="field-err" data-err="len" hidden>Please enter the length you want.</small>
+          <span class="eyebrow">যত লম্বা চান (ইঞ্চি) <span class="req">*</span></span>
+          <input id="gateLen" type="number" inputmode="decimal" min="14" max="60" step="0.5" placeholder="যেমন ২৭">
+          <small>কাঁধ থেকে নিচে, যেখানে জামার নিচের প্রান্ত থাকবে।</small>
+          <small class="field-err" data-err="len" hidden>কত লম্বা চান তা লিখুন।</small>
         </label>
       </div>
 
       <div class="gate-row">
         <label class="gate-field" data-field="type">
-          <span class="eyebrow">What are you looking for <span class="req">*</span></span>
+          <span class="eyebrow">কী খুঁজছেন <span class="req">*</span></span>
           <select id="gateType"></select>
-          <small class="field-err" data-err="type" hidden>Please select what you are looking for.</small>
+          <small class="field-err" data-err="type" hidden>কী খুঁজছেন তা বেছে নিন।</small>
         </label>
         <label class="gate-field" data-field="tol">
-          <span class="eyebrow">Length tolerance <span class="req">*</span></span>
+          <span class="eyebrow">লম্বায় ছাড় <span class="req">*</span></span>
           <select id="gateTol">
-            <option value="" selected disabled>Select a tolerance…</option>
-            <option value="1">± 1 inch — exact</option>
-            <option value="1.5">± 1.5 inches — recommended</option>
+            <option value="" selected disabled>ছাড় বেছে নিন…</option>
+            <option value="1">± ১ ইঞ্চি — একদম মাপমতো</option>
+            <option value="1.5">± ১.৫ ইঞ্চি — সুপারিশ করা</option>
           </select>
-          <small class="field-err" data-err="tol" hidden>Please select a length tolerance.</small>
+          <small class="field-err" data-err="tol" hidden>লম্বায় কতটা ছাড় দেবেন বেছে নিন।</small>
         </label>
       </div>
 
       <p class="gate-err" id="gateErr" hidden></p>
-      <button class="btn btn-primary btn-block is-incomplete" id="gateGo">Show what fits me</button>
-      <p class="gate-foot">Not sure? Take a shirt that fits you well, lay it flat, measure across the chest and double it.</p>
+      <button class="btn btn-primary btn-block is-incomplete" id="gateGo">আমার মাপে যা ফিট, দেখান</button>
+      <p class="gate-foot">নিশ্চিত নন? আপনার গায়ে ভালো ফিট হয় এমন একটি জামা সমতল জায়গায় বিছিয়ে বুকের আড়াআড়ি মাপ নিন, তারপর দুই দিয়ে গুণ করুন।</p>
     </div>
   </div>
 

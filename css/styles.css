@@ -680,3 +680,35 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   border-color:#B71C1C;
   color:#FFFFFF;
 }
+
+/* ---- Bangla typography for the measurement gate ---- */
+.gate-card,
+.gate-card .chip,
+.gate-card select,
+.gate-card option,
+.gate-card input,
+.gate-card .btn,
+#fitEdit,
+#fitEdit2{
+  font-family:"Hind Siliguri", var(--body);
+}
+.gate-card h2{
+  font-family:"Hind Siliguri", var(--display);
+  letter-spacing:0;
+  line-height:1.4;
+}
+.gate-card .eyebrow{
+  font-family:"Hind Siliguri", var(--body);
+  text-transform:none;
+  letter-spacing:.01em;
+  font-size:13px;
+  font-weight:600;
+}
+.gate-card .gate-lede,
+.gate-card .gate-note,
+.gate-card .gate-foot,
+.gate-card small,
+.gate-card .gate-err{
+  line-height:1.75;
+}
+.gate-card .gate-lede{font-size:15px;}

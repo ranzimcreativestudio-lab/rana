@@ -428,7 +428,7 @@ function renderGrid(){
       msg='<strong>Nothing in stock matches those measurements.</strong><br>'+
         (n?"The closest length we cut for a "+state.fit.chest+"″ chest is <strong>"+n.len+"″</strong>. ":"")+
         'Widen the length tolerance or change your measurements.'+
-        '<br><br><button class="btn btn-ghost btn-sm" id="fitEdit2">Change measurements</button>';
+        '<br><br><button class="btn btn-ghost btn-sm" id="fitEdit2">মাপ পরিবর্তন করুন</button>';
     }
     g.innerHTML='<div class="empty">'+msg+"</div>";
   }else{
@@ -945,7 +945,7 @@ var gatePending=null;
 function requireFit(pending){
   gatePending=pending||null;
   openGate();
-  toast("Tell us your measurements first — then we only show what fits you.");
+  toast("আগে আপনার মাপ বলুন — তারপর শুধু যা ফিট হবে তা-ই দেখাব।");
 }
 
 /* the "Talk on WhatsApp" button carries the measurements once they are given */
@@ -972,9 +972,9 @@ function renderFitBar(){
 
 function fillGateTypes(){
   $("#gateType").innerHTML=
-    '<option value="" selected disabled>Select an option…</option>'+
+    '<option value="" selected disabled>একটি বেছে নিন…</option>'+
     TYPES.map(function(t){
-      return '<option value="'+esc(t)+'">'+(t==="all"?"Everything":esc(t))+"</option>";
+      return '<option value="'+esc(t)+'">'+(t==="all"?"সবকিছু":esc(t))+"</option>";
     }).join("");
 }
 
@@ -1000,13 +1000,13 @@ function gateProblems(){
   var out=[];
   var chest=parseFloat($("#gateChest").value);
   var len=parseFloat($("#gateLen").value);
-  if(!gateDraft.gender) out.push({f:"gender",m:"Please select Women or Men."});
-  if($("#gateChest").value.trim()==="") out.push({f:"chest",m:"Please enter your chest measurement."});
-  else if(!(chest>=24&&chest<=60)) out.push({f:"chest",m:"Chest should be between 24 and 60 inches."});
-  if($("#gateLen").value.trim()==="") out.push({f:"len",m:"Please enter the length you want."});
-  else if(!(len>=14&&len<=60)) out.push({f:"len",m:"Length should be between 14 and 60 inches."});
-  if(!$("#gateType").value) out.push({f:"type",m:"Please select what you are looking for."});
-  if(!$("#gateTol").value) out.push({f:"tol",m:"Please select a length tolerance."});
+  if(!gateDraft.gender) out.push({f:"gender",m:"নারী নাকি পুরুষ — একটি বেছে নিন।"});
+  if($("#gateChest").value.trim()==="") out.push({f:"chest",m:"বুকের মাপটি লিখুন।"});
+  else if(!(chest>=24&&chest<=60)) out.push({f:"chest",m:"বুকের মাপ ২৪ থেকে ৬০ ইঞ্চির মধ্যে হতে হবে।"});
+  if($("#gateLen").value.trim()==="") out.push({f:"len",m:"কত লম্বা চান তা লিখুন।"});
+  else if(!(len>=14&&len<=60)) out.push({f:"len",m:"লম্বা ১৪ থেকে ৬০ ইঞ্চির মধ্যে হতে হবে।"});
+  if(!$("#gateType").value) out.push({f:"type",m:"কী খুঁজছেন তা বেছে নিন।"});
+  if(!$("#gateTol").value) out.push({f:"tol",m:"লম্বায় কতটা ছাড় দেবেন বেছে নিন।"});
   return out;
 }
 
@@ -1068,7 +1068,7 @@ document.addEventListener("click",function(ev){
       probs.forEach(function(p){ markField(p.f,true,p.m); });
       gateError(probs.length===1
         ? probs[0].m
-        : "Please complete the "+probs.length+" fields marked in red before we can show what fits you.");
+        : "লাল দাগ দেওয়া "+probs.length+"টি ঘর পূরণ করুন — তারপরই আমরা দেখাতে পারব কী কী আপনার মাপে ফিট।");
       syncGateGo();
       var first=gateFieldEl(probs[0].f);
       var focusable=first&&first.querySelector("input,select,button");
@@ -1090,7 +1090,7 @@ document.addEventListener("click",function(ev){
     syncChips(); renderTypeChips(); renderFitBar(); renderGrid();
     document.getElementById("shop").scrollIntoView({behavior:"smooth",block:"start"});
     var n=visible().length;
-    toast(n?n+(n===1?" piece":" pieces")+" fit your measurements":"Nothing matched — try a wider tolerance");
+    toast(n?n+"টি পোশাক আপনার মাপে ফিট":"কিছুই মিলল না — ছাড় একটু বাড়িয়ে দেখুন");
     if(pend&&pend.kind==="open") openDetail(pend.value);
     return;
   }
