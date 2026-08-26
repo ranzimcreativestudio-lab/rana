@@ -666,3 +666,17 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 @media (max-width:520px){
   .buy-row{grid-template-columns:1fr;}
 }
+
+/* "Change your measurements" button — red */
+#fitEdit,
+#fitEdit2{
+  background:#D32F2F;
+  border-color:#D32F2F;
+  color:#FFFFFF;
+}
+#fitEdit:hover,
+#fitEdit2:hover{
+  background:#B71C1C;
+  border-color:#B71C1C;
+  color:#FFFFFF;
+}
