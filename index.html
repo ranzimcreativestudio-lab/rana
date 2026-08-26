@@ -259,13 +259,33 @@
       <div class="gate-row">
         <label class="gate-field" data-field="chest">
           <span class="eyebrow">বুকের মাপ (ইঞ্চি) <span class="req">*</span></span>
-          <input id="gateChest" type="number" inputmode="decimal" min="24" max="60" step="0.5" placeholder="যেমন ৩৮">
+          <div class="mrow">
+            <input id="gateChest" type="number" inputmode="decimal" min="24" max="60" step="0.5" placeholder="যেমন ৩৮">
+            <svg class="mguide" viewBox="0 0 44 64" aria-hidden="true" focusable="false">
+            <circle cx="22" cy="8.5" r="6" fill="#F3C89F" stroke="#26333D" stroke-width="1.4"/>
+            <path d="M14 16h16l5.5 4.5-3 4-2.5-2v22H14V22.5l-2.5 2-3-4z" fill="#2F7A6A" stroke="#26333D" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M14 44.5h16v14H14z" fill="#3B4A57" stroke="#26333D" stroke-width="1.4"/>
+            <g stroke="#E23B2E" stroke-width="2" stroke-linecap="round" fill="none">
+              <path d="M8 27h28"/><path d="M11 24.5 8 27l3 2.5"/><path d="M33 24.5 36 27l-3 2.5"/>
+            </g>
+          </svg>
+          </div>
           <small>বুকের সবচেয়ে চওড়া জায়গায়, ফিতা সমান ও আঁটসাঁট রেখে।</small>
           <small class="field-err" data-err="chest" hidden>বুকের মাপটি লিখুন।</small>
         </label>
         <label class="gate-field" data-field="len">
           <span class="eyebrow">যত লম্বা চান (ইঞ্চি) <span class="req">*</span></span>
-          <input id="gateLen" type="number" inputmode="decimal" min="14" max="60" step="0.5" placeholder="যেমন ২৭">
+          <div class="mrow">
+            <input id="gateLen" type="number" inputmode="decimal" min="14" max="60" step="0.5" placeholder="যেমন ২৭">
+            <svg class="mguide" viewBox="0 0 44 64" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="8.5" r="6" fill="#F3C89F" stroke="#26333D" stroke-width="1.4"/>
+            <path d="M12 16h16l5.5 4.5-3 4-2.5-2v22H12V22.5l-2.5 2-3-4z" fill="#2F7A6A" stroke="#26333D" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M12 44.5h16v14H12z" fill="#3B4A57" stroke="#26333D" stroke-width="1.4"/>
+            <g stroke="#E23B2E" stroke-width="2" stroke-linecap="round" fill="none">
+              <path d="M38 16.5v28"/><path d="M35.5 19 38 16.5l2.5 2.5"/><path d="M35.5 42 38 44.5l2.5-2.5"/>
+            </g>
+          </svg>
+          </div>
           <small>কাঁধ থেকে নিচে, যেখানে জামার নিচের প্রান্ত থাকবে।</small>
           <small class="field-err" data-err="len" hidden>কত লম্বা চান তা লিখুন।</small>
         </label>
