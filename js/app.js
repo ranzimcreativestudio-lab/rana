@@ -411,12 +411,15 @@ function cardHTML(p){
   var ci=state.sel[p.id]||0, col=p.colors[ci];
   var m=state.fit?fitMatch(p,state.fit):null;
   var badge=m?'<span class="fit-badge">Size '+m.size+" · "+m.length+"″</span>":"";
-  var tag=p.oldPrice?'<span class="tag" data-kind="sale">'+Math.round(DISCOUNT*100)+'% OFF</span>':(p.tag?'<span class="tag">'+esc(p.tag)+"</span>":"");
   var st=stockTotal(p);
+  var tag="";
   if(st===0) tag='<span class="tag" data-kind="sale">Sold out</span>';
   else if(st!==null&&st<=5) tag='<span class="tag" data-kind="low">Only '+st+' left</span>';
+  else if(p.oldPrice) tag='<span class="tag" data-kind="sale">'+Math.round(DISCOUNT*100)+'% OFF</span>';
+  /* the product's own label (Best Sell / New …) sits in the top-right corner */
+  var tag2=p.tag?'<span class="tag tag-alt">'+esc(p.tag)+"</span>":"";
   return '<article class="card">'+
-    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+
+    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+tag2+
       '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+artHTML(p,col)+"</button>"+
       '<button class="quick" data-open="'+p.id+'">Choose size</button>'+
     "</div>"+

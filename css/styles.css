@@ -729,3 +729,9 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 }
 .chip.gpick span{font-size:15px;font-weight:600;line-height:1;}
 .chip.gpick[aria-pressed="true"] .gfig{opacity:1;}
+
+/* product's own label (Best Sell / New …) — top-right of the card */
+.tag.tag-alt{
+  left:auto;right:12px;
+  background:var(--ink);color:var(--paper);
+}
