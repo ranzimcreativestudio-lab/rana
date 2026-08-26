@@ -1,0 +1,13 @@
+-- Royal Blue Stripe Band Tee (r07) — Supabase → SQL Editor → Run
+insert into public.products
+  (slug, name, gender, type, shape, price, old_price, tag, img, fabric, fit, care, colors, sizes, sort)
+values
+  ('r07', 'Royal Blue Stripe Band Tee', 'men', 'T-Shirt', 'tee', 180, null, 'New', 'images/royalblue-stripe-tee.jpg',
+   'Cotton jersey with a printed stripe band across the chest', 'Regular, straight body', 'Wash inside out, cold water, do not iron the print',
+   '[{"n":"Royal Blue","h":"#12318A"}]'::jsonb,
+   '[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]'::jsonb,
+   120)
+on conflict (slug) do update
+  set name = excluded.name, price = excluded.price, tag = excluded.tag, img = excluded.img,
+      fabric = excluded.fabric, fit = excluded.fit, care = excluded.care,
+      colors = excluded.colors, sizes = excluded.sizes, sort = excluded.sort;

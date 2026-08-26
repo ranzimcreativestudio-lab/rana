@@ -61,6 +61,12 @@ var P = [
    img:"images/royalblue-walk-tee.jpg",
    fabric:"Cotton jersey with a front bicycle print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
    colors:[{"n":"Royal Blue","h":"#19348C"}],
+   sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]},
+
+  {id:"r07",name:"Royal Blue Stripe Band Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
+   img:"images/royalblue-stripe-tee.jpg",
+   fabric:"Cotton jersey with a printed stripe band across the chest",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
+   colors:[{"n":"Royal Blue","h":"#12318A"}],
    sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]}
 ];
 
