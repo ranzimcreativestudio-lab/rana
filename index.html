@@ -232,9 +232,26 @@
 
       <div class="gate-field" data-field="gender">
         <span class="eyebrow">কার জন্য কিনছেন <span class="req">*</span></span>
-        <div class="chips" id="gateGender">
-          <button type="button" class="chip" data-gg="women" aria-pressed="false">নারী</button>
-          <button type="button" class="chip" data-gg="men" aria-pressed="false">পুরুষ</button>
+        <div class="chips gender-picks" id="gateGender">
+          <button type="button" class="chip gpick" data-gg="women" aria-pressed="false">
+            <svg class="gfig" viewBox="0 0 48 64" aria-hidden="true" focusable="false">
+              <circle cx="24" cy="9" r="6.5"/>
+              <path d="M18 18.5 11 28"/>
+              <path d="M30 18.5 37 28"/>
+              <path d="M18 18.5H30L36 45H12Z"/>
+              <path d="M20 45 19 58"/>
+              <path d="M28 45 29 58"/>
+            </svg>
+            <span>নারী</span>
+          </button>
+          <button type="button" class="chip gpick" data-gg="men" aria-pressed="false">
+            <svg class="gfig" viewBox="0 0 48 64" aria-hidden="true" focusable="false">
+              <circle cx="24" cy="9" r="6.5"/>
+              <path d="M17.5 18.5 10 25 14 30 16.5 27.5V45h15V27.5l2.5 2.5 4-5-7.5-6.5Z"/>
+              <path d="M17 45 18.5 58h3.5L24 47l2 11h3.5L31 45"/>
+            </svg>
+            <span>পুরুষ</span>
+          </button>
         </div>
         <small class="field-err" data-err="gender" hidden>নারী নাকি পুরুষ — একটি বেছে নিন।</small>
       </div>

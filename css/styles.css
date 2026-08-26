@@ -712,3 +712,20 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   line-height:1.75;
 }
 .gate-card .gate-lede{font-size:15px;}
+
+/* ---- নারী / পুরুষ picker with figures ---- */
+.gender-picks{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:340px;margin-top:4px;
+}
+.chip.gpick{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;
+  width:100%;padding:16px 10px 14px;border-radius:18px;
+}
+.chip.gpick .gfig{
+  width:46px;height:61px;display:block;
+  fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  opacity:.9;
+}
+.chip.gpick span{font-size:15px;font-weight:600;line-height:1;}
+.chip.gpick[aria-pressed="true"] .gfig{opacity:1;}
