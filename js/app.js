@@ -1137,10 +1137,84 @@ $("#gateLen").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#ga
     });
   });
 
+
+/* ================= কাস্টমার রিভিউ =================
+   এখানে নতুন রিভিউ যোগ করুন — কাস্টমার শুধু পড়তে ও ছবি দেখতে পারবে।
+   একটি রিভিউর ঘরগুলো:
+     name   — ক্রেতার নাম
+     stars  — ১ থেকে ৫
+     date   — যেকোনো লেখা, যেমন "আগস্ট ২০২৬"
+     text   — মন্তব্য
+     photos — ছবির তালিকা (না থাকলে বাদ দিন), যেমন ["images/review-1.jpg"]
+   ছবিগুলো images ফোল্ডারে রাখুন।                                    */
+var REVIEWS=[
+  {name:"রিয়াদ হাসান",stars:5,date:"আগস্ট ২০২৬",
+   text:"কাপড়ের মান খুব ভালো, মাপও ঠিকঠাক এসেছে। ডেলিভারিও দ্রুত ছিল।"},
+
+  {name:"সাদিয়া আক্তার",stars:5,date:"আগস্ট ২০২৬",
+   text:"ছবিতে যেমন দেখেছি ঠিক তেমনই পেয়েছি। আবার অর্ডার করব ইনশাআল্লাহ।"},
+
+  {name:"তানভীর আহমেদ",stars:4,date:"জুলাই ২০২৬",
+   text:"প্রিন্ট সুন্দর, রঙ নষ্ট হয়নি ধোয়ার পরেও। দাম হিসেবে দারুণ।"}
+];
+
+function starsHTML(n){
+  n=Math.max(0,Math.min(5,Math.round(n||0)));
+  var out="";
+  for(var i=1;i<=5;i++) out+='<span'+(i<=n?' class="on"':"")+">★</span>";
+  return '<span class="stars" aria-label="'+n+' out of 5">'+out+"</span>";
+}
+
+function renderReviews(){
+  var sec=document.getElementById("reviews");
+  var box=document.getElementById("reviewGrid");
+  if(!sec||!box) return;
+  if(!REVIEWS.length){ sec.hidden=true; return; }
+  sec.hidden=false;
+
+  var avg=REVIEWS.reduce(function(a,r){return a+(r.stars||0);},0)/REVIEWS.length;
+  var score=document.getElementById("reviewScore");
+  if(score) score.innerHTML=starsHTML(avg)+
+    '<span class="score-num">'+(Math.round(avg*10)/10)+"</span>"+
+    '<span class="score-count">'+REVIEWS.length+"টি রিভিউ</span>";
+
+  box.innerHTML=REVIEWS.map(function(r){
+    var photos=(r.photos&&r.photos.length)
+      ? '<div class="review-shots">'+r.photos.map(function(src){
+          return '<button type="button" class="review-shot" data-shot="'+esc(src)+'">'+
+                 '<img src="'+esc(src)+'" alt="" loading="lazy"></button>';
+        }).join("")+"</div>"
+      : "";
+    return '<article class="review">'+
+      '<div class="review-top">'+
+        '<span class="review-who">'+esc(r.name||"ক্রেতা")+"</span>"+
+        (r.date?'<span class="review-date">'+esc(r.date)+"</span>":"")+
+      "</div>"+
+      starsHTML(r.stars)+
+      '<p class="review-text">'+esc(r.text||"")+"</p>"+
+      photos+
+    "</article>";
+  }).join("");
+}
+
+/* ছবিতে ক্লিক করলে বড় করে দেখা যায় */
+(function(){
+  var lb=document.getElementById("lightbox");
+  if(!lb) return;
+  var img=document.getElementById("lightboxImg");
+  function close(){ lb.hidden=true; document.body.style.overflow=""; }
+  document.addEventListener("click",function(ev){
+    var shot=ev.target.closest?ev.target.closest("[data-shot]"):null;
+    if(shot){ img.src=shot.getAttribute("data-shot"); lb.hidden=false; document.body.style.overflow="hidden"; return; }
+    if(ev.target.closest&&(ev.target.closest("#lightboxClose")||ev.target===lb)) close();
+  });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&!lb.hidden) close(); });
+})();
+
 /* ================= boot ================= */
 function boot(){
   /* each step on its own, so one hiccup can never blank the shop */
-  [renderTypeChips,renderHero,renderFitBar,renderGrid,renderCart,syncChips]
+  [renderTypeChips,renderHero,renderFitBar,renderGrid,renderCart,syncChips,renderReviews]
     .forEach(function(fn){
       try{ fn(); }catch(e){ console.warn("boot step failed:",e); }
     });

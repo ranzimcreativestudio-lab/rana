@@ -112,6 +112,19 @@
 
       <div class="grid" id="grid"></div>
     </section>
+
+    <!-- customer reviews — read only, filled in from the REVIEWS list in js/app.js -->
+    <section class="wrap reviews" id="reviews" hidden>
+      <div class="reviews-head">
+        <div>
+          <p class="eyebrow">কাস্টমার রিভিউ</p>
+          <h2>ক্রেতারা যা বলছেন</h2>
+        </div>
+        <div class="reviews-score" id="reviewScore"></div>
+      </div>
+      <div class="review-grid" id="reviewGrid"></div>
+      <p class="reviews-note">রিভিউগুলো আমাদের ক্রেতাদের পাঠানো। এখানে নতুন মন্তব্য লেখা যায় না — আপনার মতামত জানাতে WhatsApp-এ লিখুন।</p>
+    </section>
   </main>
 
   <footer class="site">
@@ -312,6 +325,12 @@
       <button class="btn btn-primary btn-block is-incomplete" id="gateGo">আমার মাপে যা ফিট, দেখান</button>
       <p class="gate-foot">নিশ্চিত নন? আপনার গায়ে ভালো ফিট হয় এমন একটি জামা সমতল জায়গায় বিছিয়ে বুকের আড়াআড়ি মাপ নিন, তারপর দুই দিয়ে গুণ করুন।</p>
     </div>
+  </div>
+
+  <!-- review photo viewer -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="বন্ধ করুন">&times;</button>
+    <img id="lightboxImg" alt="">
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
