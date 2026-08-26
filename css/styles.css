@@ -810,8 +810,10 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   .review-grid{grid-template-columns:1fr;}
 }
 
-/* close button sits just above the product card, not on top of it */
-#detail{overflow:visible;max-height:none;}
+/* close button sits just above the product card, not on top of it.
+   the card itself no longer scrolls — the inner box does, so the white
+   background always ends exactly where the content ends.               */
+#detail{overflow:visible;max-height:none;bottom:auto;}
 #detail .sheet-scroll{
   max-height:82vh;overflow:auto;border-radius:18px;
 }
@@ -821,7 +823,10 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   box-shadow:0 4px 14px rgba(0,0,0,.28);
 }
 #detail .close-x:hover{background:#F2F0EA;}
-@media (max-width:640px){
-  #detail .close-x{top:-44px;right:0;width:34px;height:34px;}
-  #detail .sheet-scroll{max-height:78vh;}
+
+/* mobile keeps the bottom-sheet shape */
+@media (max-width:620px){
+  #detail{bottom:0;top:auto;}
+  #detail .sheet-scroll{max-height:88vh;border-radius:18px 18px 0 0;}
+  #detail .close-x{top:-44px;right:12px;width:34px;height:34px;}
 }
