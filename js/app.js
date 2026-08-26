@@ -1102,7 +1102,6 @@ document.addEventListener("click",function(ev){
       return;   /* the button does nothing until everything is chosen */
     }
     $("#gateErr").hidden=true;
-    var pend=gatePending;              /* keep it — closeGate() clears it */
     state.fit={gender:gateDraft.gender,
                chest:parseFloat($("#gateChest").value),
                len:parseFloat($("#gateLen").value),
@@ -1117,7 +1116,8 @@ document.addEventListener("click",function(ev){
     document.getElementById("shop").scrollIntoView({behavior:"smooth",block:"start"});
     var n=visible().length;
     toast(n?n+"টি পোশাক আপনার মাপে ফিট":"কিছুই মিলল না — ছাড় একটু বাড়িয়ে দেখুন");
-    if(pend&&pend.kind==="open") openDetail(pend.value);
+    /* মাপ দেওয়ার পর আগের প্রোডাক্টটি খোলা হয় না —
+       কাস্টমার তার মাপে যা যা আছে, পুরো তালিকাটাই দেখে */
     return;
   }
 });
