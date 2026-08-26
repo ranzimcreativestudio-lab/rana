@@ -67,7 +67,13 @@ var P = [
    img:"images/royalblue-stripe-tee.jpg",
    fabric:"Cotton jersey with a printed stripe band across the chest",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
    colors:[{"n":"Royal Blue","h":"#12318A"}],
-   sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]}
+   sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]},
+
+  {id:"r08",name:"New York USA Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
+   img:"images/newyork-black-tee.jpg",
+   fabric:"Cotton jersey with a New York USA front print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
+   colors:[{"n":"Black","h":"#161817"}],
+   sizes:[{"size":"XL","chestMin":42,"chestMax":44.5,"length":31,"stock":2}]}
 ];
 
 /* your WhatsApp number in international form, no + and no spaces */
