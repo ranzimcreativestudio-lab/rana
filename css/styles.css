@@ -735,3 +735,20 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   left:auto;right:12px;
   background:var(--ink);color:var(--paper);
 }
+
+/* "আপনার মাপ বলুন" — always visible, large, red */
+#fitEdit.fit-cta{
+  font-size:15.5px;font-weight:700;
+  padding:11px 22px;border-radius:999px;
+  border-width:1.5px;
+  box-shadow:0 2px 10px color-mix(in srgb,#D32F2F 28%,transparent);
+}
+#fitEdit.fit-cta:hover{
+  box-shadow:0 3px 14px color-mix(in srgb,#B71C1C 34%,transparent);
+}
+#fitEdit.fit-cta.is-set{
+  font-size:13.5px;font-weight:600;padding:8px 16px;box-shadow:none;
+}
+@media (max-width:640px){
+  #fitEdit.fit-cta{width:100%;justify-content:center;text-align:center;}
+}

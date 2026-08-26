@@ -73,7 +73,13 @@ var P = [
    img:"images/newyork-black-tee.jpg",
    fabric:"Cotton jersey with a New York USA front print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
    colors:[{"n":"Black","h":"#161817"}],
-   sizes:[{"size":"XL","chestMin":42,"chestMax":44.5,"length":31,"stock":2}]}
+   sizes:[{"size":"XL","chestMin":42,"chestMax":44.5,"length":31,"stock":2}]},
+
+  {id:"r09",name:"Endurance Text Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
+   img:"images/endurance-blue-tee.jpg",
+   fabric:"Cotton jersey with a bold black text print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
+   colors:[{"n":"Blue","h":"#1F3799"}],
+   sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]}
 ];
 
 /* your WhatsApp number in international form, no + and no spaces */
@@ -977,12 +983,17 @@ function renderWaTalk(){
 function renderFitBar(){
   renderWaTalk();
   var bar=$("#fitBar"), edit=$("#fitEdit");
-  if(!state.fit){ bar.hidden=true; if(edit) edit.hidden=true; return; }
+  /* the button is always on screen — it invites the measurements, then edits them */
+  if(edit){
+    edit.hidden=false;
+    edit.textContent=state.fit?"মাপ পরিবর্তন করুন":"আপনার মাপ বলুন";
+    edit.classList.toggle("is-set",!!state.fit);
+  }
+  if(!state.fit){ bar.hidden=true; return; }
   bar.hidden=false;
-  if(edit) edit.hidden=false;
   $("#fitVals").textContent=
-    "chest "+state.fit.chest+"″ · length "+state.fit.len+"″ ± "+state.fit.tol+"″"+
-    " — showing only what fits";
+    "বুক "+state.fit.chest+"″ · লম্বা "+state.fit.len+"″ ± "+state.fit.tol+"″"+
+    " — শুধু যা ফিট, তাই দেখানো হচ্ছে";
 }
 
 function fillGateTypes(){
