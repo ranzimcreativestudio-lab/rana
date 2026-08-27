@@ -260,12 +260,15 @@ function openEditor(p){
   $("#pOld").value=p&&p.old_price?p.old_price:"";
   $("#pTag").value=p&&p.tag?p.tag:"";
   $("#pImg").value=p&&p.img?p.img:"";
+  $("#pImgBack").value=p&&p.img_back?p.img_back:"";
   $("#pFabric").value=p&&p.fabric?p.fabric:"";
   $("#pFit").value=p&&p.fit?p.fit:"";
   $("#pCare").value=p&&p.care?p.care:"";
   $("#pActive").checked=p?!!p.active:true;
   $("#pImgFile").value="";
+  $("#pImgBackFile").value="";
   showPreview(p&&p.img?p.img:"");
+  showPreview(p&&p.img_back?p.img_back:"","#pPreviewBack");
 
   $("#pColors").innerHTML="";
   ((p&&p.colors&&p.colors.length)?p.colors:[{n:"Black",h:"#1C1E20"}])
@@ -282,8 +285,9 @@ function openEditor(p){
 function closeEditor(){
   $("#pEdit").hidden=true; editing=null; document.body.style.overflow="";
 }
-function showPreview(src){
-  var img=$("#pPreview");
+function showPreview(src,sel){
+  var img=$(sel||"#pPreview");
+  if(!img) return;
   if(src){ img.src=src; img.hidden=false; } else { img.removeAttribute("src"); img.hidden=true; }
 }
 
@@ -296,6 +300,11 @@ $("#pImg").addEventListener("input",function(){ showPreview($("#pImg").value.tri
 $("#pImgFile").addEventListener("change",function(){
   var f=$("#pImgFile").files[0];
   if(f) showPreview(URL.createObjectURL(f));
+});
+$("#pImgBack").addEventListener("input",function(){ showPreview($("#pImgBack").value.trim(),"#pPreviewBack"); });
+$("#pImgBackFile").addEventListener("change",function(){
+  var f=$("#pImgBackFile").files[0];
+  if(f) showPreview(URL.createObjectURL(f),"#pPreviewBack");
 });
 
 /* ---------- save ---------- */
@@ -320,9 +329,9 @@ function collectSizes(){
   });
 }
 
-function uploadPhoto(){
-  var f=$("#pImgFile").files[0];
-  if(!f) return Promise.resolve($("#pImg").value.trim()||null);
+function uploadPhoto(fileSel,textSel){
+  var f=$(fileSel||"#pImgFile").files[0];
+  if(!f) return Promise.resolve($(textSel||"#pImg").value.trim()||null);
   var ext=(f.name.split(".").pop()||"jpg").toLowerCase();
   var path="p-"+Date.now()+"-"+Math.floor(Math.random()*9999)+"."+ext;
   return SB.storage.from(BUCKET).upload(path,f,{cacheControl:"3600",upsert:false})
@@ -345,7 +354,11 @@ $("#pSave").addEventListener("click",function(){
   if(err){ $("#pErr").textContent=err; $("#pErr").hidden=false; return; }
 
   var btn=$("#pSave"); btn.disabled=true; btn.textContent="Saving…";
-  uploadPhoto().then(function(imgUrl){
+  Promise.all([
+    uploadPhoto("#pImgFile","#pImg"),
+    uploadPhoto("#pImgBackFile","#pImgBack")
+  ]).then(function(urls){
+    var imgUrl=urls[0], imgBackUrl=urls[1];
     var row={
       name:name, gender:$("#pGender").value, type:type,
       shape:(type.toLowerCase().indexOf("dress")>-1?"aline":
@@ -354,6 +367,7 @@ $("#pSave").addEventListener("click",function(){
       old_price:$("#pOld").value?parseInt($("#pOld").value,10):null,
       tag:$("#pTag").value.trim()||null,
       img:imgUrl||null,
+      img_back:imgBackUrl||null,
       fabric:$("#pFabric").value.trim()||null,
       fit:$("#pFit").value.trim()||null,
       care:$("#pCare").value.trim()||null,

@@ -79,7 +79,14 @@ var P = [
    img:"images/endurance-blue-tee.jpg",
    fabric:"Cotton jersey with a bold black text print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
    colors:[{"n":"Blue","h":"#1F3799"}],
-   sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]}
+   sizes:[{"size":"XL","chestMin":44,"chestMax":46.5,"length":29,"stock":1}]},
+
+  {id:"r10",name:"Never Give Up Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
+   img:"images/neverup-black-tee.jpg",
+   imgBack:"images/neverup-black-tee-back.jpg",
+   fabric:"Cotton jersey with a blue and orange “Never Give Up” front print",fit:"Regular, straight body",care:"Wash inside out, cold water, do not iron the print",
+   colors:[{"n":"Black","h":"#151515"}],
+   sizes:[{"size":"L","chestMin":42,"chestMax":44.5,"length":31,"stock":1}]}
 ];
 
 /* your WhatsApp number in international form, no + and no spaces */
@@ -329,6 +336,7 @@ function rowToProduct(r){
     oldPrice:r.old_price?Number(r.old_price):undefined,
     tag:r.tag||undefined,
     img:r.img||undefined,
+    imgBack:r.img_back||undefined,
     fabric:r.fabric||"",
     fit:r.fit||"",
     care:r.care||"",
@@ -375,10 +383,48 @@ var CART_ICON='<svg class="bi" width="16" height="16" viewBox="0 0 24 24" fill="
   '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>'+
   '<path d="M2.5 3h2.6l2.5 12.1a1.8 1.8 0 0 0 1.8 1.4h7.8a1.8 1.8 0 0 0 1.8-1.4L20.5 7H6"/></svg>';
 
-/* a real photo when the product has one, otherwise the drawn garment */
+/* কোন প্রোডাক্টের কোন দিক (সামনে / পিছনে) এখন দেখা যাচ্ছে */
+var sideSel={};
+function hasBack(p){ return !!(p.img&&p.imgBack); }
+function sideOf(id){ return sideSel[id]==="back"?"back":"front"; }
+
+var FLIP_ICON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+  'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+  '<path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 4v4h-4"/>'+
+  '<path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 20v-4h4"/></svg>';
+
+/* a real photo when the product has one, otherwise the drawn garment.
+   দুটো ছবি থাকলে (সামনে + পিছনে) দুটোই বসে, উপর-নিচ করে দেখানো হয়। */
 function artHTML(p,col){
+  if(hasBack(p)){
+    var back=sideOf(p.id)==="back";
+    return '<span class="two-side'+(back?" is-back":"")+'" data-face="'+p.id+'">'+
+      '<img class="photo face-front" src="'+esc(p.img)+'" alt="'+esc(p.name)+' — সামনের দিক" loading="lazy">'+
+      '<img class="photo face-back" src="'+esc(p.imgBack)+'" alt="'+esc(p.name)+' — পিছনের দিক" loading="lazy">'+
+    "</span>";
+  }
   if(p.img) return '<img class="photo" src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">';
   return garmentSVG(p.shape,col.h);
+}
+
+/* ডিটেইল শিটের ছবি — সামনে/পিছনে বেছে নেওয়ার থাম্বনেইল সহ */
+function detailArtHTML(p,col){
+  if(!hasBack(p)) return artHTML(p,col);
+  var back=sideOf(p.id)==="back";
+  var main=back?p.imgBack:p.img;
+  function thumb(src,key,label){
+    return '<button type="button" class="gal-thumb" data-side="'+key+'" data-pid="'+p.id+'" '+
+      'aria-pressed="'+((key==="back")===back)+'" title="'+esc(label)+'">'+
+      '<img src="'+esc(src)+'" alt="'+esc(p.name)+" — "+esc(label)+'" loading="lazy">'+
+      "<span>"+esc(label)+"</span></button>";
+  }
+  return '<div class="gallery">'+
+    '<button type="button" class="gal-main" data-shot="'+esc(main)+'" aria-label="ছবিটি বড় করে দেখুন">'+
+      '<img class="photo" src="'+esc(main)+'" alt="'+esc(p.name)+" — "+(back?"পিছনের দিক":"সামনের দিক")+'">'+
+    "</button>"+
+    '<div class="gal-thumbs">'+thumb(p.img,"front","সামনে")+thumb(p.imgBack,"back","পিছনে")+"</div>"+
+    '<p class="gal-note">সামনে ও পিছনে — দুই দিকই দেখতে পারেন। ছবিতে চাপ দিলে বড় হবে।</p>'+
+  "</div>";
 }
 
 var toastTimer=null;
@@ -424,8 +470,13 @@ function cardHTML(p){
   else if(p.oldPrice) tag='<span class="tag" data-kind="sale">'+Math.round(DISCOUNT*100)+'% OFF</span>';
   /* the product's own label (Best Sell / New …) sits in the top-right corner */
   var tag2=p.tag?'<span class="tag tag-alt">'+esc(p.tag)+"</span>":"";
+  /* সামনে + পিছনে দুটো ছবি থাকলে ছোট একটা বোতাম দিয়ে উল্টে দেখা যায় */
+  var flip=hasBack(p)
+    ? '<button class="flip-btn" data-flip="'+p.id+'" aria-label="'+esc(p.name)+' — অন্য দিকটি দেখুন">'+
+        FLIP_ICON+"<span>"+(sideOf(p.id)==="back"?"সামনে":"পিছনে")+"</span></button>"
+    : "";
   return '<article class="card">'+
-    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+tag2+
+    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+tag2+flip+
       '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+artHTML(p,col)+"</button>"+
       '<button class="quick" data-open="'+p.id+'">Choose size</button>'+
     "</div>"+
@@ -516,7 +567,7 @@ function renderDetail(){
     '<button class="close-x" id="detailClose" aria-label="Close">'+
       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button>'+
     '<div class="sheet-scroll">'+
-    '<div class="detail-grid"><div class="detail-art">'+artHTML(p,col)+"</div>"+
+    '<div class="detail-grid"><div class="detail-art">'+detailArtHTML(p,col)+"</div>"+
     '<div class="detail-info">'+
       '<div><p class="eyebrow">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+"</p>"+
       "<h3>"+esc(p.name)+"</h3></div>"+
@@ -665,7 +716,7 @@ function closeAll(){
 
 /* ================= events ================= */
 document.addEventListener("click",function(ev){
-  var el=ev.target.closest?ev.target.closest("[data-open],[data-sw],[data-nav],[data-gender],[data-type],[data-size],[data-q],[data-line],[data-remove]"):null;
+  var el=ev.target.closest?ev.target.closest("[data-flip],[data-side],[data-open],[data-sw],[data-nav],[data-gender],[data-type],[data-size],[data-q],[data-line],[data-remove]"):null;
 
   // nav
   var nav=ev.target.closest?ev.target.closest("[data-nav]"):null;
@@ -685,6 +736,23 @@ document.addEventListener("click",function(ev){
   }
 
   if(!el) return;
+
+  /* গ্রিডে ছবি উল্টে সামনে ↔ পিছনে */
+  if(el.hasAttribute("data-flip")){
+    var fid=el.getAttribute("data-flip");
+    sideSel[fid]=sideOf(fid)==="back"?"front":"back";
+    renderGrid();
+    if(state.open==="detail"&&detailState.id===fid) renderDetail();
+    ev.preventDefault(); return;
+  }
+
+  /* ডিটেইল শিটে সামনে / পিছনে থাম্বনেইল */
+  if(el.hasAttribute("data-side")){
+    var pid=el.getAttribute("data-pid")||detailState.id;
+    sideSel[pid]=el.getAttribute("data-side")==="back"?"back":"front";
+    renderDetail(); renderGrid();
+    ev.preventDefault(); return;
+  }
 
   if(el.hasAttribute("data-open")){
     var openId=el.getAttribute("data-open");
@@ -1205,7 +1273,12 @@ function renderReviews(){
   var lb=document.getElementById("lightbox");
   if(!lb) return;
   var img=document.getElementById("lightboxImg");
-  function close(){ lb.hidden=true; document.body.style.overflow=""; }
+  function close(){
+    lb.hidden=true;
+    /* শিট খোলা থাকলে পেছনের পাতা আটকানোই থাকবে */
+    var sheetOpen=document.querySelector('.sheet[data-shown="true"]');
+    document.body.style.overflow=sheetOpen?"hidden":"";
+  }
   document.addEventListener("click",function(ev){
     var shot=ev.target.closest?ev.target.closest("[data-shot]"):null;
     if(shot){ img.src=shot.getAttribute("data-shot"); lb.hidden=false; document.body.style.overflow="hidden"; return; }

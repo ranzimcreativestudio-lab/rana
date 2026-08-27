@@ -118,11 +118,18 @@
             <input id="pTag" type="text" placeholder="New / Best seller"></label>
         </div>
 
-        <label class="gate-field"><span class="lbl">Photo</span>
+        <label class="gate-field"><span class="lbl">Photo — front</span>
           <input id="pImgFile" type="file" accept="image/*">
           <small>Pick a photo — it is uploaded when you save. Leave empty to keep the current one.</small>
           <input id="pImg" type="text" placeholder="images/black-tee.jpg or a full URL">
           <img class="p-preview" id="pPreview" alt="" hidden>
+        </label>
+
+        <label class="gate-field"><span class="lbl">Photo — back (optional)</span>
+          <input id="pImgBackFile" type="file" accept="image/*">
+          <small>Add the back of the garment and customers can flip between the two sides. Leave empty for a front photo only.</small>
+          <input id="pImgBack" type="text" placeholder="images/black-tee-back.jpg or a full URL">
+          <img class="p-preview" id="pPreviewBack" alt="" hidden>
         </label>
 
         <div class="gate-row">
