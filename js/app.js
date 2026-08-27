@@ -31,7 +31,7 @@ var P = [
    img:"images/offwhite-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
    colors:[{"n":"Off White Cream","h":"#F2EBDD"}],
-   sizes:[{"size":"M","chestMin":36,"chestMax":38.5,"length":27,"stock":2}]},
+   sizes:[{"size":"M","chestMin":36,"chestMax":38.5,"length":27,"stock":0}]},
 
   {id:"r03",name:"Let’s Get Exploring Print Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,tag:"New",
    img:"images/exploring-tee.jpg",
@@ -475,10 +475,12 @@ function cardHTML(p){
     ? '<button class="flip-btn" data-flip="'+p.id+'" aria-label="'+esc(p.name)+' — অন্য দিকটি দেখুন">'+
         FLIP_ICON+"<span>"+(sideOf(p.id)==="back"?"সামনে":"পিছনে")+"</span></button>"
     : "";
-  return '<article class="card">'+
-    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+tag2+flip+
+  /* স্টক শেষ — ছবির উপরে পরিষ্কার করে লেখা থাকে */
+  var soldBand=st===0?'<span class="sold-band">বিক্রি হয়ে গেছে · Sold out</span>':"";
+  return '<article class="card"'+(st===0?' data-sold="true"':"")+">"+
+    '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+tag2+flip+soldBand+
       '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+artHTML(p,col)+"</button>"+
-      '<button class="quick" data-open="'+p.id+'">Choose size</button>'+
+      '<button class="quick" data-open="'+p.id+'">'+(st===0?"বিস্তারিত দেখুন":"Choose size")+"</button>"+
     "</div>"+
     '<div class="meta"><div><div class="name">'+esc(p.name)+badge+"</div>"+
       '<div class="sub">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+" · "+esc(col.n)+"</div></div>"+
@@ -556,6 +558,10 @@ function renderDetail(){
       ? '<p class="stock-line"'+(remaining<=2?' data-low="true"':'')+'>Only '+remaining+' piece'+(remaining===1?'':'s')+' left in size '+esc(sz)+'.</p>'
       : '<p class="stock-line" data-low="true">Size '+esc(sz)+' is sold out.</p>';
   }
+  /* পুরো প্রোডাক্টের স্টক শেষ হলে একটা পরিষ্কার বার্তা */
+  var soldNote=stockTotal(p)===0
+    ? '<p class="sold-note">এই পোশাকটি বিক্রি হয়ে গেছে। নতুন স্টক এলে খবর পেতে WhatsApp-এ লিখুন — ০১৩৪২-২৪০৪০৮।</p>'
+    : "";
   var fitLine="";
   if(state.fit){
     fitLine=m
@@ -584,12 +590,12 @@ function renderDetail(){
         '<div class="sizes">'+rows.map(function(r){
           return '<button class="size" data-size="'+r.size+'" aria-pressed="'+(detailState.size===r.size)+
                  '" title="Chest '+r.chestMin+"–"+r.chestMax+"″ · length "+r.length+'″">'+r.size+"</button>";
-        }).join("")+"</div>"+stockNote+fitLine+"</div>"+
+        }).join("")+"</div>"+stockNote+soldNote+fitLine+"</div>"+
       '<div class="field"><span class="eyebrow">Quantity</span>'+
         '<div class="stepper"><button data-q="-1" aria-label="Decrease quantity">−</button><span id="qtyVal">'+detailState.qty+'</span><button data-q="1" aria-label="Increase quantity">+</button></div></div>'+
       '<div class="buy-row">'+
         '<button class="btn btn-outline" id="addBtn">'+CART_ICON+
-          "<span>"+(!sz?"Select a size":(canBuy?"Add to cart":"Out of stock"))+"</span></button>"+
+          "<span>"+(soldNote?"Sold out":(!sz?"Select a size":(canBuy?"Add to cart":"Out of stock")))+"</span></button>"+
         '<button class="btn btn-buy" id="buyBtn">'+CART_ICON+"<span>Buy Now</span></button>"+
       "</div>"+
       '<dl class="specs">'+

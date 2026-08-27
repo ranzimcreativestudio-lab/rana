@@ -656,6 +656,20 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 .gal-thumb:hover{border-color:var(--line-2);}
 .gal-note{margin:0;font-size:12px;color:var(--ink-3);text-align:center;max-width:300px;}
 
+/* ============ বিক্রি হয়ে গেছে ============ */
+.card[data-sold="true"] .plate{opacity:.9;}
+.card[data-sold="true"] .photo{filter:grayscale(.6);}
+.card[data-sold="true"] .name,.card[data-sold="true"] .price{color:var(--ink-2);}
+.sold-band{
+  position:absolute;left:0;right:0;top:50%;z-index:3;transform:translateY(-50%);
+  background:rgba(20,20,20,.86);color:#FFFFFF;text-align:center;
+  padding:9px 6px;font-size:13px;font-weight:700;letter-spacing:.01em;
+  pointer-events:none; /* লেখাটা যেন ছবিতে ক্লিক আটকে না দেয় */
+}
+.sold-note{
+  margin:2px 0 0;font-size:13px;line-height:1.5;color:var(--sale);font-weight:600;
+}
+
 /* ============ stock ============ */
 .tag[data-kind="low"]{background:var(--accent);color:var(--accent-ink);}
 .stock-line{margin:2px 0 0;font-size:13px;color:var(--ink-2);}
