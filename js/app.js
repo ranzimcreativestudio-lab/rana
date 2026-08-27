@@ -388,6 +388,40 @@ var sideSel={};
 function hasBack(p){ return !!(p.img&&p.imgBack); }
 function sideOf(id){ return sideSel[id]==="back"?"back":"front"; }
 
+/* ================= "SOLD OUT" সিল =================
+   ছবির উপরে বসে যাওয়া লাল রাবার-স্ট্যাম্প। ছবি নয়, SVG — তাই যেকোনো
+   মাপে ঝকঝকে থাকে এবং আলাদা ফাইল লোড করতে হয় না।                 */
+var STAMP_EDGE="M100.0,4.0 L106.2,13.2 L113.7,5.0 L118.5,15.0 L127.0,7.9 L130.4,18.5 L139.9,12.7 L141.7,23.6 "+
+"L151.9,19.2 L152.1,30.4 L162.9,27.4 L161.5,38.5 L172.6,37.1 L169.6,47.9 L180.8,48.1 L176.4,58.3 L187.3,60.1 "+
+"L181.5,69.6 L192.1,73.0 L185.0,81.5 L195.0,86.3 L186.8,93.8 L196.0,100.0 L186.8,106.2 L195.0,113.7 L185.0,118.5 "+
+"L192.1,127.0 L181.5,130.4 L187.3,139.9 L176.4,141.7 L180.8,151.9 L169.6,152.1 L172.6,162.9 L161.5,161.5 "+
+"L162.9,172.6 L152.1,169.6 L151.9,180.8 L141.7,176.4 L139.9,187.3 L130.4,181.5 L127.0,192.1 L118.5,185.0 "+
+"L113.7,195.0 L106.2,186.8 L100.0,196.0 L93.8,186.8 L86.3,195.0 L81.5,185.0 L73.0,192.1 L69.6,181.5 L60.1,187.3 "+
+"L58.3,176.4 L48.1,180.8 L47.9,169.6 L37.1,172.6 L38.5,161.5 L27.4,162.9 L30.4,152.1 L19.2,151.9 L23.6,141.7 "+
+"L12.7,139.9 L18.5,130.4 L7.9,127.0 L15.0,118.5 L5.0,113.7 L13.2,106.2 L4.0,100.0 L13.2,93.8 L5.0,86.3 L15.0,81.5 "+
+"L7.9,73.0 L18.5,69.6 L12.7,60.1 L23.6,58.3 L19.2,48.1 L30.4,47.9 L27.4,37.1 L38.5,38.5 L37.1,27.4 L47.9,30.4 "+
+"L48.1,19.2 L58.3,23.6 L60.1,12.7 L69.6,18.5 L73.0,7.9 L81.5,15.0 L86.3,5.0 L93.8,13.2 Z";
+
+function soldStamp(id,where){
+  var t="sot-"+where+"-"+id, b="sob-"+where+"-"+id;
+  return '<span class="sold-stamp" aria-hidden="true">'+
+    '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'+
+      "<defs>"+
+        '<path id="'+t+'" d="M100,100 m-67,0 a67,67 0 0,1 134,0" fill="none"/>'+
+        '<path id="'+b+'" d="M100,100 m67,0 a67,67 0 0,1 -134,0" fill="none"/>'+
+      "</defs>"+
+      '<path d="'+STAMP_EDGE+'" fill="none" stroke="currentColor" stroke-width="3.5"/>'+
+      '<circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="5"/>'+
+      '<text class="stamp-arc"><textPath href="#'+t+'" xlink:href="#'+t+'" startOffset="50%" text-anchor="middle">SOLD OUT</textPath></text>'+
+      '<text class="stamp-arc"><textPath href="#'+b+'" xlink:href="#'+b+'" startOffset="50%" text-anchor="middle">SOLD OUT</textPath></text>'+
+      '<g transform="rotate(-10 100 100)">'+
+        '<path d="M2,78 L26,89 L2,100 L2,78 Z M198,78 L174,89 L198,100 L198,78 Z" fill="currentColor" opacity=".85"/>'+
+        '<rect x="10" y="76" width="180" height="42" rx="2" fill="currentColor"/>'+
+        '<text x="100" y="106" text-anchor="middle" class="stamp-main">SOLD OUT</text>'+
+      "</g>"+
+    "</svg></span>";
+}
+
 var FLIP_ICON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
   'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
   '<path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 4v4h-4"/>'+
@@ -475,8 +509,8 @@ function cardHTML(p){
     ? '<button class="flip-btn" data-flip="'+p.id+'" aria-label="'+esc(p.name)+' — অন্য দিকটি দেখুন">'+
         FLIP_ICON+"<span>"+(sideOf(p.id)==="back"?"সামনে":"পিছনে")+"</span></button>"
     : "";
-  /* স্টক শেষ — ছবির উপরে পরিষ্কার করে লেখা থাকে */
-  var soldBand=st===0?'<span class="sold-band">বিক্রি হয়ে গেছে · Sold out</span>':"";
+  /* স্টক শেষ — ছবির উপরে লাল "SOLD OUT" সিল */
+  var soldBand=st===0?soldStamp(p.id,"card"):"";
   return '<article class="card"'+(st===0?' data-sold="true"':"")+">"+
     '<div class="plate"'+(p.img?' data-photo="true"':"")+'>'+tag+tag2+flip+soldBand+
       '<button class="plate-open" data-open="'+p.id+'" aria-label="View '+esc(p.name)+'" style="display:block;width:100%;">'+artHTML(p,col)+"</button>"+
@@ -573,7 +607,8 @@ function renderDetail(){
     '<button class="close-x" id="detailClose" aria-label="Close">'+
       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button>'+
     '<div class="sheet-scroll">'+
-    '<div class="detail-grid"><div class="detail-art">'+detailArtHTML(p,col)+"</div>"+
+    '<div class="detail-grid"><div class="detail-art"'+(soldNote?' data-sold="true"':"")+">"+
+      detailArtHTML(p,col)+(soldNote?soldStamp(p.id,"detail"):"")+"</div>"+
     '<div class="detail-info">'+
       '<div><p class="eyebrow">'+esc(p.gender==="women"?"Women":"Men")+" · "+esc(p.type)+"</p>"+
       "<h3>"+esc(p.name)+"</h3></div>"+

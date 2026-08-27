@@ -660,12 +660,26 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 .card[data-sold="true"] .plate{opacity:.9;}
 .card[data-sold="true"] .photo{filter:grayscale(.6);}
 .card[data-sold="true"] .name,.card[data-sold="true"] .price{color:var(--ink-2);}
-.sold-band{
-  position:absolute;left:0;right:0;top:50%;z-index:3;transform:translateY(-50%);
-  background:rgba(20,20,20,.86);color:#FFFFFF;text-align:center;
-  padding:9px 6px;font-size:13px;font-weight:700;letter-spacing:.01em;
-  pointer-events:none; /* লেখাটা যেন ছবিতে ক্লিক আটকে না দেয় */
+/* লাল রাবার-স্ট্যাম্প — ছবির উপরে বসে */
+.sold-stamp{
+  position:absolute;left:50%;top:50%;z-index:3;
+  width:62%;max-width:210px;aspect-ratio:1/1;
+  transform:translate(-50%,-50%) rotate(-13deg);
+  color:#D6261B;opacity:.92;
+  pointer-events:none; /* সিলটা যেন ছবিতে ক্লিক আটকে না দেয় */
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));
 }
+.sold-stamp svg{width:100%;height:100%;display:block;}
+.sold-stamp .stamp-arc{
+  fill:currentColor;font-family:var(--display);font-weight:800;
+  font-size:19px;letter-spacing:3.4px;
+}
+.sold-stamp .stamp-main{
+  fill:#FFFFFF;font-family:var(--display);font-weight:800;
+  font-size:29px;letter-spacing:1.5px;
+}
+.detail-art[data-sold="true"]{position:relative;}
+.detail-art[data-sold="true"] .photo{filter:grayscale(.45);}
 .sold-note{
   margin:2px 0 0;font-size:13px;line-height:1.5;color:var(--sale);font-weight:600;
 }
