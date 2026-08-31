@@ -103,7 +103,13 @@ Prices are in Bangladeshi taka. To change it, edit the `money()` function in `js
 function money(n){ return "৳" + n.toLocaleString("en-US"); }
 ```
 
-The free-delivery threshold (`3000`) and flat delivery rate (`120`) are in `cartTotals()` just below.
+Delivery is set just above `shipFor()` in `js/app.js`:
+
+```js
+var FREE_OVER=500, SHIP_LOCAL=80, SHIP_OUTSIDE=120;
+```
+
+`FREE_OVER` is the free-delivery threshold, `SHIP_LOCAL` the rate inside Khulna (where orders ship from) and `SHIP_OUTSIDE` the rate for every other district. `isLocal()` right below decides which one applies — it matches "khulna" or "খুলনা" in the district box.
 
 ## Deploying
 

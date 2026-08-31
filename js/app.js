@@ -637,7 +637,7 @@ function renderDetail(){
         "<div><dt>Fabric</dt><dd>"+esc(p.fabric)+"</dd></div>"+
         "<div><dt>Fit</dt><dd>"+esc(p.fit)+"</dd></div>"+
         "<div><dt>Care</dt><dd>"+esc(p.care)+"</dd></div>"+
-        "<div><dt>Delivery</dt><dd>Dhaka next-day · 2–4 days elsewhere · free over ৳500</dd></div>"+
+        "<div><dt>Delivery</dt><dd>Khulna next-day · 2–4 days elsewhere · free over ৳500</dd></div>"+
       "</dl>"+
     "</div></div>"+
     "</div>";
@@ -663,17 +663,17 @@ function openDetail(id){
 }
 
 /* ================= render: cart ================= */
-/* delivery: free over ৳500, otherwise ৳80 inside Dhaka and ৳120 elsewhere */
-var FREE_OVER=500, SHIP_DHAKA=80, SHIP_OUTSIDE=120;
+/* delivery: free over ৳500, otherwise ৳80 inside Khulna and ৳120 elsewhere */
+var FREE_OVER=500, SHIP_LOCAL=80, SHIP_OUTSIDE=120;
 
-function isDhaka(d){
+function isLocal(d){
   var v=String(d||"").toLowerCase().trim();
-  return v.indexOf("dhaka")>-1||v.indexOf("ঢাকা")>-1;
+  return v.indexOf("khulna")>-1||v.indexOf("খুলনা")>-1;
 }
 function shipFor(sub,district){
   if(sub===0) return 0;
   if(sub>=FREE_OVER) return 0;
-  return isDhaka(district)?SHIP_DHAKA:SHIP_OUTSIDE;
+  return isLocal(district)?SHIP_LOCAL:SHIP_OUTSIDE;
 }
 
 function cartTotals(){
@@ -724,11 +724,11 @@ function renderCart(){
     foot.innerHTML=
       '<div class="sumrow"><span>Subtotal</span><span>'+money(t.sub)+"</span></div>"+
       '<div class="sumrow"><span>Delivery</span><span>'+
-        (free?"Free":money(SHIP_DHAKA)+" – "+money(SHIP_OUTSIDE))+"</span></div>"+
-      (free?"":'<p class="ship-note">Inside Dhaka '+money(SHIP_DHAKA)+", other districts "+money(SHIP_OUTSIDE)+
+        (free?"Free":money(SHIP_LOCAL)+" – "+money(SHIP_OUTSIDE))+"</span></div>"+
+      (free?"":'<p class="ship-note">Inside Khulna '+money(SHIP_LOCAL)+", other districts "+money(SHIP_OUTSIDE)+
              ". Add "+money(FREE_OVER-t.sub)+" more for free delivery.</p>")+
       '<div class="sumrow total"><span>Total</span><span>'+
-        (free?money(t.total):money(t.sub+SHIP_DHAKA)+" – "+money(t.sub+SHIP_OUTSIDE))+"</span></div>"+
+        (free?money(t.total):money(t.sub+SHIP_LOCAL)+" – "+money(t.sub+SHIP_OUTSIDE))+"</span></div>"+
       '<button class="btn btn-primary btn-block" id="checkout">Place order</button>'+
       '<p class="demo-note">Demonstration storefront — no payment is processed.</p>';
   }
@@ -955,7 +955,7 @@ function orderSummaryText(){
   });
   var where=orderCtx.ship===0
     ? "Free"
-    : money(orderCtx.ship)+(isDhaka(orderCtx.district)?" (inside Dhaka)":" (outside Dhaka)");
+    : money(orderCtx.ship)+(isLocal(orderCtx.district)?" (inside Khulna)":" (outside Khulna)");
   out+="\nSubtotal: "+money(orderCtx.sub)+
        "\nDelivery: "+where+
        "\nTotal: "+money(orderCtx.total)+" (cash on delivery)";
