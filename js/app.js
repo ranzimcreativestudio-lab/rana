@@ -577,12 +577,12 @@ function sizeChartHTML(p){
   if(!rows.length) return "";
   return '<div class="chart-wrap">'+
     '<table class="size-chart">'+
-      '<caption>Measurement chart · inches</caption>'+
-      '<thead><tr><th scope="col">Size</th><th scope="col">Chest</th>'+
-        '<th scope="col">Stock</th></tr></thead>'+
+      '<caption>মেজারমেন্ট চার্ট · ইঞ্চি</caption>'+
+      '<thead><tr><th scope="col">সাইজ</th><th scope="col">বডি মেজারমেন্ট</th>'+
+        '<th scope="col">স্টক</th></tr></thead>'+
       "<tbody>"+rows.map(function(r){
         var st=stockFor(p,r.size);
-        var stock=(st===null)?"—":(st>0?st+" left":"Sold out");
+        var stock=(st===null)?"—":(st>0?st+"টি আছে":"শেষ");
         var picked=detailState.size===r.size;
         return '<tr data-size="'+esc(r.size)+'"'+(picked?' class="is-picked"':"")+
                (st===0?' data-out="true"':"")+

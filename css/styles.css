@@ -938,9 +938,9 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   caption-side:top;
   text-align:left;
   padding:0 0 7px;
-  font-size:.72rem;
-  letter-spacing:.09em;
-  text-transform:uppercase;
+  font-size:.82rem;
+  letter-spacing:normal;      /* বাংলা লেখায় ফাঁক দিলে পড়তে কষ্ট হয় */
+  text-transform:none;
   color:var(--ink-3);
   font-weight:600;
 }
@@ -952,9 +952,9 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 }
 .size-chart thead th{
   background:var(--surface-2);
-  font-size:.72rem;
-  letter-spacing:.07em;
-  text-transform:uppercase;
+  font-size:.84rem;
+  letter-spacing:normal;
+  text-transform:none;
   color:var(--ink-2);
   font-weight:600;
 }
