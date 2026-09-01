@@ -593,7 +593,7 @@ function sizeChartHTML(p){
           '<td class="chart-stock">'+stock+"</td></tr>";
       }).join("")+"</tbody>"+
     "</table>"+
-    '<p class="chart-help">Pick a size above, or tap a row.</p>'+
+    '<p class="chart-help">আপনার শরীরের মেজারমেন্ট অনুযায়ী সঠিক সাইজটি নির্বাচন করুন।</p>'+
   "</div>";
 }
 
