@@ -288,8 +288,7 @@ try{
   if(saved){ var c=JSON.parse(saved); if(Array.isArray(c)) state.cart=c; }
 }catch(e){}
 
-/* measurements are NOT remembered — the gate is asked again on every visit
-   and on every refresh, always with empty fields */
+/* the old measurement gate stored this — clear it for anyone who still has it */
 try{ localStorage.removeItem("dreamofall.fit"); }catch(e){}
 
 function save(){ try{ localStorage.setItem("dreamofall.cart",JSON.stringify(state.cart)); }catch(e){} }
@@ -531,13 +530,6 @@ function renderGrid(){
   var g=$("#grid");
   if(!list.length){
     var msg='<strong>Nothing matches that.</strong><br>Try clearing the search or picking another type.';
-    if(state.fit){
-      var n=nearestLength(state.fit);
-      msg='<strong>Nothing in stock matches those measurements.</strong><br>'+
-        (n?"The closest length we cut for a "+state.fit.chest+"″ chest is <strong>"+n.len+"″</strong>. ":"")+
-        'Widen the length tolerance or change your measurements.'+
-        '<br><br><button class="btn btn-ghost btn-sm" id="fitEdit2">মাপ পরিবর্তন করুন</button>';
-    }
     g.innerHTML='<div class="empty">'+msg+"</div>";
   }else{
     g.innerHTML=list.map(cardHTML).join("");
@@ -797,7 +789,6 @@ document.addEventListener("click",function(ev){
 
   if(el.hasAttribute("data-open")){
     var openId=el.getAttribute("data-open");
-    if(!state.fit){ requireFit({kind:"open",value:openId}); return; }
     openDetail(openId); return;
   }
 
@@ -815,7 +806,6 @@ document.addEventListener("click",function(ev){
 
   if(el.hasAttribute("data-type")){
     var wantType=el.getAttribute("data-type");
-    if(!state.fit){ requireFit({kind:"type",value:wantType}); return; }
     state.type=wantType;
     renderTypeChips(); renderGrid(); return;
   }
@@ -882,14 +872,11 @@ document.addEventListener("click",function(ev){
   if(t.closest("#buyBtn")){
     var bp=P.filter(function(x){return x.id===detailState.id;})[0];
     if(!bp||!detailState.size) return;
-    if(!state.fit){ requireFit(null); return; }
     var bcol=bp.colors[state.sel[bp.id]||0];
     openOrder([{name:bp.name,color:bcol.n,size:detailState.size,
                 qty:detailState.qty,price:bp.price}],"buy");
     return;
   }
-  if(t.closest("#addBtn")&&!state.fit){ requireFit(null); return; }
-  if(t.closest("#checkout")&&!state.fit){ requireFit(null); return; }
   if(t.closest("#checkout")){
     openOrder(state.cart.map(function(l){
       return {name:l.name,color:l.color,size:l.size,qty:l.qty,price:l.price};
@@ -1068,185 +1055,23 @@ $("#orderGo").addEventListener("click",function(){
   }
 });
 
-/* ================= measurement gate ================= */
-/* nothing is pre-selected — the customer must choose every field */
-var gateDraft={gender:null};
+/* ================= measurements =================
+   The measurement gate was removed — every piece in stock is shown to
+   everyone, with no form to fill in first. state.fit stays null so the
+   fit helpers below simply never narrow anything down.               */
 
-/* what the customer was trying to do when the form appeared */
-var gatePending=null;
-function requireFit(pending){
-  gatePending=pending||null;
-  openGate();
-  toast("আগে আপনার মাপ বলুন — তারপর শুধু যা ফিট হবে তা-ই দেখাব।");
-}
+function requireFit(){}
+function openGate(){}
+function closeGate(){}
 
-/* the "Talk on WhatsApp" button carries the measurements once they are given */
+/* the "Talk on WhatsApp" button */
 function renderWaTalk(){
   var a=$("#waTalk"); if(!a) return;
-  var msg="Hi Dream of All, I would like to ask about a piece.";
-  if(state.fit){
-    msg+="\nMy measurements — chest "+state.fit.chest+"\", length "+state.fit.len+
-         "\" (± "+state.fit.tol+"\"), shopping for "+state.fit.gender+".";
-  }
-  a.href="https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg);
+  a.href="https://wa.me/"+WA_NUMBER+"?text="+
+    encodeURIComponent("Hi Dream of All, I would like to ask about a piece.");
 }
 
-function renderFitBar(){
-  renderWaTalk();
-  var bar=$("#fitBar"), edit=$("#fitEdit");
-  /* the button is always on screen — it invites the measurements, then edits them */
-  if(edit){
-    edit.hidden=false;
-    edit.textContent=state.fit?"মাপ পরিবর্তন করুন":"আপনার মাপ বলুন";
-    edit.classList.toggle("is-set",!!state.fit);
-  }
-  if(!state.fit){ bar.hidden=true; return; }
-  bar.hidden=false;
-  $("#fitVals").textContent=
-    "বুক "+state.fit.chest+"″ · লম্বা "+state.fit.len+"″ ± "+state.fit.tol+"″"+
-    " — শুধু যা ফিট, তাই দেখানো হচ্ছে";
-}
-
-function fillGateTypes(){
-  $("#gateType").innerHTML=
-    '<option value="" selected disabled>একটি বেছে নিন…</option>'+
-    TYPES.map(function(t){
-      return '<option value="'+esc(t)+'">'+(t==="all"?"সবকিছু":esc(t))+"</option>";
-    }).join("");
-}
-
-/* --- red-mark validation helpers --- */
-function gateFieldEl(name){ return document.querySelector('#gate [data-field="'+name+'"]'); }
-
-function markField(name,bad,msg){
-  var f=gateFieldEl(name); if(!f) return;
-  f.classList.toggle("is-bad",!!bad);
-  var e=f.querySelector('.field-err[data-err="'+name+'"]');
-  if(e){ if(msg) e.textContent=msg; e.hidden=!bad; }
-  var input=f.querySelector("input");
-  if(input) input.setAttribute("data-bad",String(!!bad));
-}
-
-function clearGateErrors(){
-  ["gender","chest","len","type","tol"].forEach(function(n){ markField(n,false); });
-  $("#gateErr").hidden=true;
-}
-
-/* what is still missing / invalid, in field order */
-function gateProblems(){
-  var out=[];
-  var chest=parseFloat($("#gateChest").value);
-  var len=parseFloat($("#gateLen").value);
-  if(!gateDraft.gender) out.push({f:"gender",m:"নারী নাকি পুরুষ — একটি বেছে নিন।"});
-  if($("#gateChest").value.trim()==="") out.push({f:"chest",m:"বুকের মাপটি লিখুন।"});
-  else if(!(chest>=24&&chest<=60)) out.push({f:"chest",m:"বুকের মাপ ২৪ থেকে ৬০ ইঞ্চির মধ্যে হতে হবে।"});
-  if($("#gateLen").value.trim()==="") out.push({f:"len",m:"কত লম্বা চান তা লিখুন।"});
-  else if(!(len>=14&&len<=60)) out.push({f:"len",m:"লম্বা ১৪ থেকে ৬০ ইঞ্চির মধ্যে হতে হবে।"});
-  if(!$("#gateType").value) out.push({f:"type",m:"কী খুঁজছেন তা বেছে নিন।"});
-  if(!$("#gateTol").value) out.push({f:"tol",m:"লম্বায় কতটা ছাড় দেবেন বেছে নিন।"});
-  return out;
-}
-
-/* dim the button while the form is incomplete (it still reports errors on click) */
-function syncGateGo(){
-  var left=gateProblems().length;
-  $("#gateGo").classList.toggle("is-incomplete",left>0);
-  if(left===0) $("#gateErr").hidden=true;
-}
-
-function openGate(){
-  var f=state.fit||{};
-  gateDraft.gender=f.gender||null;
-  fillGateTypes();
-  $("#gateChest").value=(f.chest||f.chest===0)?f.chest:"";
-  $("#gateLen").value=(f.len||f.len===0)?f.len:"";
-  $("#gateType").value=(gatePending&&gatePending.kind==="type")?gatePending.value:(f.type||"");
-  $("#gateTol").value=f.tol?String(f.tol):"";
-  clearGateErrors();
-  document.querySelectorAll("#gateGender .chip").forEach(function(b){
-    b.setAttribute("aria-pressed",String(!!gateDraft.gender&&b.getAttribute("data-gg")===gateDraft.gender));
-  });
-  syncGateGo();
-  $("#gate").hidden=false;
-  document.body.style.overflow="hidden";
-  setTimeout(function(){ $("#gateChest").focus(); },60);
-}
-
-function closeGate(){
-  gatePending=null;
-  $("#gate").hidden=true;
-  if(!state.open) document.body.style.overflow="";
-}
-$("#gateClose").addEventListener("click",closeGate);
-document.addEventListener("keydown",function(e){
-  if(e.key==="Escape"&&!$("#gate").hidden) closeGate();
-});
-
-function gateError(msg){
-  var e=$("#gateErr"); e.textContent=msg; e.hidden=false;
-}
-
-document.addEventListener("click",function(ev){
-  var g=ev.target.closest?ev.target.closest("[data-gg]"):null;
-  if(g){
-    gateDraft.gender=g.getAttribute("data-gg");
-    document.querySelectorAll("#gateGender .chip").forEach(function(b){
-      b.setAttribute("aria-pressed",String(b.getAttribute("data-gg")===gateDraft.gender));
-    });
-    markField("gender",false);
-    syncGateGo();
-    return;
-  }
-  if(ev.target.closest&&(ev.target.closest("#fitEdit")||ev.target.closest("#fitEdit2"))){ openGate(); return; }
-  if(ev.target.closest&&ev.target.closest("#gateGo")){
-    var probs=gateProblems();
-    ["gender","chest","len","type","tol"].forEach(function(n){ markField(n,false); });
-    if(probs.length){
-      probs.forEach(function(p){ markField(p.f,true,p.m); });
-      gateError(probs.length===1
-        ? probs[0].m
-        : "লাল দাগ দেওয়া "+probs.length+"টি ঘর পূরণ করুন — তারপরই আমরা দেখাতে পারব কী কী আপনার মাপে ফিট।");
-      syncGateGo();
-      var first=gateFieldEl(probs[0].f);
-      var focusable=first&&first.querySelector("input,select,button");
-      if(focusable) focusable.focus();
-      return;   /* the button does nothing until everything is chosen */
-    }
-    $("#gateErr").hidden=true;
-    state.fit={gender:gateDraft.gender,
-               chest:parseFloat($("#gateChest").value),
-               len:parseFloat($("#gateLen").value),
-               type:$("#gateType").value,
-               tol:parseFloat($("#gateTol").value)};
-    saveFit();
-    state.gender=state.fit.gender;
-    state.type=state.fit.type;
-    state.q=""; $("#q").value="";
-    closeGate();
-    syncChips(); renderTypeChips(); renderFitBar(); renderGrid();
-    document.getElementById("shop").scrollIntoView({behavior:"smooth",block:"start"});
-    var n=visible().length;
-    toast(n?n+"টি পোশাক আপনার মাপে ফিট":"কিছুই মিলল না — ছাড় একটু বাড়িয়ে দেখুন");
-    /* মাপ দেওয়ার পর আগের প্রোডাক্টটি খোলা হয় না —
-       কাস্টমার তার মাপে যা যা আছে, পুরো তালিকাটাই দেখে */
-    return;
-  }
-});
-
-$("#gateChest").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#gateGo").click(); });
-$("#gateLen").addEventListener("keydown",function(e){ if(e.key==="Enter") $("#gateGo").click(); });
-
-/* clear a field's red state as soon as the customer fills it in */
-[["#gateChest","chest"],["#gateLen","len"],["#gateType","type"],["#gateTol","tol"]]
-  .forEach(function(pair){
-    var el=$(pair[0]);
-    ["input","change"].forEach(function(evt){
-      el.addEventListener(evt,function(){
-        if(el.value!==""){ markField(pair[1],false); }
-        syncGateGo();
-      });
-    });
-  });
+function renderFitBar(){ renderWaTalk(); }
 
 
 /* ================= কাস্টমার রিভিউ =================
