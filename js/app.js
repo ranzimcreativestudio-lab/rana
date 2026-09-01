@@ -313,6 +313,18 @@ function applyDiscount(list){
 }
 applyDiscount(P);
 
+/* ================= প্রোমো কোড =================
+   কোড ছোট-বড় হাতের অক্ষরে লিখলেও চলবে। ০.১০ মানে ১০% ছাড়।
+   নতুন কোড যোগ করতে একটি লাইন লিখুন, বন্ধ করতে লাইনটি মুছে দিন।   */
+var PROMOS={
+  "ane2026":0.10
+};
+
+function promoRate(code){
+  var k=String(code||"").trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(PROMOS,k)?PROMOS[k]:0;
+}
+
 /* ================= Supabase (admin panel data) =================
    ঘর দুটো ফাঁকা থাকলে সব আগের মতোই চলবে — শুধু কোডে লেখা প্রোডাক্ট
    দেখাবে এবং অর্ডার ডেটাবেজে জমা হবে না।                          */
@@ -919,19 +931,48 @@ try{
 /* ================= order form ================= */
 var orderCtx=null;   /* {lines:[{name,color,size,qty,price}],sub,ship,total,from} */
 
-function orderTotals(lines,district){
-  var sub=lines.reduce(function(a,l){return a+l.price*l.qty;},0);
+function orderTotals(lines,district,code){
+  var gross=lines.reduce(function(a,l){return a+l.price*l.qty;},0);
+  var rate=promoRate(code);
+  var off=Math.round(gross*rate);
+  var sub=gross-off;                       /* ছাড়ের পরের দাম */
   var ship=shipFor(sub,district);
-  return {sub:sub,ship:ship,total:sub+ship};
+  return {gross:gross,rate:rate,off:off,sub:sub,ship:ship,total:sub+ship};
 }
 
 /* recalculate the delivery charge from the district box and redraw the summary */
 function refreshOrderSummary(){
   if(!orderCtx) return;
-  var t=orderTotals(orderCtx.lines,$("#oDist").value);
+  var raw=$("#oPromo")?$("#oPromo").value:"";
+  var t=orderTotals(orderCtx.lines,$("#oDist").value,raw);
+  orderCtx.gross=t.gross; orderCtx.rate=t.rate; orderCtx.off=t.off;
   orderCtx.sub=t.sub; orderCtx.ship=t.ship; orderCtx.total=t.total;
   orderCtx.district=$("#oDist").value.trim();
+  orderCtx.promo=t.rate?raw.trim().toUpperCase():"";
+  renderPromoNote(raw,t);
   $("#orderSum").textContent=orderSummaryText();
+}
+
+/* সবুজ = কোড কাজ করেছে, লাল = কোডটি নেই, ফাঁকা = কিছু লেখা হয়নি */
+function renderPromoNote(raw,t){
+  var n=$("#promoNote"), f=orderFieldEl("opromo");
+  if(!n) return;
+  var typed=String(raw||"").trim();
+  if(!typed){
+    n.hidden=true;
+    if(f) f.classList.remove("is-bad","is-good");
+    return;
+  }
+  n.hidden=false;
+  if(t.rate){
+    n.textContent=typed.toUpperCase()+" applied — "+Math.round(t.rate*100)+"% off, you save "+money(t.off)+".";
+    n.classList.add("ok");
+    if(f){ f.classList.remove("is-bad"); f.classList.add("is-good"); }
+  }else{
+    n.textContent="That code is not valid.";
+    n.classList.remove("ok");
+    if(f){ f.classList.remove("is-good"); f.classList.add("is-bad"); }
+  }
 }
 
 function orderSummaryText(){
@@ -943,16 +984,22 @@ function orderSummaryText(){
   var where=orderCtx.ship===0
     ? "Free"
     : money(orderCtx.ship)+(isLocal(orderCtx.district)?" (inside Khulna)":" (outside Khulna)");
-  out+="\nSubtotal: "+money(orderCtx.sub)+
-       "\nDelivery: "+where+
+  out+="\nSubtotal: "+money(orderCtx.gross);
+  if(orderCtx.off){
+    out+="\nPromo "+orderCtx.promo+" ("+Math.round(orderCtx.rate*100)+"% off): -"+money(orderCtx.off);
+  }
+  out+="\nDelivery: "+where+
        "\nTotal: "+money(orderCtx.total)+" (cash on delivery)";
   return out;
 }
 
 function openOrder(lines,from){
   if(!lines||!lines.length){ toast("Your bag is empty"); return; }
-  var t=orderTotals(lines,"");
-  orderCtx={lines:lines,sub:t.sub,ship:t.ship,total:t.total,from:from,district:""};
+  if($("#oPromo")) $("#oPromo").value="";
+  var t=orderTotals(lines,"","");
+  orderCtx={lines:lines,gross:t.gross,rate:0,off:0,promo:"",
+            sub:t.sub,ship:t.ship,total:t.total,from:from,district:""};
+  renderPromoNote("",t);
   $("#orderSum").textContent=orderSummaryText();
   ["oname","ophone","odist","oaddr"].forEach(function(n){ markOrderField(n,false); });
   $("#orderErr").hidden=true;
@@ -1003,6 +1050,13 @@ function syncOrderGo(){
   });
 });
 
+/* প্রোমো কোড — লেখামাত্র হিসাব নতুন করে হয় */
+if($("#oPromo")){
+  ["input","change"].forEach(function(evt){
+    $("#oPromo").addEventListener(evt,refreshOrderSummary);
+  });
+}
+
 $("#orderClose").addEventListener("click",closeOrder);
 document.addEventListener("keydown",function(e){
   if(e.key==="Escape"&&!$("#order").hidden) closeOrder();
@@ -1038,7 +1092,7 @@ $("#orderGo").addEventListener("click",function(){
     phone:$("#oPhone").value.trim(),
     district:$("#oDist").value.trim(),
     address:$("#oAddr").value.trim(),
-    note:note||null,
+    note:(orderCtx.off?("Promo "+orderCtx.promo+" (-"+money(orderCtx.off)+")"+(note?" | "+note:"")):(note||null)),
     items:orderCtx.lines,
     subtotal:orderCtx.sub,
     delivery:orderCtx.ship,

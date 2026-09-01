@@ -899,3 +899,26 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
   #detail .sheet-scroll{max-height:88vh;border-radius:18px 18px 0 0;}
   #detail .close-x{top:-44px;right:12px;width:34px;height:34px;}
 }
+
+/* ================= promo code field ================= */
+.promo-field input{
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-family:var(--mono);
+}
+.promo-field input::placeholder{
+  text-transform:none;
+  letter-spacing:normal;
+  font-family:var(--body);
+}
+.promo-field.is-good input{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.promo-note{
+  display:block;
+  margin-top:6px;
+  font-size:.82rem;
+  color:var(--err);
+}
+.promo-note.ok{color:var(--accent);font-weight:600;}
