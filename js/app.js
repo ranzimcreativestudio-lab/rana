@@ -579,7 +579,7 @@ function sizeChartHTML(p){
     '<table class="size-chart">'+
       '<caption>Measurement chart · inches</caption>'+
       '<thead><tr><th scope="col">Size</th><th scope="col">Chest</th>'+
-        '<th scope="col">Length</th><th scope="col">Stock</th></tr></thead>'+
+        '<th scope="col">Stock</th></tr></thead>'+
       "<tbody>"+rows.map(function(r){
         var st=stockFor(p,r.size);
         var stock=(st===null)?"—":(st>0?st+" left":"Sold out");
@@ -589,7 +589,6 @@ function sizeChartHTML(p){
                ' tabindex="0" aria-selected="'+picked+'">'+
           '<th scope="row">'+esc(r.size)+"</th>"+
           "<td>"+r.chestMin+"–"+r.chestMax+"</td>"+
-          "<td>"+r.length+"</td>"+
           '<td class="chart-stock">'+stock+"</td></tr>";
       }).join("")+"</tbody>"+
     "</table>"+
