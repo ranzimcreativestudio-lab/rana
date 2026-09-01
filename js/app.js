@@ -569,16 +569,6 @@ function renderHero(){
   }).join("");
 }
 
-/* the small grey line under the price — just the range; the exact numbers
-   for every size live in the measurement chart below the size buttons */
-function unitLine(p,size){
-  var rows=sizeTable(p);
-  var lens=rows.map(function(r){return r.length;});
-  var lo=Math.min.apply(null,lens), hi=Math.max.apply(null,lens);
-  return rows.length+" size"+(rows.length===1?"":"s")+" · "+
-         (lo===hi?lo+"″ length":lo+"–"+hi+"″ length");
-}
-
 /* ================= measurement chart =================
    প্রতিটি সাইজের বুক ও লম্বার মাপ। কাস্টমার যে সাইজটি বেছে নেয়
    সেই সারিটি লাল হয়ে যায় — এবং সারিতে ক্লিক করলেও সাইজ বাছা হয়। */
@@ -648,13 +638,8 @@ function renderDetail(){
       "<h3>"+esc(p.name)+"</h3></div>"+
       '<div class="price-block">'+
         '<div class="detail-price">'+money(p.price)+(p.oldPrice?" <s>"+money(p.oldPrice)+"</s>"+OFF_BADGE:"")+"</div>"+
-        '<div class="price-unit">'+esc(unitLine(p,sz))+"</div>"+
         (p.oldPrice?'<span class="save-badge">Save '+money(p.oldPrice-p.price)+"</span>":"")+
       "</div>"+
-      '<div class="field"><div class="field-head"><span class="eyebrow">Colour</span><span class="val">'+esc(col.n)+"</span></div>"+
-        '<div class="swatches">'+p.colors.map(function(c,i){
-          return '<button class="sw sw-lg" data-sw="'+p.id+'" data-i="'+i+'" aria-label="'+esc(c.n)+'" aria-pressed="'+(i===ci)+'" style="background:'+c.h+'"></button>';
-        }).join("")+"</div></div>"+
       '<div class="field"><div class="field-head"><span class="eyebrow">Size</span><span class="val">'+esc(p.gender==="women"?"Women’s sizing":"Men’s sizing")+"</span></div>"+
         '<div class="sizes">'+rows.map(function(r){
           return '<button class="size" data-size="'+r.size+'" aria-pressed="'+(detailState.size===r.size)+
