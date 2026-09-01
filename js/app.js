@@ -569,12 +569,42 @@ function renderHero(){
   }).join("");
 }
 
-/* the small grey line under the price — the size and length being bought */
+/* the small grey line under the price — just the range; the exact numbers
+   for every size live in the measurement chart below the size buttons */
 function unitLine(p,size){
   var rows=sizeTable(p);
-  var r=size?rows.filter(function(x){return x.size===size;})[0]:null;
-  if(r) return "Size "+r.size+" · "+r.length+"″ length · chest "+r.chestMin+"–"+r.chestMax+"″";
-  return rows.length+" size"+(rows.length===1?"":"s")+" · "+rows[0].length+"–"+rows[rows.length-1].length+"″ length";
+  var lens=rows.map(function(r){return r.length;});
+  var lo=Math.min.apply(null,lens), hi=Math.max.apply(null,lens);
+  return rows.length+" size"+(rows.length===1?"":"s")+" · "+
+         (lo===hi?lo+"″ length":lo+"–"+hi+"″ length");
+}
+
+/* ================= measurement chart =================
+   প্রতিটি সাইজের বুক ও লম্বার মাপ। কাস্টমার যে সাইজটি বেছে নেয়
+   সেই সারিটি লাল হয়ে যায় — এবং সারিতে ক্লিক করলেও সাইজ বাছা হয়। */
+function sizeChartHTML(p){
+  var rows=sizeTable(p);
+  if(!rows.length) return "";
+  return '<div class="chart-wrap">'+
+    '<table class="size-chart">'+
+      '<caption>Measurement chart · inches</caption>'+
+      '<thead><tr><th scope="col">Size</th><th scope="col">Chest</th>'+
+        '<th scope="col">Length</th><th scope="col">Stock</th></tr></thead>'+
+      "<tbody>"+rows.map(function(r){
+        var st=stockFor(p,r.size);
+        var stock=(st===null)?"—":(st>0?st+" left":"Sold out");
+        var picked=detailState.size===r.size;
+        return '<tr data-size="'+esc(r.size)+'"'+(picked?' class="is-picked"':"")+
+               (st===0?' data-out="true"':"")+
+               ' tabindex="0" aria-selected="'+picked+'">'+
+          '<th scope="row">'+esc(r.size)+"</th>"+
+          "<td>"+r.chestMin+"–"+r.chestMax+"</td>"+
+          "<td>"+r.length+"</td>"+
+          '<td class="chart-stock">'+stock+"</td></tr>";
+      }).join("")+"</tbody>"+
+    "</table>"+
+    '<p class="chart-help">Pick a size above, or tap a row.</p>'+
+  "</div>";
 }
 
 /* ================= render: detail ================= */
@@ -629,7 +659,7 @@ function renderDetail(){
         '<div class="sizes">'+rows.map(function(r){
           return '<button class="size" data-size="'+r.size+'" aria-pressed="'+(detailState.size===r.size)+
                  '" title="Chest '+r.chestMin+"–"+r.chestMax+"″ · length "+r.length+'″">'+r.size+"</button>";
-        }).join("")+"</div>"+stockNote+soldNote+fitLine+"</div>"+
+        }).join("")+"</div>"+stockNote+sizeChartHTML(p)+soldNote+fitLine+"</div>"+
       '<div class="field"><span class="eyebrow">Quantity</span>'+
         '<div class="stepper"><button data-q="-1" aria-label="Decrease quantity">−</button><span id="qtyVal">'+detailState.qty+'</span><button data-q="1" aria-label="Increase quantity">+</button></div></div>'+
       '<div class="buy-row">'+
