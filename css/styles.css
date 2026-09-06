@@ -11,14 +11,14 @@
   /* white text always clears contrast on this one, in either theme */
   --brand-solid-grad:linear-gradient(120deg,#73075D 0%,#C20B74 58%,#D9138A 100%);
 
-  --paper:#F8F4F6;
+  --paper:#F7E9F2;
   --surface:#FFFFFF;
-  --surface-2:#F0E4EC;
+  --surface-2:#EFDCE9;
   --ink:#150F13;
   --ink-2:#665A61;
-  --ink-3:#948792;
-  --line:#E6D9E1;
-  --line-2:#D5C4CF;
+  --ink-3:#94848F;
+  --line:#E4D2DE;
+  --line-2:#D2BBCB;
   --accent:#C20B74;
   --accent-hi:#D9138A;
   --accent-soft:#FBE3F0;
@@ -43,14 +43,14 @@
     --brand-bright:#FF8CC2;
     --brand-grad:linear-gradient(135deg,#8E1268 0%,#D9138A 52%,#FF8CC2 100%);
 
-    --paper:#100A0E;
-    --surface:#1A1218;
-    --surface-2:#241A21;
-    --ink:#F0E7EC;
-    --ink-2:#A9999F;
-    --ink-3:#7B6C74;
-    --line:#2E2129;
-    --line-2:#3C2C35;
+    --paper:#150A11;
+    --surface:#20131B;
+    --surface-2:#2B1B25;
+    --ink:#F3E9EF;
+    --ink-2:#AE9BA5;
+    --ink-3:#806E79;
+    --line:#35222D;
+    --line-2:#452F3B;
     --accent:#F45BA5;
     --accent-hi:#FF8CC2;
     --accent-soft:#330F24;
@@ -70,14 +70,14 @@
   --brand-bright:#FF8CC2;
   --brand-grad:linear-gradient(135deg,#8E1268 0%,#D9138A 52%,#FF8CC2 100%);
 
-  --paper:#100A0E;
-  --surface:#1A1218;
-  --surface-2:#241A21;
-  --ink:#F0E7EC;
-  --ink-2:#A9999F;
-  --ink-3:#7B6C74;
-  --line:#2E2129;
-  --line-2:#3C2C35;
+  --paper:#150A11;
+  --surface:#20131B;
+  --surface-2:#2B1B25;
+  --ink:#F3E9EF;
+  --ink-2:#AE9BA5;
+  --ink-3:#806E79;
+  --line:#35222D;
+  --line-2:#452F3B;
   --accent:#F45BA5;
   --accent-hi:#FF8CC2;
   --accent-soft:#330F24;
