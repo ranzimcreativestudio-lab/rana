@@ -1,5 +1,5 @@
 /* =========================================================
-   Dream of All — admin panel
+   ProwdFashion — admin panel
    Login, orders and products, all through Supabase.
    ========================================================= */
 (function(){

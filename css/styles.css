@@ -1,24 +1,35 @@
 /* ============ tokens ============ */
+/* ProwdFashion brand palette — taken from the logo.
+   #C20B74 is the wordmark magenta, #73075D the deep end of the mark's
+   gradient and #EF248B the bright end. Everything else is a neutral
+   tuned slightly warm/pink so the whole page belongs to that one hue. */
 :root{
-  --paper:#F1F3F0;
+  --brand:#C20B74;
+  --brand-deep:#73075D;
+  --brand-bright:#EF248B;
+  --brand-grad:linear-gradient(135deg,#73075D 0%,#C20B74 52%,#EF248B 100%);
+  /* white text always clears contrast on this one, in either theme */
+  --brand-solid-grad:linear-gradient(120deg,#73075D 0%,#C20B74 58%,#D9138A 100%);
+
+  --paper:#F8F4F6;
   --surface:#FFFFFF;
-  --surface-2:#E5E9E4;
-  --ink:#14181A;
-  --ink-2:#565E5A;
-  --ink-3:#88918C;
-  --line:#D6DBD4;
-  --line-2:#C3CAC1;
-  --accent:#22544A;
-  --accent-hi:#2E6B5E;
-  --accent-soft:#DAE6E1;
+  --surface-2:#F0E4EC;
+  --ink:#150F13;
+  --ink-2:#665A61;
+  --ink-3:#948792;
+  --line:#E6D9E1;
+  --line-2:#D5C4CF;
+  --accent:#C20B74;
+  --accent-hi:#D9138A;
+  --accent-soft:#FBE3F0;
   --accent-ink:#FFFFFF;
-  --sale:#9A4A2C;
+  --sale:#8A0E5C;
   --err:#C42B1C;
   --err-soft:#FBE4E1;
-  --plate-shadow:rgba(20,24,26,.10);
-  --shadow-sm:0 1px 2px rgba(20,24,26,.05);
-  --shadow-md:0 12px 34px -18px rgba(20,24,26,.35);
-  --shadow-lg:0 30px 70px -30px rgba(20,24,26,.45);
+  --plate-shadow:rgba(35,10,26,.10);
+  --shadow-sm:0 1px 2px rgba(35,10,26,.05);
+  --shadow-md:0 12px 34px -18px rgba(35,10,26,.35);
+  --shadow-lg:0 30px 70px -30px rgba(35,10,26,.45);
   --radius:14px;
   --maxw:1240px;
   --display:"Archivo","Helvetica Neue",Arial,sans-serif;
@@ -27,19 +38,24 @@
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --paper:#0D0F10;
-    --surface:#15191A;
-    --surface-2:#1D2223;
-    --ink:#E7EAE6;
-    --ink-2:#9AA29D;
-    --ink-3:#6C7571;
-    --line:#272D2E;
-    --line-2:#333A3B;
-    --accent:#7CBAA7;
-    --accent-hi:#95CBBA;
-    --accent-soft:#1A2A27;
-    --accent-ink:#0D0F10;
-    --sale:#D98A66;
+    --brand:#F45BA5;
+    --brand-deep:#8E1268;
+    --brand-bright:#FF8CC2;
+    --brand-grad:linear-gradient(135deg,#8E1268 0%,#D9138A 52%,#FF8CC2 100%);
+
+    --paper:#100A0E;
+    --surface:#1A1218;
+    --surface-2:#241A21;
+    --ink:#F0E7EC;
+    --ink-2:#A9999F;
+    --ink-3:#7B6C74;
+    --line:#2E2129;
+    --line-2:#3C2C35;
+    --accent:#F45BA5;
+    --accent-hi:#FF8CC2;
+    --accent-soft:#330F24;
+    --accent-ink:#1A0710;
+    --sale:#F58CBF;
     --err:#FF7A6B;
     --err-soft:#3A1A16;
     --plate-shadow:rgba(0,0,0,.35);
@@ -49,19 +65,24 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0D0F10;
-  --surface:#15191A;
-  --surface-2:#1D2223;
-  --ink:#E7EAE6;
-  --ink-2:#9AA29D;
-  --ink-3:#6C7571;
-  --line:#272D2E;
-  --line-2:#333A3B;
-  --accent:#7CBAA7;
-  --accent-hi:#95CBBA;
-  --accent-soft:#1A2A27;
-  --accent-ink:#0D0F10;
-  --sale:#D98A66;
+  --brand:#F45BA5;
+  --brand-deep:#8E1268;
+  --brand-bright:#FF8CC2;
+  --brand-grad:linear-gradient(135deg,#8E1268 0%,#D9138A 52%,#FF8CC2 100%);
+
+  --paper:#100A0E;
+  --surface:#1A1218;
+  --surface-2:#241A21;
+  --ink:#F0E7EC;
+  --ink-2:#A9999F;
+  --ink-3:#7B6C74;
+  --line:#2E2129;
+  --line-2:#3C2C35;
+  --accent:#F45BA5;
+  --accent-hi:#FF8CC2;
+  --accent-soft:#330F24;
+  --accent-ink:#1A0710;
+  --sale:#F58CBF;
   --err:#FF7A6B;
   --err-soft:#3A1A16;
   --plate-shadow:rgba(0,0,0,.35);
@@ -96,6 +117,33 @@ a{color:inherit;}
   font-size:19px;
   line-height:1;
 }
+/* the two-tone ProwdFashion wordmark: "Prowd" in ink, "Fashion" in brand
+   magenta, exactly as the logo sets it */
+.wordmark .wm-b{color:var(--accent);}
+
+/* header + footer brand lockup: logo mark beside the wordmark */
+.brand-lockup{
+  display:inline-flex;align-items:center;gap:11px;
+  background:none;border:0;padding:0;cursor:pointer;text-align:left;
+}
+.brand-lockup .brand-mark{
+  width:38px;height:38px;flex:none;object-fit:contain;
+}
+.brand-lockup .brand-text{display:flex;flex-direction:column;gap:2px;line-height:1;}
+.brand-lockup .brand-tag{
+  font-family:var(--mono);
+  font-size:8.5px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+}
+@media (max-width:720px){
+  .brand-lockup .brand-tag{display:none;}
+  .brand-lockup .brand-mark{width:32px;height:32px;}
+}
+footer.site .brand-lockup{margin-bottom:10px;}
+footer.site .brand-lockup .brand-mark{width:46px;height:46px;}
+footer.site .brand-lockup .wordmark{font-size:22px;}
 .eyebrow{
   font-family:var(--mono);
   font-size:11px;
@@ -110,8 +158,11 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.025em;text-
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
 
 .topbar{
-  background:var(--ink);
-  color:var(--paper);
+  /* fixed deep-magenta gradient in both themes so white text always clears
+     contrast — the lighter dark-mode brand tint would not */
+  background:#C20B74;
+  background-image:linear-gradient(100deg,#73075D 0%,#C20B74 55%,#D9138A 100%);
+  color:#FFFFFF;
   font-family:var(--mono);
   font-size:11px;
   letter-spacing:.12em;
@@ -170,8 +221,8 @@ header.site{
   transition:transform .18s,background .18s,border-color .18s,color .18s;
 }
 .btn:active{transform:translateY(1px);}
-.btn-primary{background:var(--accent);color:var(--accent-ink);}
-.btn-primary:hover{background:var(--accent-hi);}
+.btn-primary{background:#C20B74;background-image:var(--brand-solid-grad);color:#FFFFFF;}
+.btn-primary:hover{background:#8E1268;background-image:none;color:#FFFFFF;}
 .btn-ghost{border:1px solid var(--line-2);color:var(--ink);}
 .btn-ghost:hover{background:var(--surface);}
 .btn[disabled]{opacity:.45;cursor:not-allowed;}
@@ -212,7 +263,7 @@ header.site{
 /* 10% off marker beside every price */
 .off-badge{
   display:inline-block;margin-left:8px;padding:3px 8px;border-radius:6px;
-  background:#E11D2E;color:#fff;
+  background:#C20B74;color:#fff;
   font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;
   vertical-align:middle;white-space:nowrap;
 }
@@ -691,12 +742,12 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 .topbar a{text-decoration:underline;text-underline-offset:2px;}
 
 /* ============ price block + buy row ============ */
-:root{ --buy:#9A3B22; --buy-hi:#853118; --buy-ink:#FFFFFF;
-       --save:#4F6B3A; --save-ink:#FFFFFF; }
+:root{ --buy:#C20B74; --buy-hi:#8E1268; --buy-ink:#FFFFFF;
+       --save:#73075D; --save-ink:#FFFFFF; }
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){ --buy:#B8492B; --buy-hi:#CC5734; --save:#5E7D46; }
+  :root:not([data-theme="light"]){ --buy:#D9138A; --buy-hi:#EF248B; --save:#8E1268; }
 }
-:root[data-theme="dark"]{ --buy:#B8492B; --buy-hi:#CC5734; --save:#5E7D46; }
+:root[data-theme="dark"]{ --buy:#D9138A; --buy-hi:#EF248B; --save:#8E1268; }
 
 .price-block{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
 .price-block .detail-price{font-size:26px;font-weight:600;}
@@ -728,8 +779,8 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 }
 .btn-outline{border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink);}
 .btn-outline:hover:not([disabled]){border-color:var(--ink-3);background:var(--surface-2);}
-.btn-buy{background:var(--buy);color:var(--buy-ink);}
-.btn-buy:hover:not([disabled]){background:var(--buy-hi);}
+.btn-buy{background:#C20B74;background-image:var(--brand-solid-grad);color:#FFFFFF;}
+.btn-buy:hover:not([disabled]){background:#8E1268;background-image:none;color:#FFFFFF;}
 .buy-row .bi{flex:none;}
 
 @media (max-width:520px){

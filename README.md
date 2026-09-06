@@ -1,4 +1,6 @@
-# Dream of All
+# ProwdFashion
+
+**Designing a better you.**
 
 A small storefront for tops and dresses — men's and women's. Plain HTML, CSS and JavaScript with no build step and no dependencies, so it runs anywhere you can serve a folder.
 
@@ -16,6 +18,28 @@ A small storefront for tops and dresses — men's and women's. Plain HTML, CSS a
 - Every garment is a hand-drawn SVG illustration generated in code — no image files to host
 - Light and dark themes, plus a manual toggle in the header
 - Responsive from 360px up
+
+## Brand
+
+ProwdFashion — *Designing a better you.*
+
+| Token | Light | Dark | Where it shows |
+|---|---|---|---|
+| `--brand` / `--accent` | `#C20B74` | `#F45BA5` | links, active chips, focus rings, the "Fashion" half of the wordmark |
+| `--brand-deep` | `#73075D` | `#8E1268` | dark end of every gradient, `--save` badge |
+| `--brand-bright` | `#EF248B` | `#FF8CC2` | bright end of the gradients |
+| `--brand-solid-grad` | fixed both themes | | topbar, Buy Now, primary buttons — white text clears contrast on it |
+
+All three come straight out of the logo. Every other colour in `css/styles.css`
+is a neutral tuned slightly toward that hue, so the palette is changed in one
+place: the `:root` block at the top of the stylesheet, plus its two dark-theme
+copies.
+
+Logo files live in `images/`:
+
+- `prowdfashion-mark.png` — the P mark alone, transparent, 512×512. Header, footer, favicon, apple-touch icon.
+- `prowdfashion-logo.png` — the full stacked logo, transparent. Used for the social preview (`og:image`).
+- `favicon.ico` — the mark at 16/32/48/64.
 
 > This is a front-end demo. Nothing is charged, no order is really placed, and there is no server. See [Going from demo to real shop](#going-from-demo-to-real-shop) below.
 
@@ -131,4 +155,4 @@ A common middle path is keeping this design as the front end and letting a headl
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE). The code is yours to use commercially. Rename the brand to your own before you launch; "Dream of All" is the brand name — change it in index.html if you rebrand.
+MIT — see [LICENSE](LICENSE). The code is yours to use commercially.

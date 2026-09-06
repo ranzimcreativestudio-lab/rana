@@ -284,14 +284,14 @@ var state={gender:"all",type:"all",q:"",sort:"featured",sel:{},cart:[],open:null
 P.forEach(function(p){ state.sel[p.id]=0; });
 
 try{
-  var saved=localStorage.getItem("dreamofall.cart");
+  var saved=localStorage.getItem("prowdfashion.cart");
   if(saved){ var c=JSON.parse(saved); if(Array.isArray(c)) state.cart=c; }
 }catch(e){}
 
 /* the old measurement gate stored this — clear it for anyone who still has it */
-try{ localStorage.removeItem("dreamofall.fit"); }catch(e){}
+try{ localStorage.removeItem("prowdfashion.fit"); }catch(e){}
 
-function save(){ try{ localStorage.setItem("dreamofall.cart",JSON.stringify(state.cart)); }catch(e){} }
+function save(){ try{ localStorage.setItem("prowdfashion.cart",JSON.stringify(state.cart)); }catch(e){} }
 function saveFit(){ /* intentionally not stored — see note above */ }
 
 var TYPES=["all"].concat(P.map(function(p){return p.type;}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort());
@@ -935,10 +935,10 @@ $("#themeBtn").addEventListener("click",function(){
   if(!cur) next=prefersDark?"light":"dark";
   else next=cur==="dark"?"light":"dark";
   document.documentElement.setAttribute("data-theme",next);
-  try{ localStorage.setItem("dreamofall.theme",next); }catch(e){}
+  try{ localStorage.setItem("prowdfashion.theme",next); }catch(e){}
 });
 try{
-  var th=localStorage.getItem("dreamofall.theme");
+  var th=localStorage.getItem("prowdfashion.theme");
   if(th==="dark"||th==="light") document.documentElement.setAttribute("data-theme",th);
 }catch(e){}
 
@@ -991,7 +991,7 @@ function renderPromoNote(raw,t){
 
 function orderSummaryText(){
   if(!orderCtx) return "";
-  var out="Assalamu alaikum, Dream of All — I would like to place an order.\n\n";
+  var out="Assalamu alaikum, ProwdFashion — I would like to place an order.\n\n";
   orderCtx.lines.forEach(function(l){
     out+="• "+l.name+" — "+l.color+" / "+l.size+" × "+l.qty+" = "+money(l.price*l.qty)+"\n";
   });
@@ -1136,7 +1136,7 @@ function closeGate(){}
 function renderWaTalk(){
   var a=$("#waTalk"); if(!a) return;
   a.href="https://wa.me/"+WA_NUMBER+"?text="+
-    encodeURIComponent("Hi Dream of All, I would like to ask about a piece.");
+    encodeURIComponent("Hi ProwdFashion, I would like to ask about a piece.");
 }
 
 function renderFitBar(){ renderWaTalk(); }
