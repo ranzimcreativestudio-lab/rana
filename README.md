@@ -4,7 +4,7 @@
 
 A small storefront for tops and dresses — men's and women's. Plain HTML, CSS and JavaScript with no build step and no dependencies, so it runs anywhere you can serve a folder.
 
-**Live site:** https://halfseam-store.vercel.app/
+**Live site:** https://prowdfashion.vercel.app/
 
 ---
 
