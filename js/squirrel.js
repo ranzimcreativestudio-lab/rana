@@ -29,7 +29,10 @@
   var REDUCED = window.matchMedia &&
                 window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  try { if (localStorage.getItem(KEY) === "1") return; } catch (e) {}
+  /* The × used to hide him for ever. It no longer does — it tucks him away
+     for this page view only, and leaves a small button to call him back.
+     Anyone who dismissed the old version gets him back on the next load. */
+  try { if (localStorage.getItem(KEY)) localStorage.removeItem(KEY); } catch (e) {}
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
 
@@ -95,7 +98,8 @@
       say: "নারীদের পোশাক দেখাচ্ছি।" },
     { w: ["পুরুষ", "ছেলে", "men", "man"], sel: '#genderChips [data-gender="men"]',
       say: "পুরুষদের পোশাক দেখাচ্ছি।" },
-    { w: ["সবাই", "সবকিছু", "everyone"], sel: '#genderChips [data-gender="all"]',
+    { w: ["সবাই", "সবকিছু", "সব দেখ", "সবগুলো", "everyone"],
+      sel: '#genderChips [data-gender="all"]',
       say: "সব দেখাচ্ছি।" },
     { w: ["ব্যাগ", "কার্ট", "bag", "cart"], sel: "#cartBtn", say: "ব্যাগ খুলছি।" },
     { w: ["খোঁজ", "খুঁজ", "সার্চ", "search"], sel: "#q", focus: true,
@@ -209,11 +213,27 @@
 
     /* small screens */
     '@media (max-width:620px){',
-    '  .sq{width:86px;height:86px;}',
-    '  .sq-say{max-width:196px;font-size:13.5px;padding:9px 12px;}',
-    '  .sq-btn{opacity:.85;}',
+    '  .sq{width:84px;height:84px;}',
+    '  .sq-say{max-width:190px;font-size:13.5px;padding:9px 12px;}',
+    /* the mic stays findable; the × only after a tap, so it is not hit by accident */
+    '  .sq .sq-mic{opacity:.92;}',
+    '  .sq .sq-x{opacity:0;}',
+    '  .sq[data-btns="1"] .sq-x{opacity:1;}',
     '}',
-    '@media (max-width:360px){.sq-layer{display:none;}}',
+    '@media (max-width:380px){',
+    '  .sq{width:74px;height:74px;}',
+    '  .sq-say{max-width:168px;font-size:13px;}',
+    '  .sq-btn{width:22px;height:22px;}',
+    '}',
+    /* the little button that calls him back after the × */
+    '.sq-back{position:fixed;right:14px;bottom:14px;width:46px;height:46px;',
+    '  border-radius:50%;padding:0;cursor:pointer;pointer-events:auto;',
+    '  display:flex;align-items:center;justify-content:center;',
+    '  border:1.5px solid var(--line-2,#D2BBCB);background:var(--surface,#fff);',
+    '  box-shadow:0 10px 26px -12px rgba(35,10,26,.55);}',
+    '.sq-back[hidden]{display:none;}',
+    '.sq-back:hover{border-color:var(--accent,#C20B74);}',
+    '.sq-back svg{width:26px;height:26px;display:block;}',
     '@media (prefers-reduced-motion:reduce){',
     '  .sq .sq-tail,.sq .sq-head,.sq .sq-ear,.sq .sq-lid,.sq-ring[data-on="1"],',
     '  .sq-mic[data-on="1"]{animation:none!important;}',
@@ -479,16 +499,55 @@
   btns.appendChild(x);
   sq.appendChild(btns);
 
+  /* the "come back" button, shown only after the × */
+  var back = document.createElement("button");
+  back.className = "sq-back";
+  back.type = "button";
+  back.hidden = true;
+  back.setAttribute("aria-label", "কাঠবিড়ালিকে আবার ডাকুন");
+  back.innerHTML = [
+    '<svg viewBox="0 0 130 130" aria-hidden="true">',
+      '<path d="M76 116 C48 118 25 105 16 82 C7 59 13 32 30 18 C43 7 60 2 76 5',
+      '   C62 18 54 34 52 52 C50 72 56 92 68 104 C71 108 74 112 76 116 Z"',
+      '   fill="#EFE6EC" stroke="#C9B4C4" stroke-width="2.5" stroke-linejoin="round"/>',
+      '<path d="M88 58 C71 62 61 80 63 97 C65 112 79 120 94 117 C108 114 115 100 113 84',
+      '   C111 67 100 55 88 58 Z" fill="#FFFFFF" stroke="#C9B4C4" stroke-width="2.5"/>',
+      '<path d="M86 31 C81 12 94 2 102 12 C107 19 105 30 100 33 Z" fill="#FFFFFF"',
+      '   stroke="#C9B4C4" stroke-width="2.5" stroke-linejoin="round"/>',
+      '<path d="M84 31 C71 37 68 54 79 63 C89 72 106 70 115 61 C119 57 125 54 125 49',
+      '   C125 44 120 41 117 37 C111 28 93 26 84 31 Z" fill="#FFFFFF"',
+      '   stroke="#C9B4C4" stroke-width="2.5" stroke-linejoin="round"/>',
+      '<ellipse cx="104" cy="42" rx="5" ry="5.4" fill="#31202B"/>',
+      '<circle cx="106" cy="40" r="1.6" fill="#fff"/>',
+      '<path d="M119 44.5 C124 43.5 127 46 125.5 49.5 C124 52.5 119.5 52.5 118 49.5 Z"',
+      '   fill="#C27BA0"/>',
+    '</svg>'
+  ].join("");
+
   layer.appendChild(ring);
   layer.appendChild(say);
   layer.appendChild(sq);
+  layer.appendChild(back);
   document.body.appendChild(layer);
 
   /* ============================================================
      6. MOVEMENT — little hops, anywhere on the screen
      ============================================================ */
-  var VW = function () { return window.innerWidth; };
-  var VH = function () { return window.innerHeight; };
+  /* The visible box, not window.innerWidth. On a phone, if anything on the
+     page is wider than the screen the browser widens the layout viewport and
+     innerWidth reports that larger number — a fixed element clamped to it
+     ends up off the side of the screen, which is exactly how he went missing
+     on mobile. documentElement.clientWidth is the box the visitor can see. */
+  var VW = function () {
+    var d = document.documentElement;
+    return Math.min(d && d.clientWidth ? d.clientWidth : window.innerWidth,
+                    window.innerWidth || 99999);
+  };
+  var VH = function () {
+    var d = document.documentElement;
+    return Math.min(d && d.clientHeight ? d.clientHeight : window.innerHeight,
+                    window.innerHeight || 99999);
+  };
   var size = function () { return sq.offsetWidth || 104; };
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
@@ -809,13 +868,32 @@
     if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); poke(); }
   });
 
+  /* show the buttons for a moment after a tap (phones have no hover) */
+  function flashBtns() {
+    sq.dataset.btns = "1";
+    window.clearTimeout(btnTimer);
+    btnTimer = window.setTimeout(function () { sq.dataset.btns = "0"; }, 5000);
+  }
+  var btnTimer = 0;
+  hit.addEventListener("click", flashBtns);
+
+  /* × = "not now". He steps aside for this page view and leaves a button
+     to call him back. Nothing is remembered, so a refresh brings him back. */
   x.addEventListener("click", function (ev) {
     ev.stopPropagation();
     hidden = true;
     window.clearTimeout(timer);
     listen(false);
-    layer.hidden = true;
-    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    clearTip();
+    sq.style.display = "none";
+    back.hidden = false;
+  });
+
+  back.addEventListener("click", function () {
+    hidden = false;
+    back.hidden = true;
+    sq.style.display = "";
+    startTour(situation(), 500);
   });
 
   /* ============================================================
@@ -864,6 +942,117 @@
       } catch (e) {}
       window.setTimeout(function () { busy = false; loop(); }, 1300);
     }, REDUCED ? 180 : 900);
+  }
+
+  /* ------------------------------------------------------------
+     Saying anything at all: instead of a fixed word list, match what
+     was spoken against the words that are actually on the screen —
+     product names, chips, buttons, links, form labels. Bengali words
+     for colours and garment types are expanded to the English ones
+     the shop uses, so "কালো টি-শার্টে ক্লিক করো" finds the right card.
+     ------------------------------------------------------------ */
+  var STOP = [
+    "ক্লিক", "করো", "কর", "করুন", "চাপ", "চাপো", "চাপুন", "টিপ", "টেপো", "প্রেস",
+    "সিলেক্ট", "নির্বাচন", "বাছো", "বেছে", "নাও", "দাও", "দেখাও", "দেখ", "দেখান",
+    "এটা", "এটি", "ওটা", "ওটি", "এই", "ওই", "একটা", "একটু", "আমাকে", "আমি",
+    "তুমি", "যাও", "গিয়ে", "উপর", "মধ্যে", "থেকে", "আর", "এবং", "তে", "এ",
+    "click", "press", "select", "choose", "open", "tap", "the", "this", "that",
+    "on", "to", "me", "please", "go", "and", "a", "an"
+  ];
+  var SYN = {
+    "টিশার্ট": "t-shirt tee tshirt", "টি": "t-shirt tee", "শার্ট": "shirt tee",
+    "পোলো": "polo", "সোয়েটশার্ট": "sweatshirt", "সোয়েটার": "sweatshirt",
+    "হুডি": "hoodie hood", "গেঞ্জি": "tee t-shirt", "জামা": "tee shirt",
+    "পোশাক": "tee shirt dress", "ড্রেস": "dress",
+    "কালো": "black", "সাদা": "white", "নীল": "navy blue", "আকাশি": "sky blue",
+    "ধূসর": "grey gray melange", "ছাই": "grey gray melange", "সবুজ": "green forest",
+    "কমলা": "orange", "লাল": "red", "বাদামি": "brown", "গোলাপি": "pink",
+    "দাম": "price", "ছাড়": "off discount", "নতুন": "new", "বেস্ট": "best seller",
+    "সেরা": "best seller", "স্টক": "stock", "রিভিউ": "review"
+  };
+
+  function norm(t) {
+    return String(t || "").toLowerCase()
+      .replace(/[\u200b\u200c\u200d]/g, "")
+      .replace(/[^0-9a-z\u0980-\u09FF]+/g, " ")
+      .replace(/\s+/g, " ").trim();
+  }
+  /* "টি-শার্টটাতে" → "টি শার্ট" */
+  function stem(w) {
+    if (w.length > 3) {
+      w = w.replace(/(টাতে|টিতে|গুলোতে|গুলিতে|টার|টির|গুলো|গুলি|কে|তে|এর|য়ে|টা|টি)$/, "");
+    }
+    return w;
+  }
+  function tokens(text) {
+    var raw = norm(text).split(" "), out = [], i, w;
+    for (i = 0; i < raw.length; i++) {
+      w = stem(raw[i]);
+      if (!w || w.length < 2) continue;
+      if (STOP.indexOf(w) !== -1 || STOP.indexOf(raw[i]) !== -1) continue;
+      if (out.indexOf(w) === -1) out.push(w);
+      if (SYN[w]) {
+        var ex = SYN[w].split(" ");
+        for (var j = 0; j < ex.length; j++) if (out.indexOf(ex[j]) === -1) out.push(ex[j]);
+      }
+    }
+    return out;
+  }
+
+  function labelOf(el) {
+    var bits = [
+      el.getAttribute("aria-label"), el.getAttribute("title"),
+      el.getAttribute("placeholder"), el.getAttribute("data-gender"),
+      el.getAttribute("data-type"), el.getAttribute("name"),
+      el.value && el.tagName === "INPUT" ? null : null
+    ];
+    var img = el.querySelector && el.querySelector("img[alt]");
+    if (img) bits.push(img.getAttribute("alt"));
+    var lab = el.id && document.querySelector('label[for="' + el.id + '"]');
+    if (lab) bits.push(lab.textContent);
+    bits.push((el.textContent || "").slice(0, 160));
+    return " " + norm(bits.join(" ")) + " ";
+  }
+
+  var PICKABLE = 'a[href],button,[role="button"],input,select,textarea,' +
+                 '.chip,.card,.size,.swatch,[data-open],[data-gender],[data-type],' +
+                 '[data-sw],[data-q],[data-nav]';
+  /* deliberately NOT in that list: [data-remove]. Taking something out of the
+     bag should stay a deliberate tap, not something a misheard word can do. */
+
+  function isField(el) {
+    var t = el.tagName;
+    return t === "INPUT" || t === "TEXTAREA" || t === "SELECT";
+  }
+
+  function findOnPage(text) {
+    var toks = tokens(text);
+    if (!toks.length) return null;
+    var all = document.querySelectorAll(PICKABLE);
+    var best = null, i, k, el, lab, sc, area, r;
+    for (i = 0; i < all.length && i < 500; i++) {
+      el = all[i];
+      if (el.closest && el.closest(".sq-layer")) continue;
+      if (!onScreen(el)) continue;
+      lab = labelOf(el);
+      if (lab.length < 3) continue;
+      sc = 0;
+      for (k = 0; k < toks.length; k++) {
+        if (lab.indexOf(" " + toks[k] + " ") !== -1) sc += 3;      /* whole word */
+        else if (toks[k].length >= 3 && lab.indexOf(toks[k]) !== -1) sc += 2;
+      }
+      if (sc < 3) continue;
+      r = el.getBoundingClientRect();
+      area = r.width * r.height;
+      /* the smallest thing that matches is almost always the right thing */
+      if (!best || sc > best.sc || (sc === best.sc && area < best.area)) {
+        var nameEl = (el.querySelector && el.querySelector(".name, h3")) || el;
+        var nm = (nameEl.textContent || el.getAttribute("aria-label") || "")
+                   .replace(/\s+/g, " ").trim();
+        best = { el: el, sc: sc, area: area, name: nm.slice(0, 30) };
+      }
+    }
+    return best;
   }
 
   function heard(raw) {
@@ -929,15 +1118,42 @@
       return;
     }
 
+    /* "প্রোডাক্ট সিলেক্ট করো" with no number — the first card on screen */
+    if (has(text, ["প্রোডাক্ট", "জামা", "পোশাক", "কার্ড", "product", "item"])) {
+      var cards = document.querySelectorAll("#grid .card");
+      for (var c = 0; c < cards.length; c++) {
+        if (onScreen(cards[c])) {
+          press(cards[c], { say: "এটা খুলছি।" });
+          return;
+        }
+      }
+    }
+
+    /* anything else that is written on the screen right now */
+    var best = findOnPage(text);
+    if (best) {
+      if (best.el.id === "orderGo") {
+        busy = true;
+        pointAt(best.el, "শেষ চাপটা আপনি নিজে দিন।");
+        window.setTimeout(function () { busy = false; loop(); }, 4200);
+        return;
+      }
+      press(best.el, {
+        say: best.name ? "এই যে — " + best.name + "।" : "এখানে চাপছি।",
+        focus: isField(best.el)
+      });
+      return;
+    }
+
     /* a bare "এটা ক্লিক করো" — he presses whatever he is pointing at */
     if (has(text, CLICK_WORDS)) {
       if (current && current.id !== "orderGo") { press(current, {}); return; }
       if (current) { tell("শেষ চাপটা আপনি নিজে দিন।"); return; }
-      tell("কোনটা? নাম বলুন — যেমন নারী, ব্যাগ, সাইজ এল।");
+      tell("কোনটায়? পর্দায় যা লেখা আছে তার নাম বলুন।");
       return;
     }
 
-    tell("বুঝলাম না। বলুন: নারী, পুরুষ, ব্যাগ, সাইজ এল, ব্যাগে রাখো।");
+    tell("\u201C" + text.slice(0, 26) + "\u201D — এটা পর্দায় খুঁজে পেলাম না।");
   }
 
   function listen(on) {
