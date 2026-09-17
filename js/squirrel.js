@@ -238,7 +238,7 @@
 
     /* mic + dismiss, tucked under him */
     '.sq-btns{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);',
-    '  display:flex;gap:6px;pointer-events:none;}',
+    '  display:flex;gap:5px;pointer-events:none;}',
     '.sq-btn{width:24px;height:24px;border-radius:50%;padding:0;cursor:pointer;',
     '  pointer-events:auto;display:flex;align-items:center;justify-content:center;',
     '  border:1.5px solid var(--line-2,#D2BBCB);background:var(--surface,#fff);',
@@ -251,14 +251,16 @@
     '  border-color:var(--accent,#C20B74);animation:sq-mic 1.4s ease-in-out infinite;}',
     '@keyframes sq-mic{0%,100%{box-shadow:0 0 0 0 rgba(194,11,116,.45)}',
     '  70%{box-shadow:0 0 0 9px rgba(194,11,116,0)}}',
-    '.sq-mic svg{width:12px;height:12px;fill:currentColor;display:block;}',
+    '.sq-mic svg,.sq-spk svg{width:13px;height:13px;fill:currentColor;display:block;}',
+    '.sq-spk[data-on="1"]{opacity:1;background:var(--accent,#C20B74);color:#fff;',
+    '  border-color:var(--accent,#C20B74);}',
 
     /* small screens */
     '@media (max-width:620px){',
     '  .sq{width:84px;height:84px;}',
     '  .sq-say{max-width:190px;font-size:13.5px;padding:9px 12px;}',
     /* the mic stays findable; the × only after a tap, so it is not hit by accident */
-    '  .sq .sq-mic{opacity:.92;}',
+    '  .sq .sq-mic,.sq .sq-spk{opacity:.92;}',
     '  .sq .sq-x{opacity:0;}',
     '  .sq[data-btns="1"] .sq-x{opacity:1;}',
     '}',
@@ -528,6 +530,15 @@
   ].join("");
 
   var MIC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg>';
+  /* two speaker faces: crossed out when silent, with waves when it talks */
+  var SPK_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M11 5 6.5 9H3v6h3.5L11 19V5Z"/>' +
+    '<path d="M16 9.5 20.5 14M20.5 9.5 16 14" stroke="currentColor" stroke-width="1.9"' +
+    ' stroke-linecap="round" fill="none"/></svg>';
+  var SPK_ON = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M11 5 6.5 9H3v6h3.5L11 19V5Z"/>' +
+    '<path d="M14.5 9a4 4 0 0 1 0 6M17.5 6.6a7.5 7.5 0 0 1 0 10.8" stroke="currentColor"' +
+    ' stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
 
   /* ============================================================
      5. BUILD
@@ -573,6 +584,14 @@
   x.setAttribute("aria-label", "কাঠবিড়ালিটিকে সরিয়ে দিন");
 
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var spk = document.createElement("button");
+  spk.className = "sq-btn sq-spk";
+  spk.type = "button";
+  spk.innerHTML = speakerOn ? SPK_ON : SPK_OFF;
+  spk.dataset.on = speakerOn ? "1" : "0";
+  spk.setAttribute("aria-label", "কাঠবিড়ালির কণ্ঠ চালু বা বন্ধ করুন");
+
+  btns.appendChild(spk);
   if (SR) btns.appendChild(mic);
   btns.appendChild(x);
   sq.appendChild(btns);
@@ -821,20 +840,37 @@
     catch (e) { window.speechSynthesis.onvoiceschanged = loadVoices; }
   }
 
-  /* Browsers refuse to speak before the visitor has interacted with the page,
-     so it stays silent until they turn the mic on or tap it once. After
-     that it says every line out loud. */
-  var canSpeak = false;
+  /* ---------------------------------------------------------------
+     The speaker is OFF, always, until the visitor presses the speaker
+     button. Nothing else turns it on — not the welcome, not tapping
+     the squirrel, not the microphone. A shop that starts talking by
+     itself is a shop people close.
+     --------------------------------------------------------------- */
+  var SPK_KEY = "prowdfashion.squirrel.speaker";
+  var speakerOn = false;
+  try { speakerOn = (localStorage.getItem(SPK_KEY) === "1"); } catch (e) {}
 
-  function speak(text, force) {
-    if (!(canSpeak || force) || !text || !window.speechSynthesis) return;
+  /* Reading Bengali needs a Bengali voice. An English or Hindi voice given
+     Bengali letters produces noise, which is exactly what is hard to follow,
+     so in that case the speaker simply is not offered. */
+  function hasBanglaVoice() {
+    if (!VOICES.length) loadVoices();
+    if (!VOICES.length) return true;   /* list not ready — do not stand in the way */
+    for (var i = 0; i < VOICES.length; i++) {
+      if (/^bn/i.test(VOICES[i].lang || "")) return true;
+    }
+    return false;
+  }
+
+  function speak(text) {
+    if (!speakerOn || !text || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);
       if (!VOICE_PICK) loadVoices();
       try { if (VOICE_PICK) u.voice = VOICE_PICK; } catch (e2) {}
       u.lang = (VOICE_PICK && /^bn/i.test(VOICE_PICK.lang)) ? VOICE_PICK.lang : "bn-BD";
-      u.rate = 0.98;
+      u.rate = 0.88;      /* a little slower — easier to follow */
       /* a real man's voice needs no help; a woman's has to come down a lot */
       u.pitch = (WANT_VOICE === "male") ? (VOICE_OK ? 0.9 : 0.62)
                                         : (VOICE_OK ? 1.25 : 1.6);
@@ -1206,9 +1242,8 @@
   window.setInterval(watch, 500);
 
   /* ---------------------------------------------------------------
-     The first thing anyone gets: a welcome. She tries to say it out
-     loud too — most browsers will block that until the visitor has
-     touched the page, and that is fine; the greeting still shows.
+     The first thing anyone gets: a welcome, in writing. Silent — the
+     speaker only ever speaks after the visitor asks for it.
      --------------------------------------------------------------- */
   function greet() {
     var hello = "প্রাউড ফ্যাশনে আপনাকে স্বাগতম। আসুন, আমি আপনাকে ঘুরিয়ে দেখাই।";
@@ -1224,7 +1259,6 @@
       bubbleSide = (sq.dataset.face === "left") ? "right" : "left";
       placeBubble();
     }
-    speak(hello, true);
     window.setTimeout(function () {
       busy = false;
       startTour(situation(), 400);
@@ -1284,12 +1318,6 @@
     clearTip();
     window.setTimeout(function () { nextTip(); loop(); }, 260);
   }
-  hit.addEventListener("click", function () {
-    if (!canSpeak) {
-      canSpeak = true;                  /* a deliberate tap = permission to talk */
-      if (say.dataset.on === "1") speak(say.textContent);
-    }
-  });
   hit.addEventListener("click", poke);
   hit.addEventListener("keydown", function (ev) {
     if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); poke(); }
@@ -1811,10 +1839,34 @@
     try { rec.start(); } catch (e) {}
     armRotate();
     voiceOn = true;
-    canSpeak = true;
     mic.dataset.on = "1";
-    tell("আমি শুনছি। আপনি যে ভাষায় স্বচ্ছন্দ, সেই ভাষাতেই বলুন; উত্তর দেব বাংলায়।");
+    tell(speakerOn
+      ? "আমি শুনছি। আপনি যে ভাষায় স্বচ্ছন্দ, সেই ভাষাতেই বলুন; উত্তর দেব বাংলায়।"
+      : "আমি শুনছি। আপনি যে ভাষায় স্বচ্ছন্দ, সেই ভাষাতেই বলুন; উত্তর লিখে জানাব। কণ্ঠ শুনতে চাইলে পাশের স্পিকারটি চালু করুন।");
   }
+
+  /* the speaker switch — the only thing that ever makes a sound */
+  spk.addEventListener("click", function (ev) {
+    ev.stopPropagation();
+    if (!speakerOn) {
+      if (!hasBanglaVoice()) {
+        tell("এই যন্ত্রে বাংলা কণ্ঠ নেই, তাই কথাগুলি পড়ে শোনানো যাচ্ছে না। লেখাগুলিই পড়ে নিন।");
+        return;
+      }
+      speakerOn = true;
+      spk.dataset.on = "1";
+      spk.innerHTML = SPK_ON;
+      try { localStorage.setItem(SPK_KEY, "1"); } catch (e) {}
+      tell("কণ্ঠ চালু করলাম। এখন থেকে কথাগুলি বলেও শোনাব।");
+    } else {
+      speakerOn = false;
+      spk.dataset.on = "0";
+      spk.innerHTML = SPK_OFF;
+      try { localStorage.setItem(SPK_KEY, "0"); } catch (e) {}
+      try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+      tell("কণ্ঠ বন্ধ করলাম।");
+    }
+  });
 
   mic.addEventListener("click", function (ev) {
     ev.stopPropagation();
@@ -1825,6 +1877,11 @@
   window.prowdSquirrel = {
     say: function (t) { heard(t); },
     voice: function (on) { listen(!!on); },
+    speaker: function (on) {
+      if (typeof on === "undefined") return speakerOn;
+      if (!!on !== speakerOn) spk.click();
+      return speakerOn;
+    },
     tour: function (n) { startTour(n || situation(), 100); },
     pitch: function () { var t = salesTip(); return t ? t.say : null; },
     voicePick: function () {
