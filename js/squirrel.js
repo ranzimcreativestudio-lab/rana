@@ -42,40 +42,40 @@
   var TOURS = {
     /* browsing the shop */
     shop: [
-      { sel: "#genderChips", say: "নারী না পুরুষ — কার জন্য কিনছেন, এখান থেকে বেছে নিন।" },
-      { sel: "#typeChips",   say: "টি-শার্ট, পোলো… ধরন অনুযায়ী দেখুন।" },
-      { sel: "#q",           say: "নাম লিখে সরাসরি খুঁজে নিতে পারেন।" },
-      { sel: "#sort",        say: "দাম কম-বেশি অনুযায়ী সাজিয়ে নিন।" },
-      { sel: "#grid .card",  say: "ছবিতে ক্লিক করলে সাইজ, মাপ আর বিস্তারিত।" },
-      { sel: "#cartBtn",     say: "পছন্দ হলে ব্যাগে রাখুন — এখানে জমা থাকবে।" },
-      { sel: "#waTalk",      say: "যেকোনো প্রশ্ন? WhatsApp-এ সরাসরি লিখুন।" },
-      { sel: "#themeBtn",    say: "রাতে চোখ আরাম চাইলে এই বোতামটা চাপুন।" }
+      { sel: "#genderChips", say: "পোশাকটি নারীর জন্য না পুরুষের জন্য, এখান থেকে নির্বাচন করুন।" },
+      { sel: "#typeChips",   say: "পোশাকের ধরন অনুসারে দেখতে চাইলে এখান থেকে বেছে নিন।" },
+      { sel: "#q",           say: "পছন্দের পোশাকের নাম লিখে সরাসরি খুঁজে নিতে পারেন।" },
+      { sel: "#sort",        say: "মূল্য অনুসারে সাজিয়ে নিতে চাইলে এখান থেকে নির্বাচন করুন।" },
+      { sel: "#grid .card",  say: "ছবিটির উপরে চাপ দিলে মাপ ও বিস্তারিত বিবরণ দেখতে পাবেন।" },
+      { sel: "#cartBtn",     say: "পছন্দ হলে ঝুড়িতে রাখুন, সেগুলি এখানেই জমা থাকবে।" },
+      { sel: "#waTalk",      say: "কোনো প্রশ্ন থাকলে হোয়াটসঅ্যাপে সরাসরি জানাতে পারেন।" },
+      { sel: "#themeBtn",    say: "রাতে চোখের আরামের জন্য এই বোতামটিতে চাপ দিন।" }
     ],
     /* a product is open */
     detail: [
-      { sel: ".sheet-media, .shot", say: "ছবিতে চাপলে বড় করে দেখা যায়।" },
-      { sel: ".swatches, [data-sw]", say: "রঙ এখান থেকে বদলে নিন।" },
-      { sel: ".sizes",      say: "আগে সাইজ বাছুন — নিচের মাপের চার্টে মিলিয়ে নিন।" },
-      { sel: ".size-chart", say: "বুক আর লম্বার মাপ এখানে দেওয়া আছে।" },
-      { sel: ".stepper",    say: "কয়টা নেবেন, এখানে বাড়ান বা কমান।" },
-      { sel: "#addBtn",     say: "ব্যাগে রাখতে এই বোতামটা চাপুন।" },
-      { sel: "#buyBtn",     say: "সরাসরি কিনতে চাইলে Buy Now চাপুন।" }
+      { sel: ".sheet-media, .shot", say: "ছবিটির উপরে চাপ দিলে বড় করে দেখতে পাবেন।" },
+      { sel: ".swatches, [data-sw]", say: "রং এখান থেকে পরিবর্তন করে নিতে পারেন।" },
+      { sel: ".sizes",      say: "প্রথমে মাপ নির্বাচন করুন; নিচের তালিকার সঙ্গে মিলিয়ে নিতে পারেন।" },
+      { sel: ".size-chart", say: "বুক ও দৈর্ঘ্যের মাপ এখানে দেওয়া আছে।" },
+      { sel: ".stepper",    say: "কয়টি নেবেন, এখান থেকে বাড়াতে বা কমাতে পারেন।" },
+      { sel: "#addBtn",     say: "ঝুড়িতে রাখতে হলে এই বোতামটিতে চাপ দিন।" },
+      { sel: "#buyBtn",     say: "সরাসরি কিনতে চাইলে ‘Buy Now’ বোতামটিতে চাপ দিন।" }
     ],
     /* the bag */
     cart: [
-      { sel: "#cartBody .lrow, #cartBody", say: "সংখ্যা এখান থেকেই বাড়ানো-কমানো যায়।" },
-      { sel: "#cartFoot",  say: "৳৫০০-এর বেশি হলে ডেলিভারি ফ্রি।" },
-      { sel: "#checkout",  say: "সব ঠিক থাকলে Place order চাপুন।" }
+      { sel: "#cartBody .lrow, #cartBody", say: "এখান থেকেই সংখ্যা বাড়ানো বা কমানো যায়।" },
+      { sel: "#cartFoot",  say: "পাঁচশো টাকার বেশি হলে পৌঁছে দেওয়ার খরচ লাগবে না।" },
+      { sel: "#checkout",  say: "সব ঠিক থাকলে ‘Place order’ বোতামটিতে চাপ দিন।" }
     ],
     /* the order form */
     order: [
-      { sel: "#oName",  say: "আপনার নাম লিখুন।" },
-      { sel: "#oPhone", say: "১১ সংখ্যার মোবাইল নম্বর — কুরিয়ার এখানেই ফোন করবে।" },
-      { sel: "#oDist",  say: "জেলার নাম লিখুন।" },
-      { sel: "#oAddr",  say: "বাসা, রোড, এলাকা — যেন কুরিয়ার সহজে খুঁজে পায়।" },
-      { sel: "#oPromo", say: "প্রমো কোড থাকলে এখানে বসান।" },
-      { sel: "#orderSum", say: "মোট কত আসছে, একবার দেখে নিন।" },
-      { sel: "#orderGo", say: "সব ঠিক? শেষ চাপটা আপনি নিজে দিন।" }
+      { sel: "#oName",  say: "এখানে আপনার নাম লিখুন।" },
+      { sel: "#oPhone", say: "এগারো অঙ্কের মুঠোফোন নম্বর দিন; এই নম্বরেই যোগাযোগ করা হবে।" },
+      { sel: "#oDist",  say: "আপনার জেলার নাম লিখুন।" },
+      { sel: "#oAddr",  say: "বাড়ি, সড়ক ও এলাকার নাম লিখুন, যাতে সহজে খুঁজে পাওয়া যায়।" },
+      { sel: "#oPromo", say: "ছাড়ের কোড থাকলে এখানে লিখুন।" },
+      { sel: "#orderSum", say: "সর্বমোট কত হচ্ছে, একবার দেখে নিন।" },
+      { sel: "#orderGo", say: "সব ঠিক থাকলে শেষ চাপটি আপনি নিজেই দিন।" }
     ]
   };
 
@@ -84,77 +84,77 @@
      ============================================================ */
   /* Most specific phrases first: "ব্যাগে রাখো" must win over "ব্যাগ". */
   var VOICE = [
-    { w: ["ব্যাগে রাখ", "ব্যাগে দাও", "ব্যাগে ভর", "অ্যাড কর", "add to bag",
+    { w: ["ব্যাগে রাখ", "ঝুড়িতে রাখ", "ব্যাগে দাও", "ব্যাগে ভর", "অ্যাড কর", "add to bag",
       "add to cart", "add", "bagে rakho", "bag e rakho", "rakho", "डालो", "जोड़ो",
       "अ‍ॅड", "أضف"],
-      sel: "#addBtn", say: "ব্যাগে রাখছি।" },
+      sel: "#addBtn", say: "ঝুড়িতে রেখে দিচ্ছি।" },
     { w: ["অর্ডার কর", "অর্ডার দাও", "অর্ডার দিব", "place order", "checkout",
       "check out", "order koro", "order", "ऑर्डर", "आर्डर", "اطلب", "اطلب الآن"],
-      sel: "#checkout", via: "#cartBtn", viaSay: "ব্যাগ খুলে অর্ডারে যাচ্ছি।",
-      say: "অর্ডার ফর্ম খুলছি।" },
+      sel: "#checkout", via: "#cartBtn", viaSay: "ঝুড়ি খুলে ক্রয়ের ধাপে যাচ্ছি।",
+      say: "ক্রয়ের ফরমটি খুলে দিচ্ছি।" },
     { w: ["কনফার্ম", "নিশ্চিত", "confirm", "कन्फर्म", "पुष्टि", "تأكيد"],
       sel: "#orderGo", noClick: true,
-      say: "শেষ চাপটা আপনি নিজে দিন — এটা আমি চাপব না।" },
+      say: "শেষ চাপটি আপনি নিজেই দিন; এটিতে আমি চাপ দেব না।" },
     { w: ["সাইজ চার্ট", "মাপের চার্ট", "মাপ দেখ", "size chart"], sel: ".size-chart",
-      noClick: true, say: "এই যে মাপের চার্ট।" },
+      noClick: true, say: "এই যে মাপের তালিকা।" },
     { w: ["এখনি কিন", "কিনব", "কিনবো", "buy now", "buy", "kino", "kinbo",
       "खरीद", "अभी खरीदें", "اشتر"], sel: "#buyBtn",
-      say: "কেনার ধাপে নিচ্ছি।" },
+      say: "কেনার ধাপে নিয়ে যাচ্ছি।" },
     { w: ["নারী", "মেয়ে", "women", "woman", "ladies", "female", "nari", "meye",
       "mohila", "महिला", "औरत", "लेडीज", "نساء", "femme", "mujer"],
       sel: '#genderChips [data-gender="women"]',
-      say: "নারীদের পোশাক দেখাচ্ছি।" },
+      say: "নারীদের পোশাকগুলি দেখাচ্ছি।" },
     { w: ["পুরুষ", "ছেলে", "men", "man", "gents", "male", "purush", "chele",
       "पुरुष", "आदमी", "मर्द", "رجال", "homme", "hombre"],
       sel: '#genderChips [data-gender="men"]',
-      say: "পুরুষদের পোশাক দেখাচ্ছি।" },
+      say: "পুরুষদের পোশাকগুলি দেখাচ্ছি।" },
     { w: ["সবাই", "সবকিছু", "সব দেখ", "সবগুলো", "everyone", "everybody", "all",
       "shob", "सब", "सभी", "الكل", "todos", "tout"],
       sel: '#genderChips [data-gender="all"]',
-      say: "সব দেখাচ্ছি।" },
-    { w: ["ব্যাগ", "কার্ট", "bag", "cart", "basket", "byag", "बैग", "थैला",
+      say: "সবগুলি দেখাচ্ছি।" },
+    { w: ["ব্যাগ", "ঝুড়ি", "কার্ট", "bag", "cart", "basket", "byag", "बैग", "थैला",
       "टोकरी", "حقيبة", "panier", "carrito"],
-      sel: "#cartBtn", say: "ব্যাগ খুলছি।" },
+      sel: "#cartBtn", say: "ঝুড়িটি খুলে দিচ্ছি।" },
     { w: ["খোঁজ", "খুঁজ", "সার্চ", "search", "find", "khojo", "khujo",
       "खोज", "ढूंढ", "सर्च", "ابحث", "buscar", "chercher"],
       sel: "#q", focus: true,
-      say: "লিখুন, খুঁজে দিচ্ছি।" },
+      say: "লিখুন, আমি খুঁজে দিচ্ছি।" },
     { w: ["থিম", "রাত", "অন্ধকার", "আলো", "theme", "dark", "light", "night",
       "डार्क", "रात", "थीम", "ليل", "oscuro"], sel: "#themeBtn",
-      say: "থিম বদলে দিলাম।" },
+      say: "পর্দার সাজ পরিবর্তন করে দিলাম।" },
     { w: ["হোয়াটস", "whatsapp"], sel: "#waTalk", noClick: true,
-      say: "এখানে চাপলে WhatsApp খুলবে — আপনি চাপুন।" },
+      say: "এখানে চাপ দিলে হোয়াটসঅ্যাপ খুলবে; চাপটি আপনি দিন।" },
     { w: ["বাড়াও", "বাড়া", "আরেকটা", "more", "plus", "increase", "barao",
       "बढ़ाओ", "और", "زد"], sel: '.stepper [data-q="1"]',
-      say: "একটা বাড়ালাম।" },
+      say: "একটি বাড়িয়ে দিলাম।" },
     { w: ["কমাও", "কমা", "less", "minus", "decrease", "komao", "घटाओ", "कम",
-      "قلل"], sel: '.stepper [data-q="-1"]', say: "একটা কমালাম।" },
-    { w: ["সাজাও", "সর্ট", "sort"], sel: "#sort", focus: true, say: "এখান থেকে সাজান।" },
+      "قلل"], sel: '.stepper [data-q="-1"]', say: "একটি কমিয়ে দিলাম।" },
+    { w: ["সাজাও", "সর্ট", "sort"], sel: "#sort", focus: true, say: "এখান থেকে সাজিয়ে নিন।" },
     { w: ["রঙ", "রং", "কালার", "colour", "color", "rong", "रंग", "لون"],
       sel: ".swatches", noClick: true,
-      say: "রঙ এখান থেকে বেছে নিন।" },
+      say: "রং এখান থেকে বেছে নিন।" },
     /* the order form, field by field */
     { w: ["নাম লিখ", "নাম বস", "আপনার নাম", "your name"], sel: "#oName", focus: true,
-      say: "নামটা এখানে লিখুন।" },
+      say: "নামটি এখানে লিখুন।" },
     { w: ["মোবাইল", "ফোন", "নম্বর", "mobile", "phone"], sel: "#oPhone", focus: true,
-      say: "১১ সংখ্যার নম্বর এখানে।" },
-    { w: ["জেলা", "district"], sel: "#oDist", focus: true, say: "জেলার নাম এখানে।" },
+      say: "এগারো অঙ্কের নম্বরটি এখানে দিন।" },
+    { w: ["জেলা", "district"], sel: "#oDist", focus: true, say: "জেলার নামটি এখানে লিখুন।" },
     { w: ["ঠিকানা", "বাসা", "address"], sel: "#oAddr", focus: true,
       say: "পুরো ঠিকানা এখানে লিখুন।" },
     { w: ["প্রমো", "কুপন", "promo", "coupon"], sel: "#oPromo", focus: true,
-      say: "কোডটা এখানে বসান।" },
+      say: "কোডটি এখানে লিখুন।" },
     { w: ["মোট", "টোটাল", "total"], sel: "#orderSum", noClick: true,
-      say: "মোট এইটুকু আসছে।" },
+      say: "সর্বমোট এতটুকুই হচ্ছে।" },
     { w: ["বন্ধ", "ক্লোজ", "close", "bondho", "बंद", "क्लोज", "أغلق",
-      "cerrar", "fermer"], act: "close", say: "বন্ধ করলাম।" },
+      "cerrar", "fermer"], act: "close", say: "বন্ধ করে দিলাম।" },
     { w: ["উপরে", "উপর", "up", "top", "upore", "ऊपर", "फوق", "arriba"],
-      act: "up", say: "উপরে যাচ্ছি।" },
+      act: "up", say: "উপরের দিকে যাচ্ছি।" },
     { w: ["নিচে", "নিচ", "down", "niche", "नीचे", "أسفل", "abajo"],
-      act: "down", say: "নিচে যাচ্ছি।" },
+      act: "down", say: "নিচের দিকে যাচ্ছি।" },
     { w: ["পরের", "পরবর্তী", "next", "porer", "अगला", "आगे", "التالي",
       "siguiente", "suivant"], act: "next", say: "" },
     { w: ["থাম", "চুপ", "stop", "quiet", "thamo", "chup", "रुको", "चुप",
-      "توقف", "alto"], act: "stop", say: "আচ্ছা, চুপ থাকলাম।" },
+      "توقف", "alto"], act: "stop", say: "বেশ, আমি চুপ করে থাকছি।" },
     { w: ["লুকাও", "চলে যাও", "hide", "go away", "lukao", "छिपो", "जाओ",
       "اختف"], act: "hide", say: "" }
   ];
@@ -554,7 +554,7 @@
   hit.className = "sq-hit";
   hit.setAttribute("role", "button");
   hit.setAttribute("tabindex", "0");
-  hit.setAttribute("aria-label", "সাহায্যকারী কাঠবিড়ালি — পরের কথাটি শুনুন");
+  hit.setAttribute("aria-label", "সহায়ক কাঠবিড়ালি — পরের কথাটি শুনুন");
   sq.appendChild(hit);
 
   var btns = document.createElement("div");
@@ -564,13 +564,13 @@
   mic.className = "sq-btn sq-mic";
   mic.type = "button";
   mic.innerHTML = MIC;
-  mic.setAttribute("aria-label", "ভয়েস কমান্ড চালু বা বন্ধ করুন");
+  mic.setAttribute("aria-label", "কণ্ঠে নির্দেশ দেওয়া চালু বা বন্ধ করুন");
 
   var x = document.createElement("button");
   x.className = "sq-btn sq-x";
   x.type = "button";
   x.textContent = "×";
-  x.setAttribute("aria-label", "কাঠবিড়ালিটি সরিয়ে দিন");
+  x.setAttribute("aria-label", "কাঠবিড়ালিটিকে সরিয়ে দিন");
 
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SR) btns.appendChild(mic);
@@ -882,8 +882,11 @@
   function bn(n) {
     return String(n).replace(/[0-9]/g, function (d) { return "০১২৩৪৫৬৭৮৯".charAt(+d); });
   }
-  function taka(n) {
-    return "৳" + bn(Number(n).toLocaleString("en-US"));
+  function taka(n) {                      /* "১,৩০৫ টাকা" — as it is spoken */
+    return bn(Number(n).toLocaleString("en-US")) + " টাকা";
+  }
+  function takar(n) {                     /* "১,৩০৫ টাকার" */
+    return bn(Number(n).toLocaleString("en-US")) + " টাকার";
   }
   function num(t) {                       /* "৳1,305" -> 1305 */
     var m = String(t || "").replace(/[^0-9]/g, "");
@@ -897,11 +900,12 @@
   };
   var COLOUR_BN = {
     "grey melange": "ধূসর", "light grey": "হালকা ধূসর", "white": "সাদা",
-    "black": "কালো", "navy": "নেভি ব্লু", "sky": "আকাশি", "grey": "ধূসর",
-    "gray": "ধূসর", "charcoal": "ছাই কালো", "sage": "সেজ সবুজ", "pine": "গাঢ় সবুজ",
-    "forest": "ফরেস্ট গ্রিন", "olive": "অলিভ", "butter": "বাটার হলুদ",
-    "ecru": "অফ-হোয়াইট", "chalk": "অফ-হোয়াইট", "cream": "ক্রিম", "beige": "বেইজ",
-    "stone": "স্টোন", "rust": "রাস্ট", "maroon": "মেরুন", "blue": "নীল",
+    "black": "কালো", "navy": "গাঢ় নীল", "sky": "আকাশি", "grey": "ধূসর",
+    "gray": "ধূসর", "charcoal": "ছাই", "sage": "হালকা সবুজ", "pine": "গাঢ় সবুজ",
+    "forest": "গাঢ় সবুজ", "olive": "জলপাই সবুজ", "butter": "মাখনরঙা",
+    "ecru": "হালকা সাদা", "chalk": "হালকা সাদা", "cream": "ক্রিম",
+    "beige": "বালিরঙা", "stone": "পাথুরে ধূসর", "rust": "মেটে লাল",
+    "maroon": "মেরুন", "blue": "নীল",
     "green": "সবুজ", "red": "লাল", "orange": "কমলা", "brown": "বাদামি",
     "pink": "গোলাপি", "purple": "বেগুনি", "yellow": "হলুদ"
   };
@@ -988,14 +992,15 @@
   function deliveryLine() {
     var over = freeOver(), sub = bagTotal();
     if (sub > 0 && sub < over) {
-      return "ব্যাগে " + taka(sub) + " — আর " + taka(over - sub) + " হলে ডেলিভারি ফ্রি।";
+      return "ঝুড়িতে " + taka(sub) + " হয়েছে; আর " + taka(over - sub) +
+             " হলে পৌঁছে দেওয়ার খরচ লাগবে না।";
     }
-    if (sub >= over && sub > 0) return "আপনার অর্ডারে ডেলিভারি ফ্রি হয়ে গেছে।";
+    if (sub >= over && sub > 0) return "আপনার ক্রয়ে পৌঁছে দেওয়ার খরচ আর লাগবে না।";
     var pool = [
-      taka(over) + "-এর বেশি কিনলে ডেলিভারি একদম ফ্রি।",
-      "ক্যাশ অন ডেলিভারি — হাতে পেয়ে তারপর টাকা দেবেন।",
-      "সাইজ না মিললে ৭ দিনের মধ্যে বদলে নিতে পারবেন।",
-      "খুলনায় পরদিন, বাকি দেশে ২–৪ দিনে পৌঁছে যাবে।"
+      takar(over) + " বেশি কিনলে পৌঁছে দেওয়ার খরচ লাগবে না।",
+      "পণ্য হাতে পাওয়ার পর মূল্য পরিশোধ করতে পারবেন।",
+      "মাপ না মিললে সাত দিনের মধ্যে বদলে নিতে পারবেন।",
+      "খুলনায় পরের দিনই, দেশের অন্যত্র দুই থেকে চার দিনে পৌঁছে যাবে।"
     ];
     return pool[pitchN % pool.length];
   }
@@ -1010,41 +1015,43 @@
       ? Math.round((1 - f.price / f.oldPrice) * 100) : 0;
 
     if (f.left === 0) {
-      out.push("এই " + t + "টা এখন শেষ — পাশেরগুলো দেখে নিন।");
+      out.push("এই " + t + "টি এখন শেষ হয়ে গেছে; পাশের অন্যগুলি দেখে নিন।");
       return out;
     }
 
     if (off > 0) {
-      out.push("এই " + t + "টা নিতে পারেন — " + bn(off) + "% ছাড়ে এখন " +
-               taka(f.price) + ", " + taka(f.oldPrice - f.price) + " বাঁচছে।");
+      out.push("এই " + t + "টি নিতে পারেন। " + bn(off) + " শতাংশ ছাড়ে এখন " +
+               taka(f.price) + ", " + taka(f.oldPrice - f.price) + " সাশ্রয় হচ্ছে।");
     } else {
-      out.push("এই " + t + "টা দেখতে পারেন — " + taka(f.price) + "।");
+      out.push("এই " + t + "টি দেখতে পারেন; মূল্য " + taka(f.price) + "।");
     }
 
-    if (col) out.push(col + " রঙের এই " + t + "টা আপনাকে খুব ভালো মানাবে।");
+    if (col) out.push(col + " রঙের এই " + t + "টি আপনাকে বেশ মানাবে।");
 
     var fab = String(f.fabric || "");
     if (/cotton/i.test(fab) && !/poly|elastane|spandex|viscose|rayon|blend/i.test(fab)) {
       var gsm = fab.match(/(\d{2,3})\s*gsm/i);
-      out.push("এটা ১০০% কটন" + (gsm ? ", " + bn(gsm[1]) + " জিএসএম" : "") +
-               " — সারাদিন পরেও আরাম।");
+      out.push("এটি সম্পূর্ণ সুতির কাপড়" +
+               (gsm ? ", " + bn(gsm[1]) + " জিএসএম" : "") +
+               "; সারাদিন পরে থাকলেও আরাম পাবেন।");
     } else if (fab) {
       out.push("কাপড় — " + fab + "।");
     }
 
     if (f.tag && /best/i.test(f.tag)) {
-      out.push("এটা আমাদের বেস্ট সেলার — অনেকেই নিচ্ছেন।");
+      out.push("এটি আমাদের সবচেয়ে বেশি বিক্রি হওয়া পোশাক; অনেকেই নিচ্ছেন।");
     } else if (f.tag && /new/i.test(f.tag)) {
-      out.push("একদম নতুন এসেছে — আগে আপনিই দেখে নিন।");
+      out.push("সদ্য নতুন এসেছে; সবার আগে আপনিই দেখে নিন।");
     }
     if (typeof f.left === "number" && f.left > 0 && f.left <= 5) {
-      out.push("মাত্র " + bn(f.left) + "টা বাকি — দেরি করলে ফুরিয়ে যাবে।");
+      out.push("আর মাত্র " + bn(f.left) +
+               "টি অবশিষ্ট রয়েছে; দেরি করলে শেষ হয়ে যেতে পারে।");
     }
 
     out.push(deliveryLine());
     var fit = bnFit(f.fit);
-    if (fit) out.push("ফিটিং — " + fit + "।");
-    if (f.name) out.push(f.name + " — ছবিতে চাপলে সব মাপ আর বিস্তারিত।");
+    if (fit) out.push("গড়ন — " + fit + "।");
+    if (f.name) out.push(f.name + " — ছবিটিতে চাপ দিলে সব মাপ ও বিস্তারিত বিবরণ পাবেন।");
     return out;
   }
 
@@ -1054,13 +1061,13 @@
     var k = String(t || "").toLowerCase();
     if (!k) return "";
     var bits = [];
-    if (/boxy|relaxed|oversize/.test(k)) bits.push("একটু ঢিলেঢালা");
-    else if (/trim|slim|fitted/.test(k)) bits.push("স্লিম");
-    else if (/regular|straight|classic/.test(k)) bits.push("রেগুলার");
+    if (/boxy|relaxed|oversize/.test(k)) bits.push("কিছুটা ঢিলেঢালা");
+    else if (/trim|slim|fitted/.test(k)) bits.push("আঁটসাঁট");
+    else if (/regular|straight|classic/.test(k)) bits.push("স্বাভাবিক");
     if (/crop/.test(k)) bits.push("কোমরের উপরে ছোট");
-    else if (/longline|long body/.test(k)) bits.push("একটু লম্বা");
+    else if (/longline|long body/.test(k)) bits.push("কিছুটা লম্বা");
     else if (/hip/.test(k)) bits.push("কোমর পর্যন্ত");
-    if (/ribbed hem/.test(k)) bits.push("নিচে রিব");
+    if (/ribbed hem/.test(k)) bits.push("নিচের প্রান্ত রিব-বোনা");
     return bits.join(", ");
   }
 
@@ -1196,7 +1203,7 @@
      touched the page, and that is fine; the greeting still shows.
      --------------------------------------------------------------- */
   function greet() {
-    var hello = "ProwdFashion-এ আপনাকে স্বাগতম! চলুন, ঘুরে দেখাই।";
+    var hello = "প্রাউড ফ্যাশনে আপনাকে স্বাগতম। আসুন, আমি আপনাকে ঘুরিয়ে দেখাই।";
     var brand = document.querySelector(".topbar .brand-lockup") ||
                 document.querySelector(".brand-lockup");
     busy = true;
@@ -1540,8 +1547,11 @@
         if (has(text, ORDINALS[o].w)) {
           var cards = document.querySelectorAll("#grid .card");
           var el = cards[ORDINALS[o].n - 1];
-          if (onScreen(el)) { press(el, { say: ORDINALS[o].n + " নম্বরটা খুলছি।" }); return; }
-          tell("ওই নম্বরটা এখন পর্দায় নেই।"); return;
+          if (onScreen(el)) {
+            press(el, { say: bn(ORDINALS[o].n) + " নম্বরের পোশাকটি খুলে দিচ্ছি।" });
+            return;
+          }
+          tell("ওই নম্বরের পোশাকটি এখন পর্দায় নেই।"); return;
         }
       }
     }
@@ -1607,7 +1617,7 @@
     if (want) {
       var sizeBtns = document.querySelectorAll(".sizes .size");
       if (!sizeBtns.length) {
-        tell("আগে একটা পোশাক খুলুন — তারপর সাইজ বলুন।");
+        tell("আগে একটি পোশাক খুলুন, তারপর মাপটি বলুন।");
         return;
       }
       var have = [], hitBtn = null;
@@ -1616,9 +1626,9 @@
         have.push(lbl);
         if (lbl === want) hitBtn = sizeBtns[y];
       }
-      if (hitBtn) { press(hitBtn, { say: want + " সাইজ বেছে নিলাম।" }); return; }
+      if (hitBtn) { press(hitBtn, { say: want + " মাপটি বেছে নিলাম।" }); return; }
       acted = true;
-      tell(want + " সাইজটা এই পোশাকে নেই। আছে — " + have.join(", ") + "।");
+      tell("এই পোশাকে " + want + " মাপটি নেই। রয়েছে — " + have.join(", ") + "।");
       return;
     }
 
@@ -1666,7 +1676,7 @@
       var cards = document.querySelectorAll("#grid .card");
       for (var c = 0; c < cards.length; c++) {
         if (onScreen(cards[c])) {
-          press(cards[c], { say: "এটা খুলছি।" });
+          press(cards[c], { say: "এটি খুলে দিচ্ছি।" });
           return;
         }
       }
@@ -1677,12 +1687,12 @@
     if (best) {
       if (best.el.id === "orderGo") {
         busy = true;
-        pointAt(best.el, "শেষ চাপটা আপনি নিজে দিন।");
+        pointAt(best.el, "শেষ চাপটি আপনি নিজেই দিন।");
         window.setTimeout(function () { busy = false; loop(); }, 4200);
         return;
       }
       press(best.el, {
-        say: best.name ? "এই যে — " + best.name + "।" : "এখানে চাপছি।",
+        say: best.name ? "এই যে — " + best.name + "।" : "এখানে চাপ দিচ্ছি।",
         focus: isField(best.el)
       });
       return;
@@ -1691,13 +1701,13 @@
     /* a bare "এটা ক্লিক করো" — he presses whatever he is pointing at */
     if (has(text, CLICK_WORDS)) {
       if (current && current.id !== "orderGo") { press(current, {}); return; }
-      if (current) { tell("শেষ চাপটা আপনি নিজে দিন।"); return; }
-      tell("কোনটায়? পর্দায় যা লেখা আছে তার নাম বলুন।");
+      if (current) { tell("শেষ চাপটি আপনি নিজেই দিন।"); return; }
+      tell("কোনটিতে? পর্দায় যা লেখা রয়েছে, তার নাম বলুন।");
       return;
     }
 
-    if (missed) { tell("এটা এখন পর্দায় নেই — আগে ওই ধাপটা খুলুন।"); return; }
-    tell("\u201C" + text.slice(0, 26) + "\u201D — এটা পর্দায় খুঁজে পেলাম না।");
+    if (missed) { tell("এটি এখন পর্দায় নেই; আগে ওই ধাপটি খুলে নিন।"); return; }
+    tell("\u201C" + text.slice(0, 26) + "\u201D — এটি পর্দায় খুঁজে পেলাম না।");
   }
 
   /* ------------------------------------------------------------
@@ -1773,7 +1783,7 @@
       rec.onerror = function (ev) {
         if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
           listen(false);
-          tell("মাইক্রোফোনের অনুমতি দিতে হবে — ব্রাউজারের ঠিকানা বারে তালার আইকনে দেখুন।");
+          tell("মাইক্রোফোন ব্যবহারের অনুমতি দিতে হবে। ঠিকানা-বারের তালার চিহ্নটি দেখুন।");
         }
       };
       rec.onend = function () {
@@ -1795,7 +1805,7 @@
     voiceOn = true;
     canSpeak = true;
     mic.dataset.on = "1";
-    tell("শুনছি — যে ভাষায় স্বচ্ছন্দ, সেভাবেই বলুন। উত্তর দেব বাংলায়।");
+    tell("আমি শুনছি। আপনি যে ভাষায় স্বচ্ছন্দ, সেই ভাষাতেই বলুন; উত্তর দেব বাংলায়।");
   }
 
   mic.addEventListener("click", function (ev) {
