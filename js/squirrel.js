@@ -707,7 +707,7 @@
      ============================================================ */
   var timer = 0, hidden = false;
   var tour = [], idx = -1, given = 0, done = false;
-  var MAX_TIPS = 6;
+  var MAX_TIPS = 8;
   var current = null;          /* the element he is pointing at right now */
   var busy = false;            /* a spoken command is being carried out */
   var mode = "";               /* shop | detail | cart | order */
@@ -787,8 +787,13 @@
     catch (e) { window.speechSynthesis.onvoiceschanged = loadVoices; }
   }
 
-  function speak(text) {
-    if (!voiceOn || !text || !window.speechSynthesis) return;
+  /* Browsers refuse to speak before the visitor has interacted with the page,
+     so she stays silent until they turn the mic on or tap her once. After
+     that she says every line out loud. */
+  var canSpeak = false;
+
+  function speak(text, force) {
+    if (!(canSpeak || force) || !text || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);
@@ -834,11 +839,267 @@
           VH() - s - (14 + Math.random() * 40));
   }
 
+  /* ============================================================
+     7b. SHE SELLS
+     She reads the shop's own data — price, discount, colour, fabric,
+     stock, the bag total — and builds a line from it. Every line is
+     something the site already says somewhere; she invents nothing.
+     ============================================================ */
+  var SHOP = function () { return window.PROWD || null; };
+  function freeOver() {
+    var g = SHOP();
+    return (g && typeof g.freeOver === "number") ? g.freeOver : 500;
+  }
+
+  function bn(n) {
+    return String(n).replace(/[0-9]/g, function (d) { return "০১২৩৪৫৬৭৮৯".charAt(+d); });
+  }
+  function taka(n) {
+    return "৳" + bn(Number(n).toLocaleString("en-US"));
+  }
+  function num(t) {                       /* "৳1,305" -> 1305 */
+    var m = String(t || "").replace(/[^0-9]/g, "");
+    return m ? parseInt(m, 10) : 0;
+  }
+
+  var TYPE_BN = {
+    "t-shirt": "টি-শার্ট", "tshirt": "টি-শার্ট", "tee": "টি-শার্ট", "polo": "পোলো",
+    "sweatshirt": "সোয়েটশার্ট", "hoodie": "হুডি", "dress": "ড্রেস", "shirt": "শার্ট",
+    "top": "টপ", "jacket": "জ্যাকেট", "trouser": "ট্রাউজার", "pant": "প্যান্ট"
+  };
+  var COLOUR_BN = {
+    "grey melange": "ধূসর", "light grey": "হালকা ধূসর", "white": "সাদা",
+    "black": "কালো", "navy": "নেভি ব্লু", "sky": "আকাশি", "grey": "ধূসর",
+    "gray": "ধূসর", "charcoal": "ছাই কালো", "sage": "সেজ সবুজ", "pine": "গাঢ় সবুজ",
+    "forest": "ফরেস্ট গ্রিন", "olive": "অলিভ", "butter": "বাটার হলুদ",
+    "ecru": "অফ-হোয়াইট", "chalk": "অফ-হোয়াইট", "cream": "ক্রিম", "beige": "বেইজ",
+    "stone": "স্টোন", "rust": "রাস্ট", "maroon": "মেরুন", "blue": "নীল",
+    "green": "সবুজ", "red": "লাল", "orange": "কমলা", "brown": "বাদামি",
+    "pink": "গোলাপি", "purple": "বেগুনি", "yellow": "হলুদ"
+  };
+  function bnType(t) {
+    var k = String(t || "").toLowerCase().trim();
+    return TYPE_BN[k] || t || "পোশাক";
+  }
+  function bnColour(c) {
+    var k = String(c || "").toLowerCase().trim();
+    if (COLOUR_BN[k]) return COLOUR_BN[k];
+    for (var w in COLOUR_BN) {
+      if (COLOUR_BN.hasOwnProperty(w) && k.indexOf(w) !== -1) return COLOUR_BN[w];
+    }
+    return c || "";
+  }
+
+  /* ---- what she knows about one product ----
+     From the shop's own record when js/app.js exposes it, otherwise read
+     straight off the card. Either way the numbers are the ones printed on
+     the page — she never makes a figure up. */
+  function factsOf(card) {
+    var open = card.querySelector("[data-open]");
+    var id = open && open.getAttribute("data-open");
+    var g = SHOP();
+    var p = (g && id) ? g.byId(id) : null;
+    if (p) return factsOfProduct(p);
+
+    var f = {};
+    var nm = card.querySelector(".name");
+    if (nm) {
+      var clone = nm.cloneNode(true);
+      var fb = clone.querySelector(".fit-badge");
+      if (fb) fb.parentNode.removeChild(fb);
+      f.name = clone.textContent.replace(/\s+/g, " ").trim();
+    }
+    var sub = card.querySelector(".sub");
+    if (sub) {
+      var bits = sub.textContent.split("·");
+      f.type = (bits[1] || "").trim();
+      f.colour = (bits[2] || "").trim();
+    }
+    var pr = card.querySelector(".price");
+    if (pr) {
+      var pc = pr.cloneNode(true);
+      var old = pc.querySelector("s");
+      if (old) { f.oldPrice = num(old.textContent); old.parentNode.removeChild(old); }
+      var bd = pc.querySelectorAll(".off-badge,.save-badge");
+      for (var i = 0; i < bd.length; i++) bd[i].parentNode.removeChild(bd[i]);
+      f.price = num(pc.textContent);
+    }
+    var alt = card.querySelector(".tag-alt");
+    if (alt) f.tag = alt.textContent.trim();
+    if (card.getAttribute("data-sold") === "true") f.left = 0;
+    else {
+      var low = card.querySelector('.tag[data-kind="low"]');
+      if (low) f.left = num(low.textContent);
+    }
+    return f;
+  }
+
+  function factsOfProduct(p) {
+    var f = {
+      name: p.name, type: p.type, fabric: p.fabric, fit: p.fit,
+      price: p.price, oldPrice: p.oldPrice, tag: p.tag, colour: ""
+    };
+    var g = SHOP();
+    try {
+      var i = (g && g.state().sel[p.id]) || 0;
+      f.colour = p.colors && p.colors[i] ? p.colors[i].n : "";
+    } catch (e) {}
+    try { f.left = g ? g.stockTotal(p) : null; } catch (e) { f.left = null; }
+    return f;
+  }
+
+  function bagTotal() {
+    var g = SHOP();
+    if (!g) return 0;
+    try {
+      return (g.state().cart || []).reduce(function (a, l) { return a + l.price * l.qty; }, 0);
+    } catch (e) { return 0; }
+  }
+
+  /* the delivery promise, told against what is actually in the bag */
+  function deliveryLine() {
+    var over = freeOver(), sub = bagTotal();
+    if (sub > 0 && sub < over) {
+      return "ব্যাগে " + taka(sub) + " — আর " + taka(over - sub) + " হলে ডেলিভারি ফ্রি।";
+    }
+    if (sub >= over && sub > 0) return "আপনার অর্ডারে ডেলিভারি ফ্রি হয়ে গেছে।";
+    var pool = [
+      taka(over) + "-এর বেশি কিনলে ডেলিভারি একদম ফ্রি।",
+      "ক্যাশ অন ডেলিভারি — হাতে পেয়ে তারপর টাকা দেবেন।",
+      "সাইজ না মিললে ৭ দিনের মধ্যে বদলে নিতে পারবেন।",
+      "খুলনায় পরদিন, বাকি দেশে ২–৪ দিনে পৌঁছে যাবে।"
+    ];
+    return pool[pitchN % pool.length];
+  }
+
+  /* every honest line she could say about this piece, best first */
+  function pitchLines(f) {
+    var out = [];
+    if (!f || !f.price) return out;
+    var t = bnType(f.type);
+    var col = bnColour(f.colour);
+    var off = (f.oldPrice && f.oldPrice > f.price)
+      ? Math.round((1 - f.price / f.oldPrice) * 100) : 0;
+
+    if (f.left === 0) {
+      out.push("এই " + t + "টা এখন শেষ — পাশেরগুলো দেখে নিন।");
+      return out;
+    }
+
+    if (off > 0) {
+      out.push("এই " + t + "টা নিতে পারেন — " + bn(off) + "% ছাড়ে এখন " +
+               taka(f.price) + ", " + taka(f.oldPrice - f.price) + " বাঁচছে।");
+    } else {
+      out.push("এই " + t + "টা দেখতে পারেন — " + taka(f.price) + "।");
+    }
+
+    if (col) out.push(col + " রঙের এই " + t + "টা আপনাকে খুব ভালো মানাবে।");
+
+    var fab = String(f.fabric || "");
+    if (/cotton/i.test(fab) && !/poly|elastane|spandex|viscose|rayon|blend/i.test(fab)) {
+      var gsm = fab.match(/(\d{2,3})\s*gsm/i);
+      out.push("এটা ১০০% কটন" + (gsm ? ", " + bn(gsm[1]) + " জিএসএম" : "") +
+               " — সারাদিন পরেও আরাম।");
+    } else if (fab) {
+      out.push("কাপড় — " + fab + "।");
+    }
+
+    if (f.tag && /best/i.test(f.tag)) {
+      out.push("এটা আমাদের বেস্ট সেলার — অনেকেই নিচ্ছেন।");
+    } else if (f.tag && /new/i.test(f.tag)) {
+      out.push("একদম নতুন এসেছে — আগে আপনিই দেখে নিন।");
+    }
+    if (typeof f.left === "number" && f.left > 0 && f.left <= 5) {
+      out.push("মাত্র " + bn(f.left) + "টা বাকি — দেরি করলে ফুরিয়ে যাবে।");
+    }
+
+    out.push(deliveryLine());
+    var fit = bnFit(f.fit);
+    if (fit) out.push("ফিটিং — " + fit + "।");
+    if (f.name) out.push(f.name + " — ছবিতে চাপলে সব মাপ আর বিস্তারিত।");
+    return out;
+  }
+
+  /* the fit notes are written in English; say the ones we can say in Bengali
+     and stay quiet about the rest rather than mixing languages badly */
+  function bnFit(t) {
+    var k = String(t || "").toLowerCase();
+    if (!k) return "";
+    var bits = [];
+    if (/boxy|relaxed|oversize/.test(k)) bits.push("একটু ঢিলেঢালা");
+    else if (/trim|slim|fitted/.test(k)) bits.push("স্লিম");
+    else if (/regular|straight|classic/.test(k)) bits.push("রেগুলার");
+    if (/crop/.test(k)) bits.push("কোমরের উপরে ছোট");
+    else if (/longline|long body/.test(k)) bits.push("একটু লম্বা");
+    else if (/hip/.test(k)) bits.push("কোমর পর্যন্ত");
+    if (/ribbed hem/.test(k)) bits.push("নিচে রিব");
+    return bits.join(", ");
+  }
+
+  var pitchN = 0, lastCard = null, recent = [];
+
+  /* don't repeat a line she has just used */
+  function pick(lines) {
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[(pitchN + i) % lines.length];
+      if (recent.indexOf(l) === -1) {
+        pitchN += i + 1;
+        recent.push(l);
+        if (recent.length > 4) recent.shift();
+        return l;
+      }
+    }
+    return lines[pitchN++ % lines.length];
+  }
+
+  /* pick a product she can see and say one thing about it */
+  function salesTip() {
+    var cards = document.querySelectorAll("#grid .card");
+    var vis = [], i;
+    for (i = 0; i < cards.length; i++) if (onScreen(cards[i])) vis.push(cards[i]);
+    if (!vis.length) return null;
+    var at = Math.floor(Math.random() * vis.length);
+    if (vis.length > 1 && vis[at] === lastCard) at = (at + 1) % vis.length;
+    var card = vis[at];
+    var lines = pitchLines(factsOf(card));
+    if (!lines.length) return null;
+    lastCard = card;
+    return { el: card, say: pick(lines) };
+  }
+
+  /* the same, for the piece that is already open */
+  function detailPitch() {
+    var g = SHOP(), f = null;
+    try {
+      var id = g && g.detail() && g.detail().id;
+      var p = id ? g.byId(id) : null;
+      if (p) f = factsOfProduct(p);
+    } catch (e) {}
+    var lines = pitchLines(f);
+    if (!lines.length) return null;
+    var el = $(".detail-price");
+    if (!onScreen(el)) el = $("#addBtn");
+    if (!onScreen(el)) el = $(".sizes");
+    if (!onScreen(el)) return null;
+    return { el: el, say: pick(lines) };
+  }
+
   /* the next thing on the current list that is ALREADY on screen —
      he never scrolls the page to find something */
   function nextTip() {
     if (hidden || busy) return;
     if (given >= MAX_TIPS) { done = true; idle(); return; }
+
+    /* every other stop on the shop floor is a sales pitch about a real
+       product she can see, not another note about how the page works */
+    if (mode === "shop" && given % 2 === 1) {
+      var sp = salesTip();
+      if (sp) { given++; pointAt(sp.el, sp.say); return; }
+    }
+    if (mode === "detail" && given > 0 && given % 3 === 2) {
+      var dp = detailPitch();
+      if (dp) { given++; pointAt(dp.el, dp.say); return; }
+    }
     var tries = 0, tip = null, el = null;
     while (tries < tour.length) {
       idx = (idx + 1) % tour.length;
@@ -900,7 +1161,33 @@
     }
   }
   window.setInterval(watch, 500);
-  window.setTimeout(function () { startTour(situation(), 2400); }, 200);
+
+  /* ---------------------------------------------------------------
+     The first thing anyone gets: a welcome. She tries to say it out
+     loud too — most browsers will block that until the visitor has
+     touched the page, and that is fine; the greeting still shows.
+     --------------------------------------------------------------- */
+  function greet() {
+    var hello = "ProwdFashion-এ আপনাকে স্বাগতম! চলুন, ঘুরে দেখাই।";
+    var brand = document.querySelector(".topbar .brand-lockup") ||
+                document.querySelector(".brand-lockup");
+    busy = true;
+    if (onScreen(brand)) {
+      pointAt(brand, hello);
+    } else {
+      say.textContent = hello;
+      say.style.left = "-9999px";
+      say.dataset.on = "1";
+      bubbleSide = (sq.dataset.face === "left") ? "right" : "left";
+      placeBubble();
+    }
+    speak(hello, true);
+    window.setTimeout(function () {
+      busy = false;
+      startTour(situation(), 400);
+    }, 5400);
+  }
+  window.setTimeout(greet, 1100);
 
   /* ============================================================
      9. STAYING PUT WHILE THE PAGE MOVES
@@ -954,6 +1241,12 @@
     clearTip();
     window.setTimeout(function () { nextTip(); loop(); }, 260);
   }
+  hit.addEventListener("click", function () {
+    if (!canSpeak) {
+      canSpeak = true;                  /* a deliberate tap = permission to talk */
+      if (say.dataset.on === "1") speak(say.textContent);
+    }
+  });
   hit.addEventListener("click", poke);
   hit.addEventListener("keydown", function (ev) {
     if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); poke(); }
@@ -1334,6 +1627,7 @@
     }
     try { rec.start(); } catch (e) {}
     voiceOn = true;
+    canSpeak = true;
     mic.dataset.on = "1";
     tell("শুনছি। বলুন — নারী, পুরুষ, ব্যাগ, সাইজ এল, ব্যাগে রাখো।");
   }
@@ -1348,6 +1642,11 @@
     say: function (t) { heard(t); },
     voice: function (on) { listen(!!on); },
     tour: function (n) { startTour(n || situation(), 100); },
+    pitch: function () { var t = salesTip(); return t ? t.say : null; },
+    lines: function () {
+      var c = document.querySelector("#grid .card");
+      return c ? pitchLines(factsOf(c)) : [];
+    },
     at: function () { return current; }
   };
 })();

@@ -1265,4 +1265,19 @@ if(SB) loadProductsFromDb().then(boot,boot); else boot();
 /* the shop opens straight away — the measurement form is asked for only when
    the customer picks a type or opens a piece, and again on every new visit  */
 
+
+/* ================= a read-only window onto the shop =================
+   js/squirrel.js (the guide) needs real numbers to talk about: the price
+   on the tag, how many pieces are left, what the fabric is. Everything in
+   this file lives inside an IIFE, so nothing is reachable from outside —
+   this is the one small hatch, and it only ever reads. */
+window.PROWD = {
+  products:   function(){ return P; },
+  byId:       function(id){ return P.filter(function(x){ return x.id===id; })[0] || null; },
+  state:      function(){ return state; },
+  detail:     function(){ return detailState; },
+  stockTotal: function(p){ try { return stockTotal(p); } catch(e){ return null; } },
+  freeOver:   FREE_OVER
+};
+
 })();
