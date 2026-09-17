@@ -84,35 +84,54 @@
      ============================================================ */
   /* Most specific phrases first: "ব্যাগে রাখো" must win over "ব্যাগ". */
   var VOICE = [
-    { w: ["ব্যাগে রাখ", "ব্যাগে দাও", "ব্যাগে ভর", "অ্যাড কর", "add to bag", "add"],
+    { w: ["ব্যাগে রাখ", "ব্যাগে দাও", "ব্যাগে ভর", "অ্যাড কর", "add to bag",
+      "add to cart", "add", "bagে rakho", "bag e rakho", "rakho", "डालो", "जोड़ो",
+      "अ‍ॅड", "أضف"],
       sel: "#addBtn", say: "ব্যাগে রাখছি।" },
-    { w: ["অর্ডার কর", "অর্ডার দাও", "অর্ডার দিব", "place order", "checkout"],
-      sel: "#checkout", say: "অর্ডার ফর্ম খুলছি।" },
-    { w: ["কনফার্ম", "নিশ্চিত", "confirm"], sel: "#orderGo", noClick: true,
+    { w: ["অর্ডার কর", "অর্ডার দাও", "অর্ডার দিব", "place order", "checkout",
+      "check out", "order koro", "order", "ऑर्डर", "आर्डर", "اطلب", "اطلب الآن"],
+      sel: "#checkout", via: "#cartBtn", viaSay: "ব্যাগ খুলে অর্ডারে যাচ্ছি।",
+      say: "অর্ডার ফর্ম খুলছি।" },
+    { w: ["কনফার্ম", "নিশ্চিত", "confirm", "कन्फर्म", "पुष्टि", "تأكيد"],
+      sel: "#orderGo", noClick: true,
       say: "শেষ চাপটা আপনি নিজে দিন — এটা আমি চাপব না।" },
     { w: ["সাইজ চার্ট", "মাপের চার্ট", "মাপ দেখ", "size chart"], sel: ".size-chart",
       noClick: true, say: "এই যে মাপের চার্ট।" },
-    { w: ["এখনি কিন", "কিনব", "কিনবো", "buy now", "buy"], sel: "#buyBtn",
+    { w: ["এখনি কিন", "কিনব", "কিনবো", "buy now", "buy", "kino", "kinbo",
+      "खरीद", "अभी खरीदें", "اشتر"], sel: "#buyBtn",
       say: "কেনার ধাপে নিচ্ছি।" },
-    { w: ["নারী", "মেয়ে", "women", "woman"], sel: '#genderChips [data-gender="women"]',
+    { w: ["নারী", "মেয়ে", "women", "woman", "ladies", "female", "nari", "meye",
+      "mohila", "महिला", "औरत", "लेडीज", "نساء", "femme", "mujer"],
+      sel: '#genderChips [data-gender="women"]',
       say: "নারীদের পোশাক দেখাচ্ছি।" },
-    { w: ["পুরুষ", "ছেলে", "men", "man"], sel: '#genderChips [data-gender="men"]',
+    { w: ["পুরুষ", "ছেলে", "men", "man", "gents", "male", "purush", "chele",
+      "पुरुष", "आदमी", "मर्द", "رجال", "homme", "hombre"],
+      sel: '#genderChips [data-gender="men"]',
       say: "পুরুষদের পোশাক দেখাচ্ছি।" },
-    { w: ["সবাই", "সবকিছু", "সব দেখ", "সবগুলো", "everyone"],
+    { w: ["সবাই", "সবকিছু", "সব দেখ", "সবগুলো", "everyone", "everybody", "all",
+      "shob", "सब", "सभी", "الكل", "todos", "tout"],
       sel: '#genderChips [data-gender="all"]',
       say: "সব দেখাচ্ছি।" },
-    { w: ["ব্যাগ", "কার্ট", "bag", "cart"], sel: "#cartBtn", say: "ব্যাগ খুলছি।" },
-    { w: ["খোঁজ", "খুঁজ", "সার্চ", "search"], sel: "#q", focus: true,
+    { w: ["ব্যাগ", "কার্ট", "bag", "cart", "basket", "byag", "बैग", "थैला",
+      "टोकरी", "حقيبة", "panier", "carrito"],
+      sel: "#cartBtn", say: "ব্যাগ খুলছি।" },
+    { w: ["খোঁজ", "খুঁজ", "সার্চ", "search", "find", "khojo", "khujo",
+      "खोज", "ढूंढ", "सर्च", "ابحث", "buscar", "chercher"],
+      sel: "#q", focus: true,
       say: "লিখুন, খুঁজে দিচ্ছি।" },
-    { w: ["থিম", "রাত", "অন্ধকার", "আলো", "theme", "dark", "light"], sel: "#themeBtn",
+    { w: ["থিম", "রাত", "অন্ধকার", "আলো", "theme", "dark", "light", "night",
+      "डार्क", "रात", "थीम", "ليل", "oscuro"], sel: "#themeBtn",
       say: "থিম বদলে দিলাম।" },
     { w: ["হোয়াটস", "whatsapp"], sel: "#waTalk", noClick: true,
       say: "এখানে চাপলে WhatsApp খুলবে — আপনি চাপুন।" },
-    { w: ["বাড়াও", "বাড়া", "আরেকটা", "more"], sel: '.stepper [data-q="1"]',
+    { w: ["বাড়াও", "বাড়া", "আরেকটা", "more", "plus", "increase", "barao",
+      "बढ़ाओ", "और", "زد"], sel: '.stepper [data-q="1"]',
       say: "একটা বাড়ালাম।" },
-    { w: ["কমাও", "কমা", "less"], sel: '.stepper [data-q="-1"]', say: "একটা কমালাম।" },
+    { w: ["কমাও", "কমা", "less", "minus", "decrease", "komao", "घटाओ", "कम",
+      "قلل"], sel: '.stepper [data-q="-1"]', say: "একটা কমালাম।" },
     { w: ["সাজাও", "সর্ট", "sort"], sel: "#sort", focus: true, say: "এখান থেকে সাজান।" },
-    { w: ["রঙ", "রং", "কালার", "colour", "color"], sel: ".swatches", noClick: true,
+    { w: ["রঙ", "রং", "কালার", "colour", "color", "rong", "रंग", "لون"],
+      sel: ".swatches", noClick: true,
       say: "রঙ এখান থেকে বেছে নিন।" },
     /* the order form, field by field */
     { w: ["নাম লিখ", "নাম বস", "আপনার নাম", "your name"], sel: "#oName", focus: true,
@@ -126,23 +145,32 @@
       say: "কোডটা এখানে বসান।" },
     { w: ["মোট", "টোটাল", "total"], sel: "#orderSum", noClick: true,
       say: "মোট এইটুকু আসছে।" },
-    { w: ["বন্ধ", "ক্লোজ", "close"], act: "close", say: "বন্ধ করলাম।" },
-    { w: ["উপরে", "উপর", "up", "top"], act: "up", say: "উপরে যাচ্ছি।" },
-    { w: ["নিচে", "নিচ", "down"], act: "down", say: "নিচে যাচ্ছি।" },
-    { w: ["পরের", "পরবর্তী", "next"], act: "next", say: "" },
-    { w: ["থাম", "চুপ", "stop"], act: "stop", say: "আচ্ছা, চুপ থাকলাম।" },
-    { w: ["লুকাও", "চলে যাও", "hide"], act: "hide", say: "" }
+    { w: ["বন্ধ", "ক্লোজ", "close", "bondho", "बंद", "क्लोज", "أغلق",
+      "cerrar", "fermer"], act: "close", say: "বন্ধ করলাম।" },
+    { w: ["উপরে", "উপর", "up", "top", "upore", "ऊपर", "फوق", "arriba"],
+      act: "up", say: "উপরে যাচ্ছি।" },
+    { w: ["নিচে", "নিচ", "down", "niche", "नीचे", "أسفل", "abajo"],
+      act: "down", say: "নিচে যাচ্ছি।" },
+    { w: ["পরের", "পরবর্তী", "next", "porer", "अगला", "आगे", "التالي",
+      "siguiente", "suivant"], act: "next", say: "" },
+    { w: ["থাম", "চুপ", "stop", "quiet", "thamo", "chup", "रुको", "चुप",
+      "توقف", "alto"], act: "stop", say: "আচ্ছা, চুপ থাকলাম।" },
+    { w: ["লুকাও", "চলে যাও", "hide", "go away", "lukao", "छिपो", "जाओ",
+      "اختف"], act: "hide", say: "" }
   ];
 
   var ORDINALS = [
-    { w: ["প্রথম", "১", "এক ", "first", "one"], n: 1 },
-    { w: ["দ্বিতীয়", "২", "দুই", "second", "two"], n: 2 },
-    { w: ["তৃতীয়", "৩", "তিন", "third", "three"], n: 3 },
-    { w: ["চতুর্থ", "৪", "চার", "fourth", "four"], n: 4 },
-    { w: ["পঞ্চম", "৫", "পাঁচ", "fifth", "five"], n: 5 },
-    { w: ["ষষ্ঠ", "৬", "ছয়", "sixth", "six"], n: 6 }
+    { w: ["প্রথম", "১", "এক ", "first", "one", "prothom", "pehla", "पहला", "1"], n: 1 },
+    { w: ["দ্বিতীয়", "২", "দুই", "second", "two", "ditiyo", "dusra", "दूसरा", "2"], n: 2 },
+    { w: ["তৃতীয়", "৩", "তিন", "third", "three", "tritiyo", "tisra", "तीसरा", "3"], n: 3 },
+    { w: ["চতুর্থ", "৪", "চার", "fourth", "four", "chouth", "चौथा", "4"], n: 4 },
+    { w: ["পঞ্চম", "৫", "পাঁচ", "fifth", "five", "पांचवां", "5"], n: 5 },
+    { w: ["ষষ্ঠ", "৬", "ছয়", "sixth", "six", "छठा", "6"], n: 6 }
   ];
-  var CLICK_WORDS = ["ক্লিক", "চাপ", "টিপ", "প্রেস", "খোল", "দেখাও", "click", "press", "open", "tap"];
+  var CLICK_WORDS = ["ক্লিক", "চাপ", "টিপ", "প্রেস", "খোল", "দেখাও", "সিলেক্ট",
+    "click", "press", "open", "tap", "select", "choose", "hit",
+    "kholo", "khulo", "chap", "tipo", "dekhao",
+    "दबाओ", "खोलो", "चुनो", "क्लिक", "اضغط", "افتح", "haz", "clique"];
 
   /* ============================================================
      3. STYLES
@@ -1326,6 +1354,7 @@
   function press(el, opts) {
     opts = opts || {};
     opts.say = opts.say || "";
+    acted = true;
     busy = true;
     window.clearTimeout(timer);
     pointAt(el, opts.say);
@@ -1353,7 +1382,18 @@
     "এটা", "এটি", "ওটা", "ওটি", "এই", "ওই", "একটা", "একটু", "আমাকে", "আমি",
     "তুমি", "যাও", "গিয়ে", "উপর", "মধ্যে", "থেকে", "আর", "এবং", "তে", "এ",
     "click", "press", "select", "choose", "open", "tap", "the", "this", "that",
-    "on", "to", "me", "please", "go", "and", "a", "an"
+    "on", "to", "me", "please", "go", "and", "a", "an", "show", "want", "i",
+    "my", "for", "can", "you", "would", "like", "give", "take", "put", "let",
+    /* romanised Bengali — how a lot of people actually talk */
+    "koro", "kor", "korun", "dao", "nao", "dekhao", "dekho", "kore", "ta", "ti",
+    "amake", "ami", "ekta", "please", "kore", "den", "diye",
+    /* Hindi / Urdu */
+    "करो", "कीजिए", "दिखाओ", "दीजिए", "चाहिए", "मुझे", "पर", "को", "है", "का",
+    "karo", "kijiye", "dikhao", "dijiye", "chahiye", "mujhe", "par", "ko",
+    /* Arabic */
+    "اضغط", "أريد", "من", "فضلك", "على", "هذا",
+    /* Spanish / French / Portuguese fillers, in case */
+    "por", "favor", "quiero", "haz", "clique", "sur", "le", "la", "je", "veux"
   ];
   var SYN = {
     "টিশার্ট": "t-shirt tee tshirt", "টি": "t-shirt tee", "শার্ট": "shirt tee",
@@ -1370,13 +1410,43 @@
     "প্রমো": "promo code", "মোট": "total", "ডেলিভারি": "delivery", "কুরিয়ার": "courier",
     "রঙ": "colour color", "কালার": "colour color", "ছবি": "photo image view",
     "বাংলাদেশ": "bangladesh", "খুলনা": "khulna", "ঢাকা": "dhaka",
+
+    /* ---- romanised Bengali ("Banglish") ---- */
+    "shada": "white", "sada": "white", "kalo": "black", "nil": "navy blue",
+    "shobuj": "green", "sobuj": "green", "lal": "red", "holud": "yellow",
+    "golapi": "pink", "khoyeri": "brown", "dhusor": "grey gray",
+    "jama": "tee shirt", "genji": "tee t-shirt", "gengi": "tee t-shirt",
+    "poshak": "tee shirt dress", "dam": "price", "chhar": "off discount",
+    "nari": "women", "meye": "women", "mohila": "women",
+    "purush": "men", "chele": "men", "porush": "men",
+    "bag": "bag", "byag": "bag", "kholo": "open", "khulo": "open",
+    "rakho": "add", "kino": "buy", "boro": "xl large", "choto": "s small",
+
+    /* ---- Hindi / Urdu ---- */
+    "काला": "black", "सफेद": "white", "सफ़ेद": "white", "नीला": "navy blue",
+    "हरा": "green", "लाल": "red", "पीला": "yellow", "गुलाबी": "pink",
+    "भूरा": "brown", "स्लेटी": "grey gray",
+    "कमीज": "shirt", "कमीज़": "shirt", "टीशर्ट": "t-shirt tee",
+    "महिला": "women", "औरत": "women", "लड़की": "women",
+    "पुरुष": "men", "आदमी": "men", "लड़का": "men",
+    "बैग": "bag", "थैला": "bag", "कीमत": "price", "छूट": "off discount",
+    "आकार": "size", "नाम": "name", "पता": "address", "फोन": "phone mobile",
+    "سیاہ": "black", "سفید": "white", "قمیض": "shirt", "بیگ": "bag",
+    "أسود": "black", "أبيض": "white", "قميص": "shirt", "حقيبة": "bag",
+
+    /* ---- plain English helpers ---- */
+    "tshirt": "t-shirt tee", "t": "t-shirt tee", "sweater": "sweatshirt",
+    "trousers": "trouser pant", "checkout": "place order", "basket": "bag",
+    "cart": "bag", "colour": "color", "gray": "grey",
     "সেরা": "best seller", "স্টক": "stock", "রিভিউ": "review"
   };
 
   function norm(t) {
     return String(t || "").toLowerCase()
       .replace(/[\u200b\u200c\u200d]/g, "")
-      .replace(/[^0-9a-z\u0980-\u09FF]+/g, " ")
+      /* keep the letters of every script the visitor might speak in —
+         the old version dropped everything outside Latin and Bengali */
+      .replace(/[^\w\u00C0-\u024F\u0370-\u03FF\u0400-\u04FF\u0590-\u06FF\u0900-\u0DFF\u0E00-\u0E7F\u1100-\u11FF\u3040-\u30FF\u4E00-\u9FFF]+/g, " ")
       .replace(/\s+/g, " ").trim();
   }
   /* "টি-শার্টটাতে" → "টি শার্ট" */
@@ -1459,7 +1529,7 @@
     return best;
   }
 
-  function heard(raw) {
+  function resolveCmd(raw) {
     var text = String(raw || "").toLowerCase().replace(/[।,.?!]/g, " ").trim();
     if (!text) return;
     window.clearTimeout(timer);   /* a spoken command outranks the tour */
@@ -1486,6 +1556,19 @@
       .replace(/এক্স\s*এক্স\s*এক্স\s*এল/g, " xxxl ")
       .replace(/ডাবল\s*এক্স\s*এল/g, " xxl ")
       .replace(/এক্স\s*এক্স\s*এল/g, " xxl ")
+      .replace(/double\s*x\s*l/g, " xxl ")
+      .replace(/triple\s*x\s*l/g, " xxxl ")
+      .replace(/extra\s*large/g, " xl ")
+      .replace(/extra\s*small/g, " xs ")
+      .replace(/large/g, " l ")
+      .replace(/medium/g, " m ")
+      .replace(/small/g, " s ")
+      .replace(/एक्स\s*एक्स\s*एल/g, " xxl ")
+      .replace(/एक्स\s*एल/g, " xl ")
+      .replace(/एक्स\s*एस/g, " xs ")
+      .replace(/बड़ा|लार्ज/g, " l ")
+      .replace(/मीडियम|मध्यम/g, " m ")
+      .replace(/छोटा|स्मॉल/g, " s ")
       .replace(/এক্সট্রা\s*লার্জ/g, " xl ")
       .replace(/এক্সট্রা\s*স্মল/g, " xs ")
       .replace(/এক্স\s*এল/g, " xl ")
@@ -1498,7 +1581,11 @@
       .replace(/বড়/g, " xl ")
       .replace(/\s+/g, " ") + " ";
     /* the bare letter names, once the multi-word ones above are done */
-    var LETTER = { "এল": "l", "এম": "m", "এস": "s", "এ": "", "ও": "" };
+    var LETTER = {
+      "এল": "l", "এম": "m", "এস": "s", "এ": "", "ও": "",
+      "एल": "l", "एम": "m", "एस": "s", "एक्स": "x",
+      "ال": "l", "ام": "m", "اس": "s"
+    };
     lt = " " + lt.split(" ").map(function (w) {
       return Object.prototype.hasOwnProperty.call(LETTER, w) ? LETTER[w] : w;
     }).join(" ").replace(/\s+/g, " ").trim() + " ";
@@ -1511,7 +1598,8 @@
       { re: /\sm\s/,                s: "M",    strong: false },
       { re: /\ss\s/,                s: "S",    strong: false }
     ];
-    var saidSize = has(text, ["সাইজ", "মাপ", "size"]);
+    var saidSize = has(text, ["সাইজ", "মাপ", "size", "साइज", "आकार", "مقاس",
+                              "talla", "taille", "maap"]);
     var want = null;
     for (var z = 0; z < SIZES.length; z++) {
       if (SIZES[z].re.test(lt) && (SIZES[z].strong || saidSize)) { want = SIZES[z].s; break; }
@@ -1529,6 +1617,7 @@
         if (lbl === want) hitBtn = sizeBtns[y];
       }
       if (hitBtn) { press(hitBtn, { say: want + " সাইজ বেছে নিলাম।" }); return; }
+      acted = true;
       tell(want + " সাইজটা এই পোশাকে নেই। আছে — " + have.join(", ") + "।");
       return;
     }
@@ -1541,17 +1630,33 @@
 
       if (v.act === "close") {
         var scrim = document.getElementById("scrim");
-        if (scrim) scrim.click();
+        acted = true; if (scrim) scrim.click();
         tell(v.say); return;
       }
-      if (v.act === "up")   { window.scrollBy({ top: -VH() * .8, behavior: "smooth" }); tell(v.say); return; }
-      if (v.act === "down") { window.scrollBy({ top:  VH() * .8, behavior: "smooth" }); tell(v.say); return; }
-      if (v.act === "next") { poke(); return; }
-      if (v.act === "stop") { done = true; window.clearTimeout(timer); tell(v.say); return; }
-      if (v.act === "hide") { x.click(); return; }
+      acted = true; if (v.act === "up")   { window.scrollBy({ top: -VH() * .8, behavior: "smooth" }); tell(v.say); return; }
+      acted = true; if (v.act === "down") { window.scrollBy({ top:  VH() * .8, behavior: "smooth" }); tell(v.say); return; }
+      acted = true; if (v.act === "next") { poke(); return; }
+      acted = true; if (v.act === "stop") { done = true; window.clearTimeout(timer); tell(v.say); return; }
+      acted = true; if (v.act === "hide") { x.click(); return; }
 
       var target = $(v.sel);
-      if (!onScreen(target)) { missed = v; continue; }  /* maybe something else fits */
+      if (!onScreen(target)) {
+        /* some steps live behind another one — "order" needs the bag open
+           first. If she can get there in one hop, she does it herself. */
+        var gate = v.via ? $(v.via) : null;
+        if (gate && onScreen(gate)) {
+          acted = true;
+          press(gate, { say: v.viaSay || "" });
+          (function (step) {
+            window.setTimeout(function () {
+              var t2 = $(step.sel);
+              if (onScreen(t2)) press(t2, step);
+            }, 2000);
+          })(v);
+          return;
+        }
+        missed = v; continue;                 /* maybe something else fits */
+      }
       press(target, v);
       return;
     }
@@ -1595,19 +1700,68 @@
     tell("\u201C" + text.slice(0, 26) + "\u201D — এটা পর্দায় খুঁজে পেলাম না।");
   }
 
+  /* ------------------------------------------------------------
+     She answers in Bengali, always. But the visitor may not speak it.
+     A browser recogniser only listens in ONE language at a time and has
+     no "detect it for me", so she cycles through a short list — the
+     visitor's own browser languages first, then Bengali, English, Hindi,
+     Urdu, Arabic — and the moment a command in some language works, she
+     stays in that language. Two misses in a row and she starts cycling
+     again. The visitor never has to set anything.
+     ------------------------------------------------------------ */
+  var LANGS = (function () {
+    var base = ["bn-BD", "en-US", "hi-IN", "ur-PK", "ar-SA"];
+    var mine = [];
+    try {
+      var list = navigator.languages || [navigator.language || ""];
+      for (var i = 0; i < list.length && i < 3; i++) {
+        var t = String(list[i] || "");
+        if (t && base.indexOf(t) === -1 && mine.indexOf(t) === -1) mine.push(t);
+      }
+    } catch (e) {}
+    return mine.concat(base);
+  })();
+  var langAt = 0, langLock = "", misses = 0, rotateTimer = 0;
+
+  function nextLang() {
+    if (!wantVoice || !rec) return;
+    try { rec.stop(); } catch (e) {}      /* onend picks the next one up */
+  }
+  function armRotate() {
+    window.clearTimeout(rotateTimer);
+    if (langLock) return;                 /* settled on a language — leave it */
+    rotateTimer = window.setTimeout(nextLang, 7000);
+  }
+
+  var acted = false;     /* did the last utterance actually do something? */
+
+  function heard(raw) {
+    acted = false;
+    resolveCmd(raw);
+    if (acted) {
+      langLock = rec ? rec.lang : "";     /* this is the visitor's language */
+      misses = 0;
+      window.clearTimeout(rotateTimer);
+    } else {
+      misses++;
+      if (misses >= 2) { misses = 0; langLock = ""; langAt++; nextLang(); }
+    }
+    armRotate();
+  }
+
   function listen(on) {
     if (!SR) return;
     wantVoice = on;
     if (!on) {
       voiceOn = false;
       mic.dataset.on = "0";
+      window.clearTimeout(rotateTimer);
       if (rec) { try { rec.abort(); } catch (e) {} }
       try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
       return;
     }
     if (!rec) {
       rec = new SR();
-      rec.lang = "bn-BD";
       rec.continuous = true;
       rec.interimResults = false;
       rec.onresult = function (ev) {
@@ -1615,6 +1769,7 @@
           if (ev.results[i].isFinal) heard(ev.results[i][0].transcript);
         }
       };
+      rec.onspeechstart = function () { window.clearTimeout(rotateTimer); };
       rec.onerror = function (ev) {
         if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
           listen(false);
@@ -1622,14 +1777,25 @@
         }
       };
       rec.onend = function () {
-        if (wantVoice) { window.setTimeout(function () { try { rec.start(); } catch (e) {} }, 350); }
+        if (!wantVoice) return;
+        if (!langLock) langAt++;
+        window.setTimeout(function () {
+          if (!wantVoice) return;
+          try {
+            rec.lang = langLock || LANGS[langAt % LANGS.length];
+            rec.start();
+            armRotate();
+          } catch (e) {}
+        }, 320);
       };
     }
+    rec.lang = langLock || LANGS[langAt % LANGS.length];
     try { rec.start(); } catch (e) {}
+    armRotate();
     voiceOn = true;
     canSpeak = true;
     mic.dataset.on = "1";
-    tell("শুনছি। বলুন — নারী, পুরুষ, ব্যাগ, সাইজ এল, ব্যাগে রাখো।");
+    tell("শুনছি — যে ভাষায় স্বচ্ছন্দ, সেভাবেই বলুন। উত্তর দেব বাংলায়।");
   }
 
   mic.addEventListener("click", function (ev) {
