@@ -112,6 +112,20 @@
       say: "একটা বাড়ালাম।" },
     { w: ["কমাও", "কমা", "less"], sel: '.stepper [data-q="-1"]', say: "একটা কমালাম।" },
     { w: ["সাজাও", "সর্ট", "sort"], sel: "#sort", focus: true, say: "এখান থেকে সাজান।" },
+    { w: ["রঙ", "রং", "কালার", "colour", "color"], sel: ".swatches", noClick: true,
+      say: "রঙ এখান থেকে বেছে নিন।" },
+    /* the order form, field by field */
+    { w: ["নাম লিখ", "নাম বস", "আপনার নাম", "your name"], sel: "#oName", focus: true,
+      say: "নামটা এখানে লিখুন।" },
+    { w: ["মোবাইল", "ফোন", "নম্বর", "mobile", "phone"], sel: "#oPhone", focus: true,
+      say: "১১ সংখ্যার নম্বর এখানে।" },
+    { w: ["জেলা", "district"], sel: "#oDist", focus: true, say: "জেলার নাম এখানে।" },
+    { w: ["ঠিকানা", "বাসা", "address"], sel: "#oAddr", focus: true,
+      say: "পুরো ঠিকানা এখানে লিখুন।" },
+    { w: ["প্রমো", "কুপন", "promo", "coupon"], sel: "#oPromo", focus: true,
+      say: "কোডটা এখানে বসান।" },
+    { w: ["মোট", "টোটাল", "total"], sel: "#orderSum", noClick: true,
+      say: "মোট এইটুকু আসছে।" },
     { w: ["বন্ধ", "ক্লোজ", "close"], act: "close", say: "বন্ধ করলাম।" },
     { w: ["উপরে", "উপর", "up", "top"], act: "up", say: "উপরে যাচ্ছি।" },
     { w: ["নিচে", "নিচ", "down"], act: "down", say: "নিচে যাচ্ছি।" },
@@ -150,11 +164,11 @@
     /* the bits that move */
     '.sq .sq-tail{transform-origin:64px 112px;animation:sq-tail 3.1s ease-in-out infinite;}',
     '.sq .sq-head{transform-origin:88px 54px;animation:sq-head 6.2s ease-in-out infinite;}',
-    '.sq .sq-ear{transform-origin:92px 30px;animation:sq-ear 7s ease-in-out infinite;}',
+    '.sq .sq-ear{transform-origin:94px 32px;animation:sq-ear 7s ease-in-out infinite;}',
     '.sq .sq-lid{transform-origin:104px 42px;animation:sq-blink 5.6s infinite;}',
-    '.sq .sq-arm{transform-origin:94px 72px;',
+    '.sq .sq-arm{transform-origin:91px 65px;',
     '  transition:transform .5s cubic-bezier(.34,1.56,.64,1);}',
-    '.sq[data-point="1"] .sq-arm{transform:rotate(-55deg);}',
+    '.sq[data-point="1"] .sq-arm{transform:rotate(-48deg);}',
     '.sq[data-hop="1"] .sq-tail{animation:sq-tail-hop .55s ease-in-out infinite;}',
     '.sq-shadow{transition:opacity .2s ease;}',
     '.sq[data-hop="1"] .sq-shadow{opacity:.06;}',
@@ -265,6 +279,15 @@
           '<feDisplacementMap in="SourceGraphic" in2="n" scale="3.1"',
           '   xChannelSelector="R" yChannelSelector="G"/>',
         '</filter>',
+        /* a soft feathered halo — blurred, then pulled apart by noise. This
+           is what makes the tail read as thousands of hairs instead of a shape. */
+        '<filter id="sqFluff" x="-40%" y="-40%" width="180%" height="180%">',
+          '<feGaussianBlur stdDeviation="1.5" result="bl"/>',
+          '<feTurbulence type="fractalNoise" baseFrequency=".42" numOctaves="4"',
+          '   seed="31" result="nf"/>',
+          '<feDisplacementMap in="bl" in2="nf" scale="9"',
+          '   xChannelSelector="R" yChannelSelector="G"/>',
+        '</filter>',
         '<filter id="sqFrayTail" x="-25%" y="-25%" width="150%" height="150%">',
           '<feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="4"',
           '   seed="19" result="nt"/>',
@@ -298,14 +321,16 @@
           '<stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/>',
           '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>',
         '</linearGradient>',
-        '<radialGradient id="sqEye" cx=".34" cy=".26" r=".9">',
-          '<stop offset="0" stop-color="#6E4F61"/>',
-          '<stop offset=".42" stop-color="#31202B"/>',
-          '<stop offset="1" stop-color="#0E070B"/>',
+        /* an albino squirrel's eye: ruby, lit from behind, not black */
+        '<radialGradient id="sqEye" cx=".33" cy=".25" r="1">',
+          '<stop offset="0" stop-color="#F7BDD1"/>',
+          '<stop offset=".3" stop-color="#DC6C90"/>',
+          '<stop offset=".62" stop-color="#B23A62"/>',
+          '<stop offset="1" stop-color="#6B1633"/>',
         '</radialGradient>',
         '<radialGradient id="sqNose" cx=".35" cy=".28" r=".9">',
-          '<stop offset="0" stop-color="#D98FB6"/>',
-          '<stop offset="1" stop-color="#A9578A"/>',
+          '<stop offset="0" stop-color="#F0AEC4"/>',
+          '<stop offset="1" stop-color="#C2647F"/>',
         '</radialGradient>',
       '</defs>',
 
@@ -317,26 +342,46 @@
          Plume: a frayed silhouette, then overlapping strokes that
          run WITH the hair, lightest on the outside of the curve. */
       '<g class="sq-tail">',
-        '<g filter="url(#sqFrayTail)">',
-          /* the plume, broad the way a squirrel's actually is */
-          '<path d="M76 116 C48 118 25 105 16 82 C7 59 13 32 30 18 C43 7 60 2 76 5',
-          '         C62 18 54 34 52 52 C50 72 56 92 68 104 C71 108 74 112 76 116 Z"',
-          '      fill="url(#sqPlume)"/>',
-          /* volume down the middle of the plume */
-          '<path d="M72 110 C50 103 35 85 35 61 C35 39 47 21 66 11"',
-          '      fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round"',
-          '      opacity=".5"/>',
-          '<path d="M70 106 C52 98 42 82 43 62 C44 43 53 28 68 18"',
-          '      fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"',
-          '      opacity=".55"/>',
+        /* the feathered halo first — a blurred, noise-torn version of the
+           plume, sitting behind it, so the outline never ends on a clean line */
+        '<g filter="url(#sqFluff)" opacity=".9">',
+          '<path d="M78 116 C50 120 26 108 15 84 C4 60 10 30 30 14 C44 2 62 -2 76 3 C62 11 53 26 49 46 C45 68 53 92 68 106 C71 110 75 113 78 116 Z"',
+          '   fill="#F4EDF2" stroke="#F4EDF2" stroke-width="15"',
+          '   stroke-linejoin="round" stroke-linecap="round"/>',
         '</g>',
+        /* the plume itself */
+        '<g filter="url(#sqFrayTail)">',
+          '<path d="M78 116 C50 120 26 108 15 84 C4 60 10 30 30 14 C44 2 62 -2 76 3 C62 11 53 26 49 46 C45 68 53 92 68 106 C71 110 75 113 78 116 Z"',
+          '   fill="url(#sqTail)" stroke="url(#sqTail)" stroke-width="8"',
+          '   stroke-linejoin="round" stroke-linecap="round"/>',
+          '<path d="M72 108 C48 100 32 80 32 56 C32 34 44 14 66 5"',
+          '   fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linecap="round"',
+          '   opacity=".55"/>',
+        '</g>',
+        /* individual hairs, running the way the fur actually lies */
         '<g filter="url(#sqFrayFine)" fill="none" stroke-linecap="round">',
-          '<path d="M66 108 C47 99 36 82 37 60 C38 40 47 24 63 13"',
-          '      stroke="#FFFFFF" stroke-width="3.2" opacity=".9"/>',
-          '<path d="M60 112 C39 103 27 84 28 60 C29 40 39 23 57 11"',
-          '      stroke="#DFD0DA" stroke-width="1.8" opacity=".6"/>',
-          '<path d="M74 8 C63 12 54 19 48 28 M24 26 C18 35 15 44 14 54"',
-          '      stroke="#F3ECF1" stroke-width="2.6" opacity=".8"/>',
+          '<path d="M74 110 C50 101 36 81 36 57 C36 36 47 17 68 7"',
+          '   stroke="#FFFFFF" stroke-width="2.6" opacity=".95"/>',
+          '<path d="M68 113 C43 103 28 82 29 56 C30 34 42 14 64 3"',
+          '   stroke="#EDE2EA" stroke-width="1.5" opacity=".7"/>',
+          '<path d="M60 115 C36 104 22 82 24 56 C26 33 38 13 60 1"',
+          '   stroke="#FBF7FA" stroke-width="1.8" opacity=".85"/>',
+          '<path d="M78 108 C56 98 44 79 45 56 C46 36 54 19 74 8"',
+          '   stroke="#E4D6E0" stroke-width="1.3" opacity=".6"/>',
+          '<path d="M52 116 C30 104 18 83 21 58 C23 36 34 16 55 4"',
+          '   stroke="#FFFFFF" stroke-width="1.4" opacity=".75"/>',
+          '<path d="M44 115 C24 102 14 80 18 56" stroke="#F0E6ED"',
+          '   stroke-width="1.2" opacity=".65"/>',
+          /* hair tips breaking the outline */
+          '<g stroke="#F6F1F5" stroke-width=".9" opacity=".8">',
+            '<path d="M15 84 L7 88 M11 70 L3 71 M11 54 L3 51 M16 39 L8 34"/>',
+            '<path d="M25 24 L19 16 M38 11 L34 3 M53 3 L51 -5 M68 1 L70 -7"/>',
+            '<path d="M79 4 L86 -1 M22 98 L15 104 M33 108 L29 117 M48 117 L46 125"/>',
+          '</g>',
+          '<g stroke="#E8DBE5" stroke-width=".8" opacity=".55">',
+            '<path d="M13 77 L5 79 M11 62 L3 61 M13 46 L5 42 M20 31 L13 25"/>',
+            '<path d="M31 17 L26 9 M45 6 L43 -2 M61 1 L60 -7 M27 103 L21 110"/>',
+          '</g>',
         '</g>',
       '</g>',
 
@@ -367,45 +412,50 @@
         '         C92 104 80 103 72 106 Z" fill="#FCF9FB"/>',
       '</g>',
       '<path d="M76 119.5 L76 113 M82 120 L82 113 M88 118.5 L87 112"',
-      '   stroke="#D3C1CE" stroke-width="1.15" stroke-linecap="round" fill="none"',
+      '   stroke="#E0AFC4" stroke-width="1.3" stroke-linecap="round" fill="none"',
       '   opacity=".9"/>',
 
       /* ------------------- the arm that does the pointing -------------------
-         At rest it hangs forward from the shoulder. To explain something it
-         swings up to horizontal — the gesture a person reads as "look here". */
+         A tapered limb with a small paw, drawn as filled shapes so it reads as
+         an arm rather than an outline. A soft blurred shadow sits under it,
+         because a white arm over a white chest needs something to separate it. */
       '<g class="sq-arm">',
-        /* a soft shadow behind the limb, so a white arm still reads
-           against a white chest */
-        '<g filter="url(#sqFrayFine)" opacity=".7">',
-          '<path d="M95 73.5 C100 79.5 104 86.5 105 93.5" fill="none" stroke="#CBB7C6"',
-          '      stroke-width="13" stroke-linecap="round"/>',
+        '<g filter="url(#sqFluff)" opacity=".45">',
+          '<path d="M91 64 C97 64 104 71 110 81 C113 86 112 91 108 91',
+          '         C104 91 98 84 93 76 C89 70 87 64 91 64 Z" fill="#B49CAF"/>',
         '</g>',
         '<g filter="url(#sqFrayFine)">',
-          '<path d="M94 72 C99 78 103 85 104 92" fill="none" stroke="#FDFBFC"',
-          '      stroke-width="10.5" stroke-linecap="round"/>',
-          '<path d="M104 89 C109.5 87.5 113 92 112 96.5 C111 101 104 102 100.5 98.5',
-          '         C97.5 95 99.5 90.5 104 89 Z" fill="#FFFFFF"/>',
+          '<path d="M90 62 C96 62 103 69 109 79 C112 84 111 89 107 89',
+          '         C103 89 97 82 92 74 C88 68 86 62 90 62 Z" fill="#FDFBFC"/>',
+          '<path d="M104 83 C110 81 116 85 115 90 C114 95 107 96 103 93',
+          '         C99 90 100 85 104 83 Z" fill="#FFFFFF"/>',
         '</g>',
-        '<path d="M94 72 C99 78 103 85 104 92" fill="none" stroke="#C9B4C4"',
-        '   stroke-width="1.5" stroke-linecap="round" opacity=".8"/>',
-        '<path d="M104 89 C109.5 87.5 113 92 112 96.5 C111 101 104 102 100.5 98.5',
-        '         C97.5 95 99.5 90.5 104 89 Z" fill="none" stroke="#C9B4C4"',
-        '   stroke-width="1.4" stroke-linejoin="round" opacity=".85"/>',
-        '<path d="M108 88.5 L110 85.5 M112 92 L115.5 91 M110.5 97 L113 99.5"',
-        '   stroke="#CDB9C8" stroke-width="1.15" stroke-linecap="round" fill="none"/>',
+        '<path d="M93 68 C98 72 104 78 108 85" fill="none" stroke="#D8C7D3"',
+        '   stroke-width="1" stroke-linecap="round" opacity=".4"/>',
+        /* toes, tipped pink the way a squirrel\u2019s are */
+        '<path d="M110 84 L114 82 M113.5 88 L118 88.5 M111 92.5 L114 95.5"',
+        '   stroke="#E0AFC4" stroke-width="1.5" stroke-linecap="round" fill="none"/>',
       '</g>',
 
       /* ------------------------- head ------------------------- */
       '<g class="sq-head">',
         '<g class="sq-ear">',
-          '<g filter="url(#sqFrayFine)">',
-            '<path d="M86 31 C81 12 94 2 102 12 C107 19 105 30 100 33 Z" fill="#FCF9FB"/>',
+          '<g filter="url(#sqFluff)" opacity=".55">',
+            '<path d="M86 33 C82 18 89 5 97 7 C105 9 107 22 103 33 Z" fill="#F4EDF2"/>',
           '</g>',
-          '<path d="M89.5 28 C86.5 15 94.5 9 98.5 16.5 C101 21 100 27.5 98 29.5 Z"',
-          '   fill="#EFB9D5" opacity=".75"/>',
-          '<path d="M86.5 14 C84 10 84 7 86.5 5.5 M100 12 C101.5 8 103 6.5 105.5 6.5"',
-          '   fill="none" stroke="#F4EDF2" stroke-width="2.2" stroke-linecap="round"/>',
+          '<g filter="url(#sqFrayFine)">',
+            '<path d="M87 32 C83 18 89 6 97 8 C104 10 106 22 102 32 Z" fill="#FCF9FB"/>',
+          '</g>',
+          '<path d="M90 30 C87.5 19 92 11 96.5 12.5 C101 14 102 22 99 30 Z"',
+          '   fill="#F2B7D0" opacity=".9"/>',
+          '<path d="M87 32 C83 18 89 6 97 8 C104 10 106 22 102 32" fill="none"',
+          '   stroke="#D9C6D2" stroke-width="1.1" opacity=".55" stroke-linecap="round"/>',
+          /* the two hairs that stick up off the ear */
+          '<path d="M89.5 9 C88 6 88 4 89.5 3 M98.5 8.5 C99.5 5.5 100.5 4 102 3.5"',
+          '   fill="none" stroke="#F0E6EE" stroke-width="1.3" stroke-linecap="round"',
+          '   opacity=".85"/>',
         '</g>',
+        /* skull and muzzle in one silhouette */
         '<g filter="url(#sqFray)">',
           '<path d="M84 31 C71 37 68 54 79 63 C89 72 106 70 115 61',
           '         C119 57 125 54 125 49 C125 44 120 41 117 37 C111 28 93 26 84 31 Z"',
@@ -434,8 +484,8 @@
         '<path d="M120.5 52.5 q-2.5 3.2 -6 1.6" fill="none" stroke="#B096A6"',
         '   stroke-width="1.3" stroke-linecap="round"/>',
         /* whiskers, long and fine */
-        '<g stroke="#CDBCC9" stroke-width=".95" stroke-linecap="round" fill="none"',
-        '   opacity=".9">',
+        '<g stroke="#CDBCC9" stroke-width=".8" stroke-linecap="round" fill="none"',
+        '   opacity=".55" filter="url(#sqFrayFine)">',
           '<path d="M119 44.5 C123 41 126 38.5 129 36.5"/>',
           '<path d="M120 48.5 C124 48 127 48.5 129.5 49.5"/>',
           '<path d="M119 52 C122.5 54 125.5 56.5 128 59"/>',
@@ -697,16 +747,57 @@
     ring.dataset.on = "1";
   }
 
+  /* ---------------------------------------------------------------
+     Her voice. Browsers hand back a different list of voices on every
+     device, so pick the best available: a Bengali female voice first,
+     then any Bengali one, then any female voice at all. If nothing on
+     the device is identifiably female, lift the pitch so it still
+     reads as a young woman rather than a man.
+     --------------------------------------------------------------- */
+  var VOICES = [], VOICE_PICK = null, VOICE_FEM = false;
+  var FEMALE_RE = /(female|woman|girl|\bfem\b|aarohi|swara|kalpana|tanishaa|priya|heera|veena|raveena|lekha|zira|susan|samantha|karen|moira|tessa|fiona|serena|amelie|nandini|sadia|anu)/i;
+  var MALE_RE = /(\bmale\b|\bman\b|\bboy\b|david|mark|rishi|hemant|ravi|prabhat|alex|daniel|fred|george|james|oliver)/i;
+
+  function rankVoice(v) {
+    var n = (v.name || "") + " " + (v.voiceURI || "");
+    var sc = 0;
+    if (/^bn/i.test(v.lang)) sc += 120;
+    else if (/^en[-_]?IN/i.test(v.lang)) sc += 35;
+    else if (/^hi/i.test(v.lang)) sc += 25;
+    else if (/^en/i.test(v.lang)) sc += 12;
+    if (FEMALE_RE.test(n)) sc += 60;
+    if (MALE_RE.test(n)) sc -= 80;
+    if (/google/i.test(n)) sc += 6;
+    if (v.localService) sc += 3;
+    return sc;
+  }
+  function loadVoices() {
+    try { VOICES = window.speechSynthesis.getVoices() || []; } catch (e) { VOICES = []; }
+    VOICE_PICK = null;
+    var bestScore = -1;
+    for (var i = 0; i < VOICES.length; i++) {
+      var sc = rankVoice(VOICES[i]);
+      if (sc > bestScore) { bestScore = sc; VOICE_PICK = VOICES[i]; }
+    }
+    VOICE_FEM = !!(VOICE_PICK && FEMALE_RE.test(VOICE_PICK.name || ""));
+  }
+  if (window.speechSynthesis) {
+    loadVoices();
+    try { window.speechSynthesis.addEventListener("voiceschanged", loadVoices); }
+    catch (e) { window.speechSynthesis.onvoiceschanged = loadVoices; }
+  }
+
   function speak(text) {
     if (!voiceOn || !text || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);
-      u.lang = "bn-BD"; u.rate = .98; u.pitch = 1.15;
-      var vs = window.speechSynthesis.getVoices() || [];
-      for (var i = 0; i < vs.length; i++) {
-        if (/^bn/i.test(vs[i].lang)) { u.voice = vs[i]; break; }
-      }
+      if (!VOICE_PICK) loadVoices();
+      if (VOICE_PICK) u.voice = VOICE_PICK;
+      u.lang = (VOICE_PICK && /^bn/i.test(VOICE_PICK.lang)) ? VOICE_PICK.lang : "bn-BD";
+      u.rate  = 1.0;
+      u.pitch = VOICE_FEM ? 1.25 : 1.6;   /* lift it if the device has no female voice */
+      u.volume = 1;
       window.speechSynthesis.speak(u);
     } catch (e) {}
   }
@@ -928,17 +1019,29 @@
   /* Hop over, point, then do it. The press is on its own timer rather than
      on the hop's arrival callback: opening a sheet changes the situation,
      which restarts the tour, and that would otherwise steal the callback. */
+  /* A product card is a container; the thing that actually opens it is the
+     button inside. Point at the card, press the button. */
+  var HOT = 'a[href],button,input,select,textarea,[role="button"],[data-open],' +
+            '[data-gender],[data-type],[data-sw],[data-q],[data-nav],[data-size]';
+  function clickTarget(el) {
+    if (!el) return el;
+    if (el.matches && el.matches(HOT)) return el;
+    var inner = el.querySelector && el.querySelector("[data-open],button,a[href]");
+    return inner || el;
+  }
+
   function press(el, opts) {
     opts = opts || {};
     opts.say = opts.say || "";
     busy = true;
     window.clearTimeout(timer);
     pointAt(el, opts.say);
+    var target = clickTarget(el);
     window.setTimeout(function () {
       try {
-        if (opts.noClick) { /* his paw stays off this one */ }
-        else if (opts.focus && el.focus) el.focus();
-        else el.click();
+        if (opts.noClick) { /* her paw stays off this one */ }
+        else if (opts.focus && target.focus) target.focus();
+        else target.click();
       } catch (e) {}
       window.setTimeout(function () { busy = false; loop(); }, 1300);
     }, REDUCED ? 180 : 900);
@@ -968,6 +1071,12 @@
     "ধূসর": "grey gray melange", "ছাই": "grey gray melange", "সবুজ": "green forest",
     "কমলা": "orange", "লাল": "red", "বাদামি": "brown", "গোলাপি": "pink",
     "দাম": "price", "ছাড়": "off discount", "নতুন": "new", "বেস্ট": "best seller",
+    "ধরন": "type types", "ধরনের": "type types", "সব": "all", "সবধরনের": "all types",
+    "নাম": "name", "মোবাইল": "mobile phone", "নম্বর": "number", "ফোন": "phone",
+    "জেলা": "district", "ঠিকানা": "address", "বাসা": "address", "কোড": "code",
+    "প্রমো": "promo code", "মোট": "total", "ডেলিভারি": "delivery", "কুরিয়ার": "courier",
+    "রঙ": "colour color", "কালার": "colour color", "ছবি": "photo image view",
+    "বাংলাদেশ": "bangladesh", "খুলনা": "khulna", "ঢাকা": "dhaka",
     "সেরা": "best seller", "স্টক": "stock", "রিভিউ": "review"
   };
 
@@ -1037,8 +1146,10 @@
       lab = labelOf(el);
       if (lab.length < 3) continue;
       sc = 0;
+      var flat = lab.trim();
       for (k = 0; k < toks.length; k++) {
-        if (lab.indexOf(" " + toks[k] + " ") !== -1) sc += 3;      /* whole word */
+        if (flat === toks[k]) sc += 8;                             /* the whole label */
+        else if (lab.indexOf(" " + toks[k] + " ") !== -1) sc += 3; /* whole word */
         else if (toks[k].length >= 3 && lab.indexOf(toks[k]) !== -1) sc += 2;
       }
       if (sc < 3) continue;
@@ -1072,28 +1183,65 @@
       }
     }
 
-    /* "এল সাইজ" */
-    if (has(text, ["সাইজ", "size"])) {
-      var sizes = document.querySelectorAll(".sizes .size");
-      var names = [
-        { w: ["এক্স এল", "এক্সএল", "xl", "এক্স-এল"], m: /^xl$/i },
-        { w: ["এল", " l ", "লার্জ", "large"], m: /^l$/i },
-        { w: ["এম", "মিডিয়াম", "medium", " m "], m: /^m$/i },
-        { w: ["এস", "স্মল", "small", " s "], m: /^s$/i }
-      ];
-      for (var n = 0; n < names.length; n++) {
-        if (has(" " + text + " ", names[n].w)) {
-          for (var k = 0; k < sizes.length; k++) {
-            if (names[n].m.test(sizes[k].textContent.trim())) {
-              press(sizes[k], { say: sizes[k].textContent.trim() + " সাইজ বেছে নিলাম।" });
-              return;
-            }
-          }
-        }
+    /* ---------------- sizes ----------------
+       Bengali speech comes back as letter NAMES — "এক্স এক্স এল", "ডাবল এক্স
+       এল" — never as "XXL". Translate those to letters first, then look for
+       the button. If that size is not on this garment, say which ones are,
+       instead of "I could not find it". */
+    var lt = " " + norm(text)
+      .replace(/ট্রিপল\s*এক্স\s*এল/g, " xxxl ")
+      .replace(/এক্স\s*এক্স\s*এক্স\s*এল/g, " xxxl ")
+      .replace(/ডাবল\s*এক্স\s*এল/g, " xxl ")
+      .replace(/এক্স\s*এক্স\s*এল/g, " xxl ")
+      .replace(/এক্সট্রা\s*লার্জ/g, " xl ")
+      .replace(/এক্সট্রা\s*স্মল/g, " xs ")
+      .replace(/এক্স\s*এল/g, " xl ")
+      .replace(/এক্স\s*এস/g, " xs ")
+      .replace(/লার্জ/g, " l ")
+      .replace(/মিডিয়াম/g, " m ")
+      .replace(/মাঝারি/g, " m ")
+      .replace(/স্মল/g, " s ")
+      .replace(/ছোট/g, " s ")
+      .replace(/বড়/g, " xl ")
+      .replace(/\s+/g, " ") + " ";
+    /* the bare letter names, once the multi-word ones above are done */
+    var LETTER = { "এল": "l", "এম": "m", "এস": "s", "এ": "", "ও": "" };
+    lt = " " + lt.split(" ").map(function (w) {
+      return Object.prototype.hasOwnProperty.call(LETTER, w) ? LETTER[w] : w;
+    }).join(" ").replace(/\s+/g, " ").trim() + " ";
+    var SIZES = [
+      { re: /\s(xxxl|3xl|xxx l)\s/, s: "XXXL", strong: true },
+      { re: /\s(xxl|2xl|xx l)\s/,   s: "XXL",  strong: true },
+      { re: /\sxl\s/,               s: "XL",   strong: true },
+      { re: /\sxs\s/,               s: "XS",   strong: true },
+      { re: /\sl\s/,                s: "L",    strong: false },
+      { re: /\sm\s/,                s: "M",    strong: false },
+      { re: /\ss\s/,                s: "S",    strong: false }
+    ];
+    var saidSize = has(text, ["সাইজ", "মাপ", "size"]);
+    var want = null;
+    for (var z = 0; z < SIZES.length; z++) {
+      if (SIZES[z].re.test(lt) && (SIZES[z].strong || saidSize)) { want = SIZES[z].s; break; }
+    }
+    if (want) {
+      var sizeBtns = document.querySelectorAll(".sizes .size");
+      if (!sizeBtns.length) {
+        tell("আগে একটা পোশাক খুলুন — তারপর সাইজ বলুন।");
+        return;
       }
+      var have = [], hitBtn = null;
+      for (var y = 0; y < sizeBtns.length; y++) {
+        var lbl = (sizeBtns[y].textContent || "").trim().toUpperCase();
+        have.push(lbl);
+        if (lbl === want) hitBtn = sizeBtns[y];
+      }
+      if (hitBtn) { press(hitBtn, { say: want + " সাইজ বেছে নিলাম।" }); return; }
+      tell(want + " সাইজটা এই পোশাকে নেই। আছে — " + have.join(", ") + "।");
+      return;
     }
 
     /* the named things */
+    var missed = null;
     for (var i = 0; i < VOICE.length; i++) {
       var v = VOICE[i];
       if (!has(text, v.w)) continue;
@@ -1110,10 +1258,7 @@
       if (v.act === "hide") { x.click(); return; }
 
       var target = $(v.sel);
-      if (!onScreen(target)) {
-        tell("এটা এখন পর্দায় নেই — আগে ওই ধাপটা খুলুন।");
-        return;
-      }
+      if (!onScreen(target)) { missed = v; continue; }  /* maybe something else fits */
       press(target, v);
       return;
     }
@@ -1153,6 +1298,7 @@
       return;
     }
 
+    if (missed) { tell("এটা এখন পর্দায় নেই — আগে ওই ধাপটা খুলুন।"); return; }
     tell("\u201C" + text.slice(0, 26) + "\u201D — এটা পর্দায় খুঁজে পেলাম না।");
   }
 
