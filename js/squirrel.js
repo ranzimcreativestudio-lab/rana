@@ -776,25 +776,30 @@
   }
 
   /* ---------------------------------------------------------------
-     Her voice. Browsers hand back a different list of voices on every
-     device, so pick the best available: a Bengali female voice first,
-     then any Bengali one, then any female voice at all. If nothing on
-     the device is identifiably female, lift the pitch so it still
-     reads as a young woman rather than a man.
+     The voice. Browsers hand back a different list of voices on every
+     device, so pick the best available: the right language first, then
+     the right gender. If the device has no voice of that gender at all,
+     shift the pitch so it still reads the way it should.
+
+     To switch her back to a woman's voice, change ONE word below:
+     WANT_VOICE = "female".
      --------------------------------------------------------------- */
-  var VOICES = [], VOICE_PICK = null, VOICE_FEM = false;
-  var FEMALE_RE = /(female|woman|girl|\bfem\b|aarohi|swara|kalpana|tanishaa|priya|heera|veena|raveena|lekha|zira|susan|samantha|karen|moira|tessa|fiona|serena|amelie|nandini|sadia|anu)/i;
-  var MALE_RE = /(\bmale\b|\bman\b|\bboy\b|david|mark|rishi|hemant|ravi|prabhat|alex|daniel|fred|george|james|oliver)/i;
+  var WANT_VOICE = "male";          /* "male" or "female" */
+
+  var VOICES = [], VOICE_PICK = null, VOICE_OK = false;
+  var FEMALE_RE = /(female|woman|girl|\bfem\b|aarohi|swara|kalpana|tanishaa|priya|heera|veena|raveena|lekha|zira|susan|samantha|karen|moira|tessa|fiona|serena|amelie|nandini|sadia|anu|hazel|eva|linda|catherine|nora)/i;
+  var MALE_RE = /(\bmale\b|\bman\b|\bboy\b|david|mark|rishi|hemant|ravi|prabhat|madhur|alex|daniel|fred|george|james|oliver|thomas|tom|aaron|arthur|gordon|nathan|ryan|eddy|reed|guy|brian|christopher|salman|tarik|amir|yusuf|kabir|rajesh)/i;
 
   function rankVoice(v) {
     var n = (v.name || "") + " " + (v.voiceURI || "");
     var sc = 0;
-    if (/^bn/i.test(v.lang)) sc += 120;
+    if (/^bn/i.test(v.lang)) sc += 120;          /* Bengali above all */
     else if (/^en[-_]?IN/i.test(v.lang)) sc += 35;
     else if (/^hi/i.test(v.lang)) sc += 25;
     else if (/^en/i.test(v.lang)) sc += 12;
-    if (FEMALE_RE.test(n)) sc += 60;
-    if (MALE_RE.test(n)) sc -= 80;
+    var wantMale = (WANT_VOICE === "male");
+    if (MALE_RE.test(n))   sc += wantMale ?  60 : -80;
+    if (FEMALE_RE.test(n)) sc += wantMale ? -80 :  60;
     if (/google/i.test(n)) sc += 6;
     if (v.localService) sc += 3;
     return sc;
@@ -802,12 +807,13 @@
   function loadVoices() {
     try { VOICES = window.speechSynthesis.getVoices() || []; } catch (e) { VOICES = []; }
     VOICE_PICK = null;
-    var bestScore = -1;
+    var best = -Infinity;
     for (var i = 0; i < VOICES.length; i++) {
       var sc = rankVoice(VOICES[i]);
-      if (sc > bestScore) { bestScore = sc; VOICE_PICK = VOICES[i]; }
+      if (sc > best) { best = sc; VOICE_PICK = VOICES[i]; }
     }
-    VOICE_FEM = !!(VOICE_PICK && FEMALE_RE.test(VOICE_PICK.name || ""));
+    var n = VOICE_PICK ? (VOICE_PICK.name || "") : "";
+    VOICE_OK = !!(WANT_VOICE === "male" ? MALE_RE.test(n) : FEMALE_RE.test(n));
   }
   if (window.speechSynthesis) {
     loadVoices();
@@ -816,8 +822,8 @@
   }
 
   /* Browsers refuse to speak before the visitor has interacted with the page,
-     so she stays silent until they turn the mic on or tap her once. After
-     that she says every line out loud. */
+     so it stays silent until they turn the mic on or tap it once. After
+     that it says every line out loud. */
   var canSpeak = false;
 
   function speak(text, force) {
@@ -826,10 +832,12 @@
       window.speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);
       if (!VOICE_PICK) loadVoices();
-      if (VOICE_PICK) u.voice = VOICE_PICK;
+      try { if (VOICE_PICK) u.voice = VOICE_PICK; } catch (e2) {}
       u.lang = (VOICE_PICK && /^bn/i.test(VOICE_PICK.lang)) ? VOICE_PICK.lang : "bn-BD";
-      u.rate  = 1.0;
-      u.pitch = VOICE_FEM ? 1.25 : 1.6;   /* lift it if the device has no female voice */
+      u.rate = 0.98;
+      /* a real man's voice needs no help; a woman's has to come down a lot */
+      u.pitch = (WANT_VOICE === "male") ? (VOICE_OK ? 0.9 : 0.62)
+                                        : (VOICE_OK ? 1.25 : 1.6);
       u.volume = 1;
       window.speechSynthesis.speak(u);
     } catch (e) {}
@@ -1819,6 +1827,12 @@
     voice: function (on) { listen(!!on); },
     tour: function (n) { startTour(n || situation(), 100); },
     pitch: function () { var t = salesTip(); return t ? t.say : null; },
+    voicePick: function () {
+      if (!VOICE_PICK) loadVoices();
+      return VOICE_PICK
+        ? { want: WANT_VOICE, name: VOICE_PICK.name, lang: VOICE_PICK.lang, matched: VOICE_OK }
+        : { want: WANT_VOICE, name: null, lang: null, matched: false };
+    },
     lines: function () {
       var c = document.querySelector("#grid .card");
       return c ? pitchLines(factsOf(c)) : [];
