@@ -24,6 +24,7 @@
   --accent-soft:#FBE3F0;
   --accent-ink:#FFFFFF;
   --sale:#8A0E5C;
+  --stamp:#8A0E5C;
   --err:#C42B1C;
   --err-soft:#FBE4E1;
   --plate-shadow:rgba(35,10,26,.10);
@@ -56,6 +57,7 @@
     --accent-soft:#330F24;
     --accent-ink:#1A0710;
     --sale:#F58CBF;
+    --stamp:#C20B74;
     --err:#FF7A6B;
     --err-soft:#3A1A16;
     --plate-shadow:rgba(0,0,0,.35);
@@ -83,6 +85,7 @@
   --accent-soft:#330F24;
   --accent-ink:#1A0710;
   --sale:#F58CBF;
+  --stamp:#C20B74;
   --err:#FF7A6B;
   --err-soft:#3A1A16;
   --plate-shadow:rgba(0,0,0,.35);
@@ -730,12 +733,12 @@ footer.site{border-top:1px solid var(--line);background:var(--surface);}
 .card[data-sold="true"] .plate{opacity:.9;}
 .card[data-sold="true"] .photo{filter:grayscale(.6);}
 .card[data-sold="true"] .name,.card[data-sold="true"] .price{color:var(--ink-2);}
-/* লাল রাবার-স্ট্যাম্প — ছবির উপরে বসে */
+/* রাবার-স্ট্যাম্প — ব্র্যান্ডের ম্যাজেন্টা রঙে, ছবির উপরে বসে */
 .sold-stamp{
   position:absolute;left:50%;top:50%;z-index:3;
   width:62%;max-width:210px;aspect-ratio:1/1;
   transform:translate(-50%,-50%) rotate(-13deg);
-  color:#D6261B;opacity:.92;
+  color:var(--stamp,#8A0E5C);opacity:.93;
   pointer-events:none; /* সিলটা যেন ছবিতে ক্লিক আটকে না দেয় */
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));
 }
