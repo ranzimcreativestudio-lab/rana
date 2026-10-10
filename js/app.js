@@ -3,30 +3,6 @@
 
 /* ================= product data ================= */
 var P = [
-  {id:"w04",name:"Boxy Cotton Tee",gender:"women",type:"T-Shirt",shape:"tee",price:1450,tag:"Best seller",
-   fabric:"Combed organic cotton, 220gsm",fit:"Boxy, sits at the hip",care:"Machine wash warm, tumble low",
-   colors:[{"n":"White","h":"#F4F2EC"},{"n":"Black","h":"#1C1E20"},{"n":"Sage","h":"#94A88F"},{"n":"Butter","h":"#E7CE94"}]},
-
-  {id:"w08",name:"Cropped Loopback Sweat",gender:"women",type:"Sweatshirt",shape:"crop",price:2900,
-   fabric:"Loopback cotton terry, 320gsm",fit:"Cropped at the waist, ribbed hem",care:"Wash inside out, dry flat",
-   colors:[{"n":"Grey Melange","h":"#B3B6B2"},{"n":"Ecru","h":"#E3DCCC"},{"n":"Pine","h":"#33544B"}]},
-
-  {id:"m01",name:"Heavy Cotton Crew Tee",gender:"men",type:"T-Shirt",shape:"tee",price:1350,tag:"Best seller",
-   fabric:"Ring-spun cotton, 240gsm, ribbed collar",fit:"Regular, straight body",care:"Machine wash warm, tumble low",
-   colors:[{"n":"White","h":"#F4F2EC"},{"n":"Black","h":"#1C1E20"},{"n":"Navy","h":"#2A3A50"},{"n":"Rust","h":"#A65B3D"}]},
-
-  {id:"m03",name:"Piqué Polo",gender:"men",type:"Polo",shape:"polo",price:2250,
-   fabric:"Cotton piqué with a flat-knit collar",fit:"Trim, sits at the hip",care:"Machine wash cold, reshape damp",
-   colors:[{"n":"Forest","h":"#3B5A46"},{"n":"Chalk","h":"#EDE8DE"},{"n":"Charcoal","h":"#3A3E42"}]},
-
-  {id:"m05",name:"Loopback Hoodie",gender:"men",type:"Sweatshirt",shape:"hoodie",price:4100,
-   fabric:"Heavyweight loopback terry, 400gsm",fit:"Regular, kangaroo pocket",care:"Wash inside out, dry flat",
-   colors:[{"n":"Charcoal","h":"#35393B"},{"n":"Oat","h":"#DDD2BE"},{"n":"Navy","h":"#2A3A50"}]},
-
-  {id:"m08",name:"Crew Sweatshirt",gender:"men",type:"Sweatshirt",shape:"sweat",price:3300,
-   fabric:"Brushed-back fleece, 350gsm",fit:"Regular with ribbed cuffs and hem",care:"Machine wash cold, dry flat",
-   colors:[{"n":"Grey Melange","h":"#B3B6B2"},{"n":"Pine","h":"#33544B"},{"n":"Black","h":"#1C1E20"}]},
-
   {id:"r01",name:"Off White Cotton Tee",gender:"men",type:"T-Shirt",shape:"tee",price:180,
    img:"images/offwhite-tee.jpg",
    fabric:"Cotton jersey, ribbed crew neck",fit:"Regular, straight body",care:"Machine wash cold, tumble dry low",
